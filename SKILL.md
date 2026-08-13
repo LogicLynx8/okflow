@@ -1,12 +1,12 @@
 ---
 name: okflow
-description: Use when generating images, videos, or music through the okflow platform, including reusable image presets with multi-variable prompt templates; covers listing models, submitting generation tasks, polling, and downloading results via CLI or the preset OpenAPI contract.
+description: Use when an Agent must generate media through okflow or discover, create, update, preview, publish, or search okflow knowledge-base notes through OpenAPI, including notes that reference image-generation history or store light-app snapshots in workbench application-reference blocks; covers API authentication, models, generation tasks, history, Markdown sync, protected media, creation-reference and application-reference blocks, presets, and canvas operations.
 ---
 
-# okflow 图片/视频生成 CLI
+# okflow 媒体生成与知识库 OpenAPI
 
-通过 okflow 开放 API 生成图片、视频、音乐。所有操作走本目录下的 Node.js CLI，
-不需要手写 HTTP 请求，也不需要了解平台内部实现。
+通过 okflow 开放 API 生成图片、视频、音乐和维护知识库笔记。媒体生成可使用本目录下的
+Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，不要修改网页代码来创建笔记。
 
 ## 前置：一次性初始化
 
@@ -58,6 +58,7 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 | `status <taskId>` | 查询单个任务的状态 |
 | `download <taskId>` | 把已完成任务的产物下载到本地 |
 | `upload <file>` | 上传本地文件并返回持久化 URL |
+| `knowledge sync <baseId> <markdown>` | 同步 Markdown 文章和本地图片到知识库 |
 
 所有命令都支持 `--help` 查看完整参数。
 
@@ -224,6 +225,16 @@ node bin/okflow.mjs generate --model <model> --prompt "..." --image-file ./refer
 
 Use `--image-file path1,path2` for multiple files. Existing `--images url1,url2` remains supported.
 
+## Knowledge-base OpenAPI
+
+For every knowledge-base task, read [references/knowledge-openapi.md](references/knowledge-openapi.md) in full
+before making requests. It is the authoritative workflow for API-key authentication, contract discovery, note
+creation and update, dry-run and publish, protected media, image-history `<creation-reference />` blocks,
+light-app `<application-reference />` blocks, verification, and error recovery.
+
+Treat these capabilities as HTTP OpenAPI operations. Do not modify frontend code or call JWT-only user endpoints
+to create notes or resolve references.
+
 ## 写 prompt 的注意事项
 
 平台上游有内容审核，命中会导致任务失败，且**错误信息通常是空的**，只能看到
@@ -245,3 +256,138 @@ Use `--image-file path1,path2` for multiple files. Existing `--images url1,url2`
 | `模型不存在` | 模型名猜错了 | 跑 `models` 拿准确名字 |
 | 轮询超时 | 视频生成没跑完 | 用 `status <taskId>` 继续查，任务还在跑 |
 | 任务快速 failed 且无错误信息 | 内容审核拦截 | 按上一节改 prompt |
+
+## Canvas node protocol
+
+When an Agent operates the Okflow canvas, keep the node types distinct:
+
+- `text` means the generation-capable `scriptCard` node.
+- `plain_text` means the editable `textCard` node. Send its body in `content`; it can be updated, connected, and generated with `run_generation` (use `mode: "text"`, which is also inferred when omitted).
+- The canvas director uses the concrete frontend name `textCard` in `canvas_create_node` and `canvas_update_node`.
+- `connect_nodes` 默认只建立候选资源关系。只有 Agent 明确要把一个 `image` 来源写进目标图片提示词时，才传 `mentionInPrompt: true`；否则该连线不会成为生图参考图。
+
+The browser remains responsible for the existing canvas approval flow. Do not bypass it with DOM clicks or direct Socket.IO requests.
+
+### OpenAPI relay and image model capabilities
+
+For a remote CLI or Agent, use the existing OpenAPI relay with `Authorization: Bearer <openapi-token>`:
+
+- `GET /openapi/v1/project/canvas/director/online?project_id=<id>&canvas_id=<id>` confirms that a browser is connected.
+- `GET /openapi/v1/project/canvas/director/models?project_id=<id>&canvas_id=<id>&node_id=<optional>` lists public image models, presets, and `capabilities` without exposing provider credentials. When `node_id` is supplied, the response includes the model/preset selected on that image node as `default_model`.
+- `POST /openapi/v1/project/canvas/director/send` sends the natural-language command to the director; the browser remains the only Socket.IO client.
+
+Before image generation, call the models endpoint or the director's `canvas_list_image_models` tool when model capabilities are needed. For `canvas_run_node_action`, omit `action_params.model` to preserve the target image node's saved model, preset, and generation settings. Only pass `model` when the user explicitly chooses one. For batch group creation, omitting `model` uses the first currently available canvas image option together with its preset ID and default config. To choose a preset explicitly, pass its returned option `id`; a normal model may use its `model_name` or returned `id`.
+
+### Batch-create image groups from a story node
+
+For one-shot derivation of character, scene, prop, and storyboard drafts, instruct the canvas director to use `canvas_batch_create_image_groups`. Pass the story node's real backend ID, a stable `batch_key`, and one group per semantic kind. The optional image model can be omitted to use the current canvas default. The tool creates `groupCard` containers and child `imageCard` drafts in one transaction, asks for one normal canvas approval, and does not run generation or charge image-generation credits.
+
+```json
+{
+  "source_node_id": 123,
+  "batch_key": "okflow-xianxia-promo-v1",
+  "connect_source": true,
+  "groups": [
+    {
+      "kind": "character",
+      "title": "角色形象",
+      "color": "#8b5cf6",
+      "items": [
+        {"title": "修仙者", "description": "青年修士的角色设定", "prompt": "东方修仙角色设定图"}
+      ]
+    },
+    {"kind": "scene", "title": "场景", "color": "#0ea5e9", "items": []},
+    {"kind": "prop", "title": "道具", "color": "#f59e0b", "items": []},
+    {"kind": "storyboard", "title": "分镜故事板", "color": "#22c55e", "items": []}
+  ]
+}
+```
+
+Use only `character`, `scene`, `prop`, and `storyboard`; allow at most one group per kind and 50 items per group. Reusing the same `source_node_id + batch_key + kind` is idempotent. Keep storyboard children as normal `imageCard` drafts with `generationMode="normal"`; never fabricate `shotId`. With `connect_source=true`, the backend creates source edges only when the canvas IO contract permits them.
+
+### 批量关联分镜参考素材
+
+多个现有节点需要一次性连线时，使用 `canvas_batch_connect_nodes`。传入 1-100
+条 `edges`，每条包含 `from_node_id`、`to_node_id`，以及可选的
+`edge_type`/`label`/`mention_in_prompt`。manual 模式整批只需一次授权；后端会先校验全部节点归属和
+IO 兼容性，再在一个事务内写入，并复用完全相同的已有连线。任意一条不合法时，
+本次调用不会写入任何连线。
+
+分镜一致性应将对应的角色、场景、道具子 `imageCard` 精确连到每个分镜子
+`imageCard`，不要连接 `groupCard` 容器，因为分组本身不产出资源。连线默认只暴露
+候选资源：`mention_in_prompt` 默认为 `false`，因此单纯创建或复用
+`imageCard -> imageCard` 连线不会选中参考图。只有当前请求明确选择该资源时才传
+`mention_in_prompt=true`，后端才会在同一事务中为目标提示词补齐可见的结构化 `@`
+引用；引用保存的是源节点身份，不保存图片 URL。故事文本到分镜的文本叙事边只作为
+上下文，不会变成参考图。生成时只传递仍存在于目标 `prompt` 且仍可从当前图到达的
+mentions；手工删除 chip 只表示本次生成不使用该资源，不会删除连线。连线本身不会
+触发生图或计费；只连接属于该镜头的素材，不要把全部素材无差别连接到每个镜头。
+
+### 批量更新画布节点
+
+多个现有节点需要一次性改内容时，使用 `canvas_batch_update_nodes`。传入 1-100
+个 `updates`，每项包含唯一的正整数 `node_id` 和非空增量 `draft_data`。后端会先
+校验整批，再在一个数据库事务中写入；任一节点无效或不属于当前画布时整批失败，
+不会留下部分结果，manual 模式只出现一张授权卡。
+
+批量重写图片提示词时，必须在新 `prompt` 中保留仍需使用的可见结构化 `@` 令牌；
+除非要改变资源身份，否则不要覆盖 `promptResourceMentions`。删除可见 `@` 即表示下次
+生成不再传该资源，即使连线仍然存在。
+
+分镜图片节点应保持“一节点一镜头”。提示词至少包含：画风、引用资源、场景、时间/
+天气、镜头编号、景别/运镜、具体动作、构图光线、连续性、生成约束。不要只写一句
+剧情概括，也不要让生图模型凭空绘制对白、字幕、Logo 或水印。
+
+### 批量执行图片分组
+
+分组创建完成后，使用 `canvas_batch_run_image_group`，传入分组真实
+`group_node_id`，提交其中尚未生成的 `imageCard` 子节点。默认动作是
+`ai_generate_image`；旧故事板分组可以显式传 `ai_generate_storyboard_image`。
+已完成和处理中节点始终跳过；错误节点默认跳过，仅在用户明确要求重试时传
+`retry_errors=true`。结果包含 `started_node_ids`、`skipped`、`failed`。manual
+模式整组只需一次授权；单个生图节点仍使用
+`canvas_run_node_action` 传入 `node_id` 和 `action_params`。
+
+### 从分镜图片批量创建视频节点组
+
+当一个已完成的导演分镜图片组需要按“一图一视频”派生草稿时，使用
+`canvas_batch_create_video_group`。该工具只出现一次 manual 授权，并在同一个
+数据库事务中创建 `groupCard`、全部子 `videoCard`，以及逐一对应的
+`imageCard -> videoCard` 分镜参考连线。它不会启动视频生成，也不会产生视频费用。
+
+传入真实分镜图片组 ID、稳定 `batch_key`，以及每张直属图片对应的一项：
+
+```json
+{
+  "source_group_node_id": 887,
+  "batch_key": "okflow-xianxia-promo-video-v1",
+  "title": "视频分镜组（6）",
+  "color": "#06b6d4",
+  "position": {"x": -76, "y": 5188},
+  "size": {"width": 2352, "height": 1368},
+  "items": [
+    {
+      "source_image_node_id": 888,
+      "title": "镜头1｜云海灵印觉醒（8s）",
+      "description": "云海之巅，修仙者结印唤醒 OKFlow 灵印",
+      "prompt": "写实东方修仙，按时间段描述连续动作与运镜",
+      "duration": 8,
+      "position": {"x": 44, "y": 44},
+      "size": {"width": 720, "height": 620}
+    }
+  ]
+}
+```
+
+每个来源必须是该分镜组直属且已有可用图片的 `imageCard`，来源 ID 不得重复；
+`duration` 必须是 1-15 的整数。子节点位置相对分组左上角，显式传入分组尺寸时不得
+越界。工具自动保存项目默认视频预设及其配置，每项只覆盖自身时长；同时保存来源
+分镜身份、当前图片 URL，并在提示词前加入编辑器可见的 `@图片1` 系统首帧标记。
+导演创建的普通分镜组不得伪造 shot/storyboard 数据库 ID。
+
+只有完全相同的请求和来源图片版本才能使用同一 `batch_key` 重试。同一
+`source_group_node_id + batch_key` 具备幂等性；提示词、布局、时长、来源 URL 或来源
+版本变化时会明确冲突，不会静默复用旧视频草稿。目前没有
+`canvas_batch_run_video_group`；校对完成后，单个视频节点使用
+`canvas_run_node_action(action="ai_generate_video")` 并显式传生成参数。不得把“创建
+视频组”描述成已经提交付费生成任务。
