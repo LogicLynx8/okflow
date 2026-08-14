@@ -58,8 +58,25 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 | `download <taskId>` | 把已完成任务的产物下载到本地 |
 | `upload <file>` | 上传本地文件并返回持久化 URL |
 | `knowledge sync <baseId> <markdown>` | 同步 Markdown 文章和本地图片到知识库 |
+| `node bin/sync-mcp-references.mjs` | 同步已发布的 MCP references 目录 |
 
 所有命令都支持 `--help` 查看完整参数。
+
+## MCP 工具 References
+
+需要发现并调用已登记 MCP/OpenAPI 工具时，先读
+`references/mcp-tools/INDEX.md`，再只读取任务所需的平台能力分段。目录是导航，
+不是授权缓存；实际调用仍必须使用服务端 `/openapi/v1/agent/mcp/dispatch`，由 API Key
+确定用户并复用平台计费、钱包和审计链。
+
+同步权威目录：
+
+```bash
+node bin/sync-mcp-references.mjs
+```
+
+命令会分页读取 `/openapi/v1/agent/mcp/references`，逐段校验 SHA-256，再原子替换
+`references/mcp-tools/`。不要手工写入工具密钥、请求头、外部服务地址或用户身份。
 
 ## 典型用法
 

@@ -155,3 +155,21 @@ export function syncKnowledgeMarkdown({ body, baseUrl, timeout = 300 } = {}) {
     timeout,
   });
 }
+
+/** Read the published MCP reference catalog for local Agent synchronization. */
+export function listMcpReferences({ platform, capability, keyword, page = 1, pageSize = 100, baseUrl, timeout = 60 } = {}) {
+  const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
+  if (platform) params.set('platform', platform);
+  if (capability) params.set('capability', capability);
+  if (keyword) params.set('keyword', keyword);
+  return request('GET', `/openapi/v1/agent/mcp/references?${params.toString()}`, { baseUrl, timeout });
+}
+
+/** Read one published MCP reference segment. */
+export function getMcpReference(referenceId, { baseUrl, timeout = 60 } = {}) {
+  const path = String(referenceId)
+    .split('/')
+    .map((part) => encodeURIComponent(part))
+    .join('/');
+  return request('GET', `/openapi/v1/agent/mcp/references/${path}`, { baseUrl, timeout });
+}
