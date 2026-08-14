@@ -49,14 +49,14 @@ CLI 零第三方依赖，只要 Node.js ≥ 18，clone 下来就能跑。
 
 **1. 拿 Key**
 
-注册 [okflow.cn](https://okflow.cn) → 控制台 →「开放 API」→ 创建 API Key，拿到 `ak_xxx:sk_xxx`。
+注册 [okflow.cn](https://okflow.cn) → 控制台 →「开放 API」→ 创建 API Key，拿到 `ak_xxx`。
 
 **2. 配 Key**
 
 在本目录新建 `.env` 文件（首次运行 `setup` 也会自动帮你建好）：
 
 ```
-OKFLOW_API_KEY=ak_xxx:sk_xxx
+OKFLOW_API_KEY=ak_xxx
 ```
 
 **3. 验证环境**

@@ -15,13 +15,13 @@
 知识库能力是 HTTP OpenAPI，不是前端组件接入指南。所有请求使用：
 
 ```http
-Authorization: Bearer ak_xxx:sk_xxx
+Authorization: Bearer ak_xxx
 Content-Type: application/json
 ```
 
 响应统一为 `{"code":200,"msg":"请求成功","data":...}`。同时检查 HTTP 状态和 `code`；只读取
 `data` 作为业务结果。知识库读写限制在 API Key 所属用户，不能访问其他用户的知识库。
-始终把完整 `ak:sk` 放在 `Authorization` 请求头中；不要把凭证放入查询字符串、日志或笔记正文。
+始终把 `ak` 放在 `Authorization` 请求头中；不要把凭证放入查询字符串、日志或笔记正文。
 
 ## 发现契约并选择知识库
 

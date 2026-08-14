@@ -68,7 +68,7 @@ function checkCredential() {
 
   warn('API Key 未配置，生成命令暂时无法使用');
   step('1. 登录 okflow 控制台 → 开放 API → 创建 API Key');
-  step(`2. 把 ak_xxx:sk_xxx 填入 ${ENV_PATH} 的 OKFLOW_API_KEY=`);
+  step(`2. 把 ak_xxx 填入 ${ENV_PATH} 的 OKFLOW_API_KEY=`);
   step('3. 或直接设置环境变量 OKFLOW_API_KEY');
   return false;
 }

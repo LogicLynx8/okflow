@@ -33,8 +33,7 @@ CLI 按以下优先级读取凭证，任一处配好即可：
 1. 环境变量 `OKFLOW_API_KEY`
 2. 本目录下 `.env` 文件里的 `OKFLOW_API_KEY=`
 
-Key 的格式是 `ak_xxx:sk_xxx`（access key 和 secret key 用冒号连接）。只有 `ak_xxx`
-也能用，但强烈建议带上 sk，否则平台侧无法完成完整校验。
+Key 的格式是 `ak_xxx`，只需要 access key 即可完成全部鉴权，无需 secret key。
 
 Key 从 okflow 控制台的「开放 API」页面创建获取。**不要把 key 写进任何会提交到
 git 的文件**，`.env` 已在 `.gitignore` 中。
@@ -162,7 +161,7 @@ The preset generation contract is:
 
 ```http
 POST /openapi/v1/agent/preset/generate
-Authorization: Bearer ak_xxx[:sk_xxx]
+Authorization: Bearer ak_xxx
 Content-Type: application/json
 ```
 
