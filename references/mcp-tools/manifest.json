@@ -1,208 +1,215 @@
 {
-  "reference_version": "sha256:fe1f83703ef02c0593039d876a0cdd96dafe950617cfe0fdc58166b778405dac",
-  "generated_at": "2026-08-14T13:12:54.477601Z",
-  "segment_count": 33,
+  "reference_version": "sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8",
+  "generated_at": "2026-08-15T05:46:18.195Z",
+  "segment_count": 34,
   "files": [
     {
       "path": "INDEX.md",
-      "sha256": "24725b7d995730ea5bd67d86f636596d7a86ef6109a120c2c29ccd868aa423ec"
+      "sha256": "69dece2acc0e82fcf75c8b8dde48cbf761e39dfcc22c28f4c93adb1e9d6425c1"
     },
     {
       "path": "platforms/bilibili.md",
       "reference_id": "catalog/bilibili",
-      "sha256": "ae027bacfcf3c3666bc1256397008e362a33e5f15541c4aabaf60c399b35879d",
+      "sha256": "0b461ef59131ec2ffdb793c7d5625fd61470753d3fcc77e234ca250da626a3fb",
       "tool_count": 42
     },
     {
       "path": "platforms/demo.md",
       "reference_id": "catalog/demo",
-      "sha256": "f240c978e19a781e66f0690c6a9c5bf78d6f930ad93c716e54af0f80378d8354",
+      "sha256": "8a2f039993add70fec5de7a670a6a6673946fbc543f14631bbb3924dca460aa6",
       "tool_count": 9
     },
     {
       "path": "platforms/douyin.md",
       "reference_id": "catalog/douyin",
-      "sha256": "ba25a63a527128b7d2bc47d6e5c9c74bba5020ae154e26e8e173da6ef945df3e",
+      "sha256": "a6cd63d7e0e5e35ee74d3a56a5b7d9adab70205bee14a05fb58cf327bd2b7532",
       "tool_count": 80
     },
     {
       "path": "platforms/douyin-2.md",
       "reference_id": "catalog/douyin-2",
-      "sha256": "94de3cdb3bb0e9e1ded8269370b521c5d9108c1319a755edc775aa00a2f5de42",
+      "sha256": "0230e4f196f1536d9eba01f44a7e4b4f18032a52daa50bb85391659c68e78757",
       "tool_count": 80
     },
     {
       "path": "platforms/douyin-3.md",
       "reference_id": "catalog/douyin-3",
-      "sha256": "22c9300f85a10b79860ad4e8d4d580fb52a014295e72a15b3838f286a5c09fdb",
-      "tool_count": 80
+      "sha256": "964fa18ead9a69e71543f772b752804a2c03011a51292f5d5c22dd42a8804eec",
+      "tool_count": 80,
+      "sanitized": true
     },
     {
       "path": "platforms/douyin-4.md",
       "reference_id": "catalog/douyin-4",
-      "sha256": "516d9c08a15c9d52bcf3a280a3888d7087869e507bcd50b92166c97e2469e093",
+      "sha256": "caa40e887e349e721f1f059626f1dbe5a5b1ba5fd1ec183596d0c27c42cec45f",
       "tool_count": 77
     },
     {
       "path": "platforms/health.md",
       "reference_id": "catalog/health",
-      "sha256": "d8f5083329f1d3ca9a5ac37a86334fe44e4c9a4cf74be21f084126744c4ce4be",
+      "sha256": "21aeb0e8af6a409549f59b640bb882ae5614a20f1c7a1863ef004d9303eb852d",
       "tool_count": 2
     },
     {
       "path": "platforms/hybrid.md",
       "reference_id": "catalog/hybrid",
-      "sha256": "087ad7f62262dad7a3f08cc954bb2be51a5dfff85c962788e4acfbcb39397350",
+      "sha256": "4110a43faf3cd062481c50c79e130ec19958843f3700becd7bf86b0d84425d72",
       "tool_count": 1
     },
     {
       "path": "platforms/instagram.md",
       "reference_id": "catalog/instagram",
-      "sha256": "40ab9597f32241fb6d33fbb7359ad749e29d8cb44eaa00d30e8b84f736624f0e",
+      "sha256": "0b3a3ef0e00df8ef32124b1740497b10e3d543f10d3f933f3add1cabb70aa46e",
       "tool_count": 80
     },
     {
       "path": "platforms/instagram-2.md",
       "reference_id": "catalog/instagram-2",
-      "sha256": "3a58547e8274e080d6c7d28cdada9efaa6fbdcaac865fd954adca02eb67e2239",
+      "sha256": "5afb30ef28b6f540128fc2720cc538f6ee45cf76296ce7c0df3b7bfb5e7d80ed",
       "tool_count": 13
     },
     {
       "path": "platforms/ios_shortcut.md",
       "reference_id": "catalog/ios_shortcut",
-      "sha256": "4ce635a3dbd2244695ebeaf4fcf4e9b454b1750469b66bebaacd929eedfb8f4e",
+      "sha256": "c933e66268aa2ee2d4a8083f01bf3aae14591b9539894d9a398bf9ac9be68172",
       "tool_count": 1
     },
     {
       "path": "platforms/kuaishou.md",
       "reference_id": "catalog/kuaishou",
-      "sha256": "dbc0ca2e150c6a7728fcd7ca6b37bc1cc958ef6a10a0470d2658db3cda94dbd5",
+      "sha256": "1b5179c53d38b266c57260935386a69e279b5cc6a9e12a2e4585ae825b2ac0f2",
       "tool_count": 38
     },
     {
       "path": "platforms/lemon8.md",
       "reference_id": "catalog/lemon8",
-      "sha256": "fbd80de87d4421e0bc51f1e3a779d812b72b1f7336955e4a4556241db2944eca",
+      "sha256": "ace5f3fea7ee87c7529766c115a07e8f7301d1abab342f8ef58007bcb4638da3",
       "tool_count": 16
     },
     {
       "path": "platforms/linkedin.md",
       "reference_id": "catalog/linkedin",
-      "sha256": "955c50c69c4d89be8463b2bdce1d53d17d9303fd8ac19b90dab28947e6717f67",
+      "sha256": "5cae4672a7b878b3402c49a397374fbe4d3d0cc7580facea4968c5835cf2d582",
       "tool_count": 8
     },
     {
       "path": "platforms/pipixia.md",
       "reference_id": "catalog/pipixia",
-      "sha256": "0d24779ac3e044addc88fc961ab747c05be3aa3f8dae36bf214c8e7b3746d0ad",
+      "sha256": "7d28c81ca35bf0bb3492be4f45282ff3c788ea7bb690ab2651a56824d64c0714",
       "tool_count": 17
     },
     {
       "path": "platforms/platform_account.md",
       "reference_id": "catalog/platform_account",
-      "sha256": "fc80e36647877f926cedbcabb287472b38258a5101f71b6cecf92d89db507a31",
+      "sha256": "7869b83fba2d073de18b61fe8d63fcf9fe858cf2a201dab2e95e9232587b5d49",
       "tool_count": 8
     },
     {
       "path": "platforms/reddit.md",
       "reference_id": "catalog/reddit",
-      "sha256": "2c92b0a78b9bcab0894657f790c2c7d57f036cb86a18287ff40a7f632a3a8527",
+      "sha256": "8563a927496e950a8678d0fe61b478bb72f9abdbd09292ce3d056ce71ad44b80",
       "tool_count": 28
     },
     {
       "path": "platforms/telegram.md",
       "reference_id": "catalog/telegram",
-      "sha256": "49159357bd7afe30c96536ebda7d3b4beef961ea8aadcf410eb942e48eb0b274",
+      "sha256": "5923570265f08973ea571e49bda9c6fde53250435732215cf8c640241553aa66",
       "tool_count": 7
     },
     {
       "path": "platforms/temp_mail.md",
       "reference_id": "catalog/temp_mail",
-      "sha256": "b7be3d6d9c8f9363f800eb452e0a6b1dbcef6c22c61275a7c13c820abd2d3704",
+      "sha256": "d5dac128ce5f830aaeebe38917cc3aa7309fc0f1830cf647fb103c390641eee9",
       "tool_count": 3
     },
     {
       "path": "platforms/threads.md",
       "reference_id": "catalog/threads",
-      "sha256": "0c569837cae393ff1c990a6bf45798e3b0ae16086573772ae2e67135dfe77913",
+      "sha256": "f202525e3f019226c5da76ed7b9227b6aa4e798572d4055c645935b2ddf7aa2f",
       "tool_count": 11
     },
     {
       "path": "platforms/tiktok.md",
       "reference_id": "catalog/tiktok",
-      "sha256": "3e051e897d2222299bc8bd4568a2f0173e985f4a820c34a6f4a4faf87fa23bd9",
+      "sha256": "4410e23c1677c759536d8907262e75e7cc8f802b1528f09470dcf53904a70cab",
       "tool_count": 80
     },
     {
       "path": "platforms/tiktok-2.md",
       "reference_id": "catalog/tiktok-2",
-      "sha256": "9a15026b135bb8c4068086397a8d8c3c24271d64f0dea1feb3445a0fab086286",
+      "sha256": "25254e17d919632161125261319072605678c6d0b776656750ec4d0c8441cb20",
       "tool_count": 80
     },
     {
       "path": "platforms/tiktok-3.md",
       "reference_id": "catalog/tiktok-3",
-      "sha256": "f983cf2b2f2c6e9f7fb73d9bf996afd10ef2fb9a985d4f994dc9f244f627b90d",
+      "sha256": "a6227bc372900fd510c229afdb44e599082f5f4ea2085cb85584a8d173d1ee25",
       "tool_count": 5
     },
     {
       "path": "platforms/toutiao.md",
       "reference_id": "catalog/toutiao",
-      "sha256": "212b39c78b6b96266491408e89d7fdca9d227b6483f472b81134cc74e7a52763",
+      "sha256": "0944bf46690a724869cb131f43e70339a243f00e6b699b3ef2e0433f5be22e67",
       "tool_count": 7
     },
     {
       "path": "platforms/twitter.md",
       "reference_id": "catalog/twitter",
-      "sha256": "92aaf699eafc2b814e4fb2888a7bf951eff97f9d62d542072d562486ff5fde0b",
+      "sha256": "0f437047b294ecac0f8852d287a3c0168dbb9e5ff107c50b6789a1f6b741f0da",
       "tool_count": 12
+    },
+    {
+      "path": "platforms/uncategorized.md",
+      "reference_id": "catalog/uncategorized",
+      "sha256": "0c468738a65726b208f6ca68b00040305aa6cfc11db6f097c6814cb77cf046ee",
+      "tool_count": 19
     },
     {
       "path": "platforms/wechat_channels.md",
       "reference_id": "catalog/wechat_channels",
-      "sha256": "15a1d0d7b88c27a91b970df3da702aed78f31ee5d2d93812723e5067b1893632",
+      "sha256": "3b976832604c22a99730bf0764210217b55791ec1be57f2b1d112ae4f177fe72",
       "tool_count": 12
     },
     {
       "path": "platforms/wechat_mp.md",
       "reference_id": "catalog/wechat_mp",
-      "sha256": "c82463dc32c8467a2a2061c80193c0e6ba2ffa8d004efba9bdc7992295e7c4a7",
+      "sha256": "297adf19a45edfe1f63d9fe877a02e28dc178365d34ce6424b9513bbb5be03ca",
       "tool_count": 9
     },
     {
       "path": "platforms/wechat_search.md",
       "reference_id": "catalog/wechat_search",
-      "sha256": "ea6c0b36b2e2b35acbc7ab5e759e5a4d52b6932aa781fe50ad4ccf866bdef705",
+      "sha256": "3171268cdc236fb3f6ececebbe597456eede2badd3c764a44a667a226cbe347a",
       "tool_count": 2
     },
     {
       "path": "platforms/weibo.md",
       "reference_id": "catalog/weibo",
-      "sha256": "4c904646c42a6c8b26e8d2aabb63d05a5660edb86195579b05685df7ffadcd35",
+      "sha256": "ce49daaccbb29472b334f82c671bed4aadcc40483cbbe3e9780613d3a4d80b22",
       "tool_count": 64
     },
     {
       "path": "platforms/xiaohongshu.md",
       "reference_id": "catalog/xiaohongshu",
-      "sha256": "f65311c6ac2fb9304f988d73139257b976cd753cfe6f0eb2422158d3853dd911",
+      "sha256": "701c9ef39ccafa705a7de1f3dc80318be69a632f1bc04344ef1b05c255060f80",
       "tool_count": 36
     },
     {
       "path": "platforms/xigua.md",
       "reference_id": "catalog/xigua",
-      "sha256": "de1a1d0f2a04495b2254bf42ca44373a46b24177571f9fd762013331f8cf1d49",
+      "sha256": "7de31990b0b7d9651819b51341ad6d02398154579c674498fdec3ad533b99f13",
       "tool_count": 7
     },
     {
       "path": "platforms/youtube.md",
       "reference_id": "catalog/youtube",
-      "sha256": "3eb46fa36e4abb53fb709643e85abb161e3295d1666f58bc8a6fbd82d61a2bab",
+      "sha256": "e0d6b2dede34a1df192943bcb5673c8a3ab8d78d9311b02635ce5e6055e4eb70",
       "tool_count": 38
     },
     {
       "path": "platforms/zhihu.md",
       "reference_id": "catalog/zhihu",
-      "sha256": "6f142ed3ce3eb7d88e9a881b7b24a3801045b99e70d21c5a688bcc5fd36500e0",
+      "sha256": "104cd56eee5448cfceac15c6e4f095c66ccd8015e959ec107dbcba4b398ed6d3",
       "tool_count": 41
     }
   ]

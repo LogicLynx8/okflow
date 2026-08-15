@@ -2,40 +2,40 @@
 
 - 来源平台：`TikTok`
 - 能力分段：`tiktok-3`
-- Reference version: `sha256:fe1f83703ef02c0593039d876a0cdd96dafe950617cfe0fdc58166b778405dac`
+- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
 - Tool count: 5
 
-## `mcp_f91e7ea52cb5419d4d3d0102`
+## `mcp_f70238ef0efe13ffcced6351`
 
-# [中文] ### 用途: - 获取用户的点赞列表 - 注意: 该接口需要用户点赞列表为公开状态 ### 参数: - secUid: 用户secUid - cursor: 翻页游标 - count: 每页数量，默认为20，不可变更。 - coverFormat: 封面格式 - post_item_list_request_type: 排序方式 - 0：默认排序 - 1：热门排序 - 2：最旧排序 ### 返回: - 用户的点赞列表 ### 备注: - 此接口返回的视频CDN直链需要携带返回的 `tt_chain_token` 才能访问，否则会返回 HTTP 403。 - 访问视频CDN直链时
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"coverFormat","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"post_item_list_request_type","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
-
-## `mcp_fabd07ab93b6762f2f1aec63`
-
-提取单个作品id/Extract single video id
+# [中文] ### 用途: - 获取TikTok Shop商品详情 - 提供最完整的商品信息，包括推荐商品、相关视频、店铺信息等 - 适用于所有地区的商品 ### 参数: - product_id: 商品ID (必填) - region: 地区代码 (US/GB/SG/MY/PH/TH/VN/ID) ### 重要提示: - **请务必确保 `product_id` 对应的 `region` 是正确的，否则接口将不会返回数据。** - 由于接口风控原因，请务必将请求timeout设置为30秒 - 如遇到400错误代码，请重试请求3次 ### 返回数据结构: ```json { "code":
 
 - Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
+- Parameters: `[{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
 
-## `mcp_fb3afccb8a509d6af0a411c9`
+## `mcp_fa23023f72eae56fae2bf0d2`
 
-批量获取视频信息/Batch Get Video Information
+# [中文] ### 用途: - 通过直播链接获取直播间信息 - 此接口可获取离线直播间信息 ### 参数: - live_room_url: 直播间链接 ### 返回: - 直播间信息 # [English] ### Purpose: - Get live room information via live link - This interface can get offline live room information ### Parameters: - live_room_url: Live room link ### Return: - Live room information
+
+- Risk: `read`
+- Parameters: `[{"name":"live_room_url","type":"string","required":true}]`
+
+## `mcp_fc477a5c20245086b7360631`
+
+获取用户的播放列表/Get user play list
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
+
+## `mcp_fc6502efd42012e7027f2b79`
+
+获取热门标签详情(趋势)/Get trending hashtag detail
 
 - Risk: `write`
-- Parameters: `[{"name":"body","type":"array","required":true}]`
+- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"hashtag_id","type":"string","required":true},{"name":"time_range","type":"integer","required":false}]`
 
-## `mcp_fe23608fb70b1b72754017ba`
+## `mcp_fdb304b3795b0e4073858c24`
 
-# [中文] ### 用途: - 获取指定用户的关注列表数据 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID (与sec_user_id二选一/One of user_id and sec_user_id) - sec_user_id: 用户sec_user_id，这是一个混合字母和数字的版本ID (与user_id二选一/One of user_id and sec_user_id) - count: 数量，不要超过20，保持固定。 - min_time: 最小时间，用于翻页，第一次请求使用默认值0，后续请求使用上一次请求返回的min_time值。 - page
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"min_time","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"user_id","type":"string","required":false}]`
-
-## `mcp_ff72876abf8f69f82572c76b`
-
-提取用户user_id/Extract user user_id
+# [中文] ### 用途: - 获取直播间首页推荐列表 ### 参数: - related_live_tag: 相关直播标签(直播分类)。该参数的可选值不固定，请先调用 `/fetch_live_recommend_tabs` 接口获取当前可用的标签列表，再从中选取传入。 ### 返回: - 直播间首页推荐列表 ### 备注: - 不清楚 `related_live_tag` 可以传哪些值时，请调用 `/fetch_live_recommend_tabs` 接口获取当前可用的标签(分类 Tab)列表。 - 此接口返回的视频CDN直链需要携带返回的 `tt_chain_token` 才能访问，
 
 - Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
+- Parameters: `[{"name":"related_live_tag","type":"string","required":true}]`

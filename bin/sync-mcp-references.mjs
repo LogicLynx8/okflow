@@ -88,6 +88,7 @@ const CAPABILITY_LABELS = {
   tiktok: 'TikTok',
   toutiao: '今日头条',
   twitter: 'Twitter / X',
+  uncategorized: '高德地图与通用工具',
   wechat: '微信',
   wechat_channels: '微信视频号',
   wechat_mp: '微信公众号',
@@ -112,10 +113,45 @@ const UPSTREAM_TEXT_PATTERNS = [
   /\b(?:price|cost)\b|价格|收费|计费/i,
 ];
 
+const SANITIZATION_REPLACEMENTS = [
+  [/https?:\/\/[^\s<>)\]}]+/gi, '[外部地址已隐藏]'],
+  [/\/(?:open)?api\/v\d+(?:\/[A-Za-z0-9_./:{}-]*)?/gi, '[接口路径已隐藏]'],
+  [/\b(?:authorization|cookie|bearer)\b/gi, '登录凭据'],
+  [/\b(?:tikhub|upstream|provider)\b/gi, '平台服务'],
+  [/\b(?:price|cost)(?:_[a-z0-9]+)*/gi, '费用字段'],
+  [/价格|收费|计费/g, '费用信息'],
+];
+
 function assertNoUpstreamText(value, label) {
-  if (UPSTREAM_TEXT_PATTERNS.some((pattern) => pattern.test(value))) {
+  const descriptiveText = String(value)
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*-\s*Parameters:\s*/.test(line))
+    .join('\n');
+  if (UPSTREAM_TEXT_PATTERNS.some((pattern) => pattern.test(descriptiveText))) {
     throw new Error(`references 包含不应公开的实现信息: ${label}`);
   }
+}
+
+function sanitizeReferenceContent(value, label) {
+  const original = String(value);
+  let sanitized = false;
+  const content = original
+    .split(/\r?\n/)
+    .map((line) => {
+      const normalizedLine = line.trimEnd();
+      if (/^\s*-\s*Parameters:\s*/.test(normalizedLine) || /^\s*-\s*Risk:\s*/.test(normalizedLine)) {
+        return normalizedLine;
+      }
+      const safeLine = SANITIZATION_REPLACEMENTS.reduce(
+        (current, [pattern, replacement]) => current.replace(pattern, replacement),
+        normalizedLine,
+      );
+      if (safeLine !== normalizedLine) sanitized = true;
+      return safeLine;
+    })
+    .join('\n');
+  assertNoUpstreamText(content, label);
+  return { content, sanitized };
 }
 
 function buildIndex({ referenceVersion, entries }) {
@@ -150,13 +186,18 @@ async function run(args) {
   const tempDir = await mkdtemp(join(dirname(output), '.mcp-tools-'));
   const files = [];
   const entries = [];
+  const sanitizedReferences = [];
   try {
     for (const item of items) {
       const referenceId = String(item.reference_id || '');
       const detail = await getMcpReference(referenceId, { baseUrl: args['base-url'] });
-      const content = String(detail?.content || '');
-      if (!content) throw new Error(`references 分段内容为空: ${referenceId}`);
-      assertNoUpstreamText(content, referenceId);
+      const rawContent = String(detail?.content || '');
+      if (!rawContent) throw new Error(`references 分段内容为空: ${referenceId}`);
+      const sourceDigest = sha256(rawContent);
+      if (detail.sha256 && detail.sha256 !== sourceDigest) {
+        throw new Error(`references 哈希校验失败: ${referenceId}`);
+      }
+      const { content, sanitized } = sanitizeReferenceContent(rawContent, referenceId);
       const relativePath = safeRelativePath(item);
       const destination = join(tempDir, relativePath);
       if (!args['check-only']) {
@@ -164,8 +205,12 @@ async function run(args) {
         await writeFile(destination, content, 'utf8');
       }
       const digest = sha256(content);
-      if (detail.sha256 && detail.sha256 !== digest) throw new Error(`references 哈希校验失败: ${referenceId}`);
-      files.push({ path: relativePath, reference_id: referenceId, sha256: digest, tool_count: item.tool_count ?? null });
+      const file = { path: relativePath, reference_id: referenceId, sha256: digest, tool_count: item.tool_count ?? null };
+      if (sanitized) {
+        file.sanitized = true;
+        sanitizedReferences.push(relativePath);
+      }
+      files.push(file);
       entries.push({ item: { ...item, path: relativePath }, content });
     }
 
@@ -186,6 +231,7 @@ async function run(args) {
         reference_version: referenceVersion,
         segment_count: files.length,
         tool_count: files.reduce((total, file) => total + Number(file.tool_count || 0), 0),
+        sanitized_segment_count: sanitizedReferences.length,
         files,
       };
       if (args.json) json(result);
@@ -210,7 +256,17 @@ async function run(args) {
       throw error;
     }
     await rm(previous, { recursive: true, force: true });
-    const result = { output, reference_version: referenceVersion, segment_count: files.length, files };
+    if (sanitizedReferences.length && !args.json) {
+      step('已对 ' + sanitizedReferences.length + ' 个分段的实现说明做脱敏，工具引用与参数保持不变');
+    }
+    const result = {
+      output,
+      reference_version: referenceVersion,
+      segment_count: files.length,
+      tool_count: files.reduce((total, file) => total + Number(file.tool_count || 0), 0),
+      sanitized_segment_count: sanitizedReferences.length,
+      files,
+    };
     if (args.json) json(result);
     else ok(`MCP references 同步完成：${files.length} 个分段 -> ${output}`);
     return 0;

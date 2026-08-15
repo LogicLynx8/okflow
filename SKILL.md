@@ -71,15 +71,21 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 
 ### MCP 调用前置检查（必须）
 
-调用 MCP 工具前必须从线上目录重新读取当前平台 References，不得直接使用本地 Markdown
-里的旧 `tool_ref`：
+安装或更新 Skill 后必须一次性检查并同步全部平台 References。默认不要附加
+`--platform`、`--capability` 或 `--keyword`；这些参数只用于排障，不得让用户
+每使用一个新平台就手动刷新一次：
 
 ```bash
-node bin/sync-mcp-references.mjs --check-only --platform xiaohongshu --json
+node bin/sync-mcp-references.mjs --check-only --json
+node bin/sync-mcp-references.mjs
 ```
 
-目录检查成功后，再从本次返回/同步的对应平台文件读取 `tool_ref`。推荐使用内置调度命令，
-它会在付费请求前再次确认引用仍存在，并且只接受工具参数对象：
+同步器会逐段校验来源哈希，并自动从说明文字中移除外部地址、授权、供应方和费用等
+实现信息；工具引用、参数名、参数类型和工具数量必须全部保留。一个分段需要脱敏时
+继续生成该分段和其余全部平台，不得因说明文案命中规则而整批放弃。
+
+日常调用从全量同步后的平台文件读取 `tool_ref`。推荐使用内置调度命令，它会在
+付费请求前实时确认该引用仍存在，并且只接受工具参数对象：
 
 ```bash
 node bin/okflow.mjs mcp dispatch \
@@ -92,9 +98,8 @@ node bin/okflow.mjs mcp dispatch \
 
 GET References 的筛选条件必须放在查询参数中（`platform`、`page`、`page_size`），不要把
 JSON 请求体附加到 GET。收到 `503` 且业务错误码为 `REFERENCE_CATALOG_INVALID` 时，说明
-服务端目录内容命中了脱敏规则（常见命中项：外部 URL、`/api/v1`、`provider`、`price/cost`、
-授权信息或上游实现文案），不是调用参数错误；必须停止，不得继续调度或重复扣费。
-先修复服务端工具描述/标签/参数，再重新执行 `--check-only`。收到 `404` 或
+服务端在返回内容前拒绝了整个目录，此时没有可安全同步的正文，必须停止且不得重复
+扣费；恢复后重新执行不带平台筛选的全量同步。收到 `404` 或
 `MCP_TOOL_REF_STALE` 时，说明本地引用过期，只同步并使用新的引用，不要重试旧值。
 
 统一调度命令会在目录不可用、引用过期、参数不是对象时阻断请求；不要绕过预检手写

@@ -1,8 +1,8 @@
 # MCP Tools References
 
-- Reference version: `sha256:fe1f83703ef02c0593039d876a0cdd96dafe950617cfe0fdc58166b778405dac`
-- Segment count: 33
-- Tool count: 994
+- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
+- Segment count: 34
+- Tool count: 1013
 
 先按“来源平台”定位目标平台，再打开对应文件查看完整工具和参数。每个文件最多收录 80 个工具；同一平台拆分时，`-2`、`-3` 表示同平台的后续分段。
 工具引用用于统一工具网关调度；索引仅提供能力导航与必要参数。
@@ -34,6 +34,7 @@
 | **TikTok** | `tiktok-3` | 5 | [platforms/tiktok-3.md](platforms/tiktok-3.md) |
 | **今日头条** | `toutiao` | 7 | [platforms/toutiao.md](platforms/toutiao.md) |
 | **Twitter / X** | `twitter` | 12 | [platforms/twitter.md](platforms/twitter.md) |
+| **uncategorized** | `uncategorized` | 19 | [platforms/uncategorized.md](platforms/uncategorized.md) |
 | **微信视频号** | `wechat_channels` | 12 | [platforms/wechat_channels.md](platforms/wechat_channels.md) |
 | **微信公众号** | `wechat_mp` | 9 | [platforms/wechat_mp.md](platforms/wechat_mp.md) |
 | **微信搜一搜** | `wechat_search` | 2 | [platforms/wechat_search.md](platforms/wechat_search.md) |
