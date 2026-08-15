@@ -8,7 +8,7 @@ import { mkdir, mkdtemp, rename, rm, writeFile } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-import { getMcpReference, listMcpReferences } from '../src/lib/api.mjs';
+import { ApiError, getMcpReference, listMcpReferences } from '../src/lib/api.mjs';
 import { parseArgs } from '../src/lib/args.mjs';
 import { json, ok, step, warn } from '../src/lib/output.mjs';
 
@@ -30,6 +30,7 @@ function help() {
   --platform <id>    只同步一个平台
   --capability <id>  只同步一个能力分段
   --keyword <词>     只同步匹配关键词的分段
+  --check-only        只检查线上目录，不替换本地文件
   --base-url <url>   覆盖 OpenAPI 地址
   --json             只输出结果 JSON
 `);
@@ -158,8 +159,10 @@ async function run(args) {
       assertNoUpstreamText(content, referenceId);
       const relativePath = safeRelativePath(item);
       const destination = join(tempDir, relativePath);
-      await mkdir(dirname(destination), { recursive: true });
-      await writeFile(destination, content, 'utf8');
+      if (!args['check-only']) {
+        await mkdir(dirname(destination), { recursive: true });
+        await writeFile(destination, content, 'utf8');
+      }
       const digest = sha256(content);
       if (detail.sha256 && detail.sha256 !== digest) throw new Error(`references 哈希校验失败: ${referenceId}`);
       files.push({ path: relativePath, reference_id: referenceId, sha256: digest, tool_count: item.tool_count ?? null });
@@ -168,14 +171,28 @@ async function run(args) {
 
     const index = buildIndex({ referenceVersion, entries });
     assertNoUpstreamText(index, 'INDEX.md');
-    await writeFile(join(tempDir, 'INDEX.md'), index, 'utf8');
+    if (!args['check-only']) await writeFile(join(tempDir, 'INDEX.md'), index, 'utf8');
     const manifest = {
       reference_version: referenceVersion,
       generated_at: new Date().toISOString(),
       segment_count: files.length,
       files: [{ path: 'INDEX.md', sha256: sha256(index) }, ...files],
     };
-    await writeFile(join(tempDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+    if (!args['check-only']) await writeFile(join(tempDir, 'manifest.json'), `${JSON.stringify(manifest, null, 2)}\n`, 'utf8');
+
+    if (args['check-only']) {
+      const result = {
+        ok: true,
+        reference_version: referenceVersion,
+        segment_count: files.length,
+        tool_count: files.reduce((total, file) => total + Number(file.tool_count || 0), 0),
+        files,
+      };
+      if (args.json) json(result);
+      else ok(`MCP references 检查通过：${files.length} 个分段，未替换本地目录`);
+      await rm(tempDir, { recursive: true, force: true });
+      return 0;
+    }
 
     const previous = `${output}.previous`;
     await rm(previous, { recursive: true, force: true });
@@ -204,7 +221,16 @@ async function run(args) {
 }
 
 run(parseArgs(process.argv.slice(2))).catch((error) => {
-  warn(error.message || String(error));
+  if (error instanceof ApiError && error.body?.data?.error?.code === 'REFERENCE_CATALOG_INVALID') {
+    warn('线上 MCP References 暂不可用：服务端目录内容校验失败（REFERENCE_CATALOG_INVALID）');
+    step('未替换本地 references，也不会继续执行 MCP 工具调用或产生费用');
+    step('请先清理工具描述、参数或标签中的 URL、/api/v1、provider、price/cost、授权信息等实现细节');
+  } else if (error instanceof ApiError && error.body?.data?.error?.code === 'MCP_TOOL_REF_STALE') {
+    warn('MCP 工具引用已过期，未执行调用');
+    step('先重新同步 References，再使用当前平台文件中的 tool_ref');
+  } else {
+    warn(error.message || String(error));
+  }
   step('未替换现有 references 目录');
   process.exitCode = 1;
 });

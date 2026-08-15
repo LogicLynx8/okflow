@@ -66,8 +66,39 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 
 需要发现并调用已登记 MCP/OpenAPI 工具时，先读
 `references/mcp-tools/INDEX.md`，再只读取任务所需的平台能力分段。目录是导航，
-不是授权缓存；实际调用仍必须使用服务端 `/openapi/v1/agent/mcp/dispatch`，由 API Key
-确定用户并复用平台计费、钱包和审计链。
+不是授权缓存；`tool_ref` 可能在重新导入工具后变化。实际调用仍必须使用服务端
+`/openapi/v1/agent/mcp/dispatch`，由 API Key 确定用户并复用平台计费、钱包和审计链。
+
+### MCP 调用前置检查（必须）
+
+调用 MCP 工具前必须从线上目录重新读取当前平台 References，不得直接使用本地 Markdown
+里的旧 `tool_ref`：
+
+```bash
+node bin/sync-mcp-references.mjs --check-only --platform xiaohongshu --json
+```
+
+目录检查成功后，再从本次返回/同步的对应平台文件读取 `tool_ref`。推荐使用内置调度命令，
+它会在付费请求前再次确认引用仍存在，并且只接受工具参数对象：
+
+```bash
+node bin/okflow.mjs mcp dispatch \
+  --platform xiaohongshu \
+  --tool-ref <当前 tool_ref> \
+  --arguments '{"keyword":"AI Native","page":1}' \
+  --request-id <唯一 UUID> \
+  --json
+```
+
+GET References 的筛选条件必须放在查询参数中（`platform`、`page`、`page_size`），不要把
+JSON 请求体附加到 GET。收到 `503` 且业务错误码为 `REFERENCE_CATALOG_INVALID` 时，说明
+服务端目录内容命中了脱敏规则（常见命中项：外部 URL、`/api/v1`、`provider`、`price/cost`、
+授权信息或上游实现文案），不是调用参数错误；必须停止，不得继续调度或重复扣费。
+先修复服务端工具描述/标签/参数，再重新执行 `--check-only`。收到 `404` 或
+`MCP_TOOL_REF_STALE` 时，说明本地引用过期，只同步并使用新的引用，不要重试旧值。
+
+统一调度命令会在目录不可用、引用过期、参数不是对象时阻断请求；不要绕过预检手写
+`fetch`/`curl` 调度付费工具。
 
 同步权威目录：
 

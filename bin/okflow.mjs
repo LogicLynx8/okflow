@@ -16,8 +16,9 @@ import * as status from '../src/commands/status.mjs';
 import * as download from '../src/commands/download.mjs';
 import * as upload from '../src/commands/upload.mjs';
 import * as knowledge from '../src/commands/knowledge.mjs';
+import * as mcp from '../src/commands/mcp.mjs';
 
-const COMMANDS = { setup, models, generate, status, download, upload, knowledge };
+const COMMANDS = { setup, models, generate, status, download, upload, knowledge, mcp };
 
 function printGlobalHelp() {
   console.log(`
@@ -30,6 +31,7 @@ function printGlobalHelp() {
   status <taskId>     查询任务状态
   download <taskId>   下载已完成任务的产物
   upload <file>       上传本地文件并返回 URL
+  mcp dispatch         预检 References 后调用一个 MCP 工具
 
 用 'okflow <命令> --help' 查看某个命令的详细参数。
 `);

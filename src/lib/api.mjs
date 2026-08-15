@@ -173,3 +173,82 @@ export function getMcpReference(referenceId, { baseUrl, timeout = 60 } = {}) {
     .join('/');
   return request('GET', `/openapi/v1/agent/mcp/references/${path}`, { baseUrl, timeout });
 }
+
+/**
+ * Read all current MCP reference segments. This is deliberately a preflight
+ * operation: the catalog can change tool_ref values after a re-import.
+ */
+export async function listAllMcpReferences({ platform, capability, keyword, baseUrl, timeout = 60 } = {}) {
+  const items = [];
+  let page = 1;
+  let total = 0;
+  while (true) {
+    const listing = await listMcpReferences({
+      platform,
+      capability,
+      keyword,
+      page,
+      pageSize: 100,
+      baseUrl,
+      timeout,
+    });
+    const pageItems = Array.isArray(listing?.items) ? listing.items : [];
+    items.push(...pageItems);
+    total = Number(listing?.total || items.length);
+    if (!pageItems.length || items.length >= total) break;
+    page += 1;
+  }
+  return { items, total };
+}
+
+/** Find a tool in the current catalog without exposing internal server data. */
+export async function resolveMcpToolRef(toolRef, { platform, capability, baseUrl, timeout = 60 } = {}) {
+  const requested = String(toolRef || '').trim();
+  if (!requested) throw new TypeError('toolRef is required');
+
+  const { items } = await listAllMcpReferences({ platform, capability, baseUrl, timeout });
+  for (const item of items) {
+    const referenceId = String(item?.reference_id || '');
+    if (!referenceId) continue;
+    const detail = await getMcpReference(referenceId, { baseUrl, timeout });
+    const match = Array.isArray(detail?.tools)
+      ? detail.tools.find((tool) => tool?.tool_ref === requested)
+      : null;
+    if (match) return { item, detail, tool: match };
+  }
+
+  throw new ApiError('MCP 工具引用已过期，请先同步最新 References', {
+    status: 409,
+    body: { code: 409, data: { error: { code: 'MCP_TOOL_REF_STALE' } } },
+  });
+}
+
+/**
+ * Dispatch one MCP tool only after the live catalog has been validated.
+ * No caller-supplied URL, header, token, or internal tool id is accepted.
+ */
+export async function dispatchMcpTool({
+  toolRef,
+  arguments: toolArguments,
+  sessionId,
+  requestId,
+  confirmation,
+  platform,
+  capability,
+  baseUrl,
+  timeout = 180,
+} = {}) {
+  if (!toolArguments || typeof toolArguments !== 'object' || Array.isArray(toolArguments)) {
+    throw new TypeError('arguments must be an object');
+  }
+  await resolveMcpToolRef(toolRef, { platform, capability, baseUrl, timeout: Math.min(timeout, 60) });
+
+  const body = {
+    tool_ref: String(toolRef),
+    arguments: toolArguments,
+  };
+  if (sessionId) body.session_id = String(sessionId);
+  if (requestId) body.request_id = String(requestId);
+  if (confirmation) body.confirmation = confirmation;
+  return request('POST', '/openapi/v1/agent/mcp/dispatch', { body, baseUrl, timeout });
+}
