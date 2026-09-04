@@ -1,18 +1,19 @@
 ---
 name: okflow
 slug: okflow
-displayName: OKFlow AI 多模态创作与智能体 CLI
-version: 1.0.0
-summary: 通过 OKFlow OpenAPI 调用线上智能体，生成图片、视频和音乐，同步模型参数与知识库，并安全调度 MCP 工具。
-description: 使用 OKFlow OpenAPI 查询公开 AI 模型与 capabilities.params、调用线上 Agent、生成图片/视频/音乐、维护知识库或安全调度 MCP 工具时使用；付费生成前按实时模型契约校验请求。
-tags: [ai-agent, image-generation, video-generation, music-generation, openapi, mcp, knowledge-base]
+displayName: OKFlow AI生图·视频·音乐与社媒内容解析
+version: 1.1.0
+summary: 用 OKFlow 生成 AI 图片、视频和音乐，解析小红书、抖音、公众号、B站、知乎及海外社交平台的公开内容，并调用线上 Agent、同步知识库。
+description: 当用户需要用 OKFlow 实际生成 AI 图片、视频或音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等平台的公开文章、笔记、帖子、视频、字幕、评论或趋势，调用 OKFlow 线上 Agent，或同步 OKFlow 知识库时使用；覆盖 AI 生图、文生图、图生图、AI 视频、文生视频、图生视频、AI 写歌、BGM、文章解析、内容提取和社媒数据。需要 OKFLOW_API_KEY，付费调用前必须按实时能力与参数契约校验。不要用于通用网页浏览、PDF/OCR、纯文本写作或私密内容；仅出现通用的 Agent、MCP、OpenAPI、知识库等词时不触发，除非明确指向 OKFlow。
+tags: [ai-agent, image-generation, video-generation, music-generation, social-media-data, content-extraction, openapi, mcp, knowledge-base]
 homepage: https://github.com/LogicLynx8/okflow
 ---
 
-# OKFlow AI 多模态创作、线上 Agent 与知识库 OpenAPI
+# OKFlow AI 生图、视频、音乐与社媒内容解析
 
-通过 okflow 开放 API 发现和调用线上 Agent、生成图片/视频/音乐，以及维护知识库笔记。
-媒体和 Agent 调用可使用本目录下的 Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，
+通过 OKFlow 开放 API 生成图片、视频和音乐，解析公开社交平台的文章、笔记、帖子、
+视频、字幕、评论与趋势，发现和调用线上 Agent，以及维护知识库笔记。媒体、Agent 和
+MCP 调用可使用本目录下的 Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，
 不要修改网页代码来创建笔记。
 
 ## 前置：一次性初始化
@@ -75,6 +76,13 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 所有命令都支持 `--help` 查看完整参数。
 
 ## MCP 工具 References
+
+当用户要求解析公开链接、提取文章正文、读取社交平台内容或获取竞品与热点数据时，
+先从 `references/mcp-tools/INDEX.md` 定位平台，再只读取对应平台分段。支持范围包括
+小红书笔记、抖音作品、公众号文章、B站和知乎内容，以及 YouTube、TikTok、
+Instagram、LinkedIn、Reddit 等平台的公开内容；具体可用字段和动作以实时 References
+及当前 API Key 权限为准。不要把这项能力扩展成通用网页浏览、PDF/OCR、私密内容读取
+或未授权的数据访问。
 
 需要发现并调用已登记 MCP/OpenAPI 工具时，先读
 `references/mcp-tools/INDEX.md`，再只读取任务所需的平台能力分段。目录是导航，
