@@ -1,4 +1,7 @@
-# hailuo-h3-text-to-video（引擎代号 NEBULA-V3）
+# hailuo-h3-text-to-video（引擎代号 NEBULA-V3，历史资料）
+
+> 该文件不会自动同步。生成请求只能使用 `references/models/` 中由公开模型 API
+> `capabilities.params` 生成的契约；本文件仅供理解历史行为，不得据此组装参数。
 
 文生视频模型。只吃文字，不接受参考图。输出 2K 无声视频。
 
@@ -45,9 +48,9 @@ node bin/okflow.mjs download <taskId>
 
 ## 这个模型不在 models 列表里
 
-`models` 命令拿不到它，`generate` 却能正常调用 —— 平台只把标记为公开的模型放进列表，
-这个模型没被标记。所以用它的时候直接写 `--model hailuo-h3-text-to-video`，
-不要因为列表里搜不到就以为模型名错了。
+`models` 命令拿不到它，`generate` 却能正常调用 —— CLI 会显式请求 `is_public=true`，
+因此没有标记为公开的模型不会出现在列表里。用它的时候直接写
+`--model hailuo-h3-text-to-video`，不要因为列表里搜不到就以为模型名错了。
 
 除它之外的模型仍然按 SKILL.md 的规则来：先跑 `models` 拿准确名字，不要凭记忆猜。
 

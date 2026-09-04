@@ -1,12 +1,13 @@
 ---
 name: okflow
-description: Use when an Agent must generate media through okflow or discover, create, update, preview, publish, or search okflow knowledge-base notes through OpenAPI, including notes that reference image-generation history or store light-app snapshots in workbench application-reference blocks; covers API authentication, models, generation tasks, history, Markdown sync, protected media, creation-reference and application-reference blocks, presets, and canvas operations.
+description: Use when an Agent must discover or call visible online okflow Agents, chain an Agent-generated prompt into media generation, generate media through okflow, or discover, create, update, preview, publish, or search okflow knowledge-base notes through OpenAPI; covers API authentication, Agent prompt codes, models, generation tasks, history, Markdown sync, protected media, creation-reference and application-reference blocks, presets, and canvas operations.
 ---
 
-# okflow 媒体生成与知识库 OpenAPI
+# okflow 媒体生成、线上 Agent 与知识库 OpenAPI
 
-通过 okflow 开放 API 生成图片、视频、音乐和维护知识库笔记。媒体生成可使用本目录下的
-Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，不要修改网页代码来创建笔记。
+通过 okflow 开放 API 发现和调用线上 Agent、生成图片/视频/音乐，以及维护知识库笔记。
+媒体和 Agent 调用可使用本目录下的 Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，
+不要修改网页代码来创建笔记。
 
 ## 前置：一次性初始化
 
@@ -54,11 +55,16 @@ git 的文件**，`.env` 已在 `.gitignore` 中。
 | `setup` | 初始化：检查环境 + 装依赖 + 校验凭证 |
 | `models` | 列出当前 key 可用的模型 |
 | `generate` | 提交生成任务并轮询到完成 |
+| `request init/validate/submit` | 生成、校验并提交磁盘 JSON 请求 |
 | `status <taskId>` | 查询单个任务的状态 |
 | `download <taskId>` | 把已完成任务的产物下载到本地 |
 | `upload <file>` | 上传本地文件并返回持久化 URL |
+| `agent list` | 列出当前 API Key 可见的线上 Agent 与 `prompt_code` |
+| `agent call` | 非流式调用一个线上 Agent |
+| `agent image` | 用线上 Agent 生成提示词后提交生图任务 |
 | `knowledge sync <baseId> <markdown>` | 同步 Markdown 文章和本地图片到知识库 |
 | `node bin/sync-mcp-references.mjs` | 同步已发布的 MCP references 目录 |
+| `node bin/sync-model-references.mjs` | 同步公开模型的 `capabilities.params` |
 
 所有命令都支持 `--help` 查看完整参数。
 
@@ -116,17 +122,115 @@ node bin/sync-mcp-references.mjs
 
 ## 典型用法
 
+### 调用线上 Agent
+
+先查询当前 API Key 可见的 Agent，再使用返回的 `prompt_code` 调用。不要凭记忆或从
+其他账户复制编码；CLI 会在付费调用前再次做可见性预检。
+
+```bash
+node bin/okflow.mjs agent list --output-format text
+node bin/okflow.mjs agent list --tags image,prompt --json
+
+node bin/okflow.mjs agent call \
+  --prompt-code <agent-list 返回的编码> \
+  --message-file ./agent-input.txt \
+  --variables '{"style":"commercial","ratio":"1:1"}' \
+  --json
+```
+
+`agent call` 只支持非流式 JSON 响应。文本 Agent 的结果在 `message`（标准化字段为
+`output.agent_text`），JSON Agent 的结果在 `json_message`。双层 Agent 的外层协议、
+模型优先级与模型降级继续由服务端处理；CLI 不传外层编码，也不能绕过该规则。
+
+### Agent 生成提示词后生图
+
+用 `agent image` 把线上 Agent 的结果作为既有生图请求的 `config.prompt`。Agent 输出不能
+覆盖调用者选择的图片模型、`--config` 其余参数或参考图片。
+
+```bash
+node bin/okflow.mjs agent image \
+  --prompt-code <生图提示词Agent编码> \
+  --message "为一款手冲咖啡设计电商主图" \
+  --model <图片模型名> \
+  --config '{"ratio":"1:1","seed":42}' \
+  --images https://example.com/product-reference.png \
+  --wait
+```
+
+若目标 Agent 返回 JSON，必须明确指定哪一个字段是提示词，CLI 不会猜测字段或在提取失败
+后继续生图：
+
+```bash
+node bin/okflow.mjs agent image \
+  --prompt-code <JSON生图提示词Agent编码> \
+  --message-file ./agent-input.txt \
+  --prompt-path json_message.prompt \
+  --model <图片模型名> \
+  --wait
+```
+
+`--agent-images` 只传给 Agent 的多模态输入；`--images` 和 `--image-file` 只传给生图
+模型的参考图片。`agent image` 会发起一次 Agent 调用和一次图片生成，可能产生两笔费用。
+自动化验收必须使用本地 mock，不得因测试触发真实 Agent 或媒体生成。
+
+`agent image` 也受下文模型契约保护：它会在付费 Agent 调用之前先确认目标模型存在、
+`capabilities.params` 非空且调用者参数合法；最终提示词产生后会再次校验再提交生图。
+
 ### 查看可用模型
 
 ```bash
-node bin/okflow.mjs models                      # 全部
+node bin/okflow.mjs models                      # 全部公开模型
 node bin/okflow.mjs models --type text2video    # 只看文生视频
 ```
 
-先跑这个，再决定 `--model` 传什么。**不要凭记忆猜模型名** —— 平台的模型清单会变，
-猜错会得到「模型不存在」而不是有意义的报错。
+`models` 始终显式发送 `is_public=true`，只列出公开且当前 API Key 可用的模型；不提供
+关闭该过滤的命令选项。先跑这个，再决定 `--model` 传什么。**不要凭记忆猜模型名** ——
+平台的模型清单会变，猜错会得到「模型不存在」而不是有意义的报错。
 
-### 生成图片
+### 模型参数 References（生成前必须同步）
+
+公开模型接口返回的 `capabilities.params` 是模型专属请求参数的唯一权威。安装或更新
+Skill 后，以及任何依赖模型参数的生成操作前，先检查并同步：
+
+```bash
+node bin/sync-model-references.mjs --check-only --json
+node bin/sync-model-references.mjs
+```
+
+同步器原子更新 `references/models/`：`catalog.json` 是机器可读精确契约，`INDEX.md`
+用于导航，`models/*.md` 是逐模型可读说明。不得手工修改这些生成文件，也不得用旧示例、
+历史记忆或供应商文档覆盖云端契约。同步失败时不得声称本地缓存为最新；可以读取旧缓存
+排查，但不得据此添加未声明参数。
+
+若模型不存在，或 `capabilities.params` 缺失/为空，必须停止生成。不要猜参数、不要退回
+手写 `curl`，也不要绕过 CLI 直接请求付费接口。
+
+### 文件化生成请求（默认工作流）
+
+Agent 必须先生成 JSON 文件，再编辑参数、校验并提交。不要在 shell 中拼接复杂 JSON：
+
+```bash
+node bin/okflow.mjs request init \
+  --model <模型名> \
+  --output ./request.json
+
+# 编辑 request.json：只填写已经生成的字段；null 表示必须由调用者补齐
+node bin/okflow.mjs request validate ./request.json
+node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
+```
+
+`request init` 会先同步最新公开模型契约，只写通用 `config.prompt`、声明的默认值、锁定值、
+隐藏固定值和必填 `null` 占位；不会擅自选择没有默认值的第一个枚举。`validate` 使用本地
+缓存，适合反复编辑；需要主动刷新时加 `--refresh`。`submit` 必定在付费 POST 前重新获取
+线上契约并校验，因此旧请求文件不能绕过参数变更。未知字段、条件不成立字段、缺失必填、
+错误类型、枚举、范围、步长、媒体 URL 或数量超限都会阻止提交。
+
+本地媒体先用 `upload` 得到持久 URL，再写入请求文件中模型声明的媒体字段，例如
+`config.images` 或 `config.reference_images`；字段名必须以该模型的生成文档为准，不能都
+假设叫 `images`。OpenAPI 顶层 `images` 仅作为兼容入口，且模型必须声明 `images`，不能
+再与 `config.images` 同时传递。
+
+### 兼容生成命令
 
 ```bash
 node bin/okflow.mjs generate \
@@ -135,15 +239,20 @@ node bin/okflow.mjs generate \
   --wait
 ```
 
+`generate` 保留给旧脚本和简单调用，但也会在上传与付费提交前实时按
+`capabilities.params` 校验。新 Agent 流程一律优先使用 `request init/validate/submit`。
+
 ### 生成视频
 
 ```bash
 node bin/okflow.mjs generate \
   --model <模型名> \
-  --prompt "运镜描述..." \
-  --config '{"resolution":"1080p","duration":"15","ratio":"16:9"}' \
+  --prompt-file ./video-prompt.txt \
+  --config-file ./model-config.json \
   --wait --timeout 1200
 ```
+
+`model-config.json` 只能包含该模型生成文档中声明的字段；不要从这个兼容示例推断字段名。
 
 视频生成通常需要 5-15 分钟，`--timeout` 要给足（单位秒）。默认超时对视频不够。
 
@@ -185,26 +294,12 @@ TASK_ID=$(node bin/okflow.mjs generate --model v8.1 --prompt "..." --json | node
 
 退出码约定：0 成功，1 失败（含任务失败、参数错误、凭证缺失）。
 
-## 生成参数怎么传
+## 参数权威与旧文档
 
-`--prompt` 之外的模型参数统一走 `--config`（JSON 字符串）或 `--config-file`。
-CLI 不做参数校验和映射，原样透传给平台。
-
-不同模型支持的参数不同（分辨率枚举、时长范围、是否支持音频等），跑 `models` 命令
-看返回里的能力描述，或直接试一次看报错。
-
-### 按模型查参数文档
-
-`references/` 目录下按模型放了参数文档，写好了完整取值范围和可直接抄的命令示例，
-比现场试错报错更省事：
-
-| 模型 | 文档 |
-|------|------|
-| `hailuo-h3-text-to-video` | `references/hailuo-h3-text-to-video.md` |
-| `gpt-image-2` | `references/gpt-image-2.md` |
-
-调用这两个模型之前先读对应文档。其他模型暂时没有专门文档，走上面说的 `models` +
-试错流程。
+模型专属参数只认同步生成的 `references/models/catalog.json` 与线上实时
+`capabilities.params`。`references/gpt-image-2.md`、
+`references/hailuo-h3-text-to-video.md` 是历史手写资料，只可用于理解提示词或排障，
+不得用于决定字段、默认值、枚举或范围。
 
 ## Preset Styles and Prompt Variables
 

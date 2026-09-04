@@ -1,5 +1,5 @@
 /**
- * models：列出当前 API Key 可用的模型。
+ * models：列出当前 API Key 公开可用的模型。
  *
  * 存在的意义是让用户不用猜模型名 —— 平台模型清单会变，硬编码在文档里必然过期。
  */
@@ -11,7 +11,7 @@ export function help() {
   console.log(`
 用法: okflow models [选项]
 
-列出当前 API Key 可用的生成模型。
+列出当前 API Key 公开可用的生成模型。
 
 选项:
   --type <类型>     按模型类型过滤，如 text2img / img2img / text2video
@@ -40,7 +40,7 @@ export async function run(args) {
     return 0;
   }
 
-  info(`共 ${items.length} 个可用模型`);
+  info(`共 ${items.length} 个公开可用模型`);
   table(
     items.map((m) => ({
       model_name: m.model_name,

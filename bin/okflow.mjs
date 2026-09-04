@@ -17,8 +17,10 @@ import * as download from '../src/commands/download.mjs';
 import * as upload from '../src/commands/upload.mjs';
 import * as knowledge from '../src/commands/knowledge.mjs';
 import * as mcp from '../src/commands/mcp.mjs';
+import * as agent from '../src/commands/agent.mjs';
+import * as request from '../src/commands/request.mjs';
 
-const COMMANDS = { setup, models, generate, status, download, upload, knowledge, mcp };
+const COMMANDS = { setup, models, generate, request, status, download, upload, knowledge, mcp, agent };
 
 function printGlobalHelp() {
   console.log(`
@@ -28,10 +30,12 @@ function printGlobalHelp() {
   setup               初始化：检查环境 + 装依赖 + 校验凭证
   models              列出可用模型
   generate            提交生成任务（可选 --wait 轮询到完成）
+  request <子命令>    从 capabilities.params 创建、校验、提交 JSON 请求文件
   status <taskId>     查询任务状态
   download <taskId>   下载已完成任务的产物
   upload <file>       上传本地文件并返回 URL
   mcp dispatch         预检 References 后调用一个 MCP 工具
+  agent <子命令>       列出、调用线上 Agent，或用 Agent 提示词生图
 
 用 'okflow <命令> --help' 查看某个命令的详细参数。
 `);
@@ -54,6 +58,9 @@ async function main() {
 
   const args = parseArgs(rest);
   if (args.help || args.h) {
+    if ((command === 'agent' || command === 'request') && args._.length > 0) {
+      return impl.run(args);
+    }
     impl.help();
     return 0;
   }

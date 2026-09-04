@@ -82,16 +82,20 @@ async function request(method, path, { body, bodyType = 'json', baseUrl, timeout
   return parsed.data;
 }
 
-/** 列出可用模型。type 可选，对应平台的 model_type 过滤。 */
+/** 列出公开可用模型。type 可选，对应平台的 model_type 过滤。 */
 export function listModels({ type, baseUrl, timeout } = {}) {
-  const query = type ? `?model_type=${encodeURIComponent(type)}` : '';
-  return request('GET', `/openapi/v1/image/models${query}`, { baseUrl, timeout });
+  const query = new URLSearchParams({ is_public: 'true' });
+  if (type) query.set('model_type', String(type));
+  return request('GET', `/openapi/v1/image/models?${query.toString()}`, { baseUrl, timeout });
 }
 
 /** 提交生成任务，返回含 task_id 的对象。 */
-export function submitGeneration({ model, config, images, baseUrl, timeout } = {}) {
+export function submitGeneration({ model, config, images, workflow_code, project_id, source_project_id, baseUrl, timeout } = {}) {
   const body = { model, config };
   if (images && images.length) body.images = images;
+  if (workflow_code !== undefined) body.workflow_code = workflow_code;
+  if (project_id !== undefined) body.project_id = project_id;
+  if (source_project_id !== undefined) body.source_project_id = source_project_id;
   return request('POST', '/openapi/v1/image/generate', { body, baseUrl, timeout });
 }
 
@@ -101,6 +105,54 @@ export function getTaskStatus(taskId, { baseUrl, timeout } = {}) {
     baseUrl,
     timeout,
   });
+}
+
+/** List the Agents that the current API key is allowed to call. */
+export function listAgents({
+  categoryCode,
+  tags,
+  outputFormat,
+  page = 1,
+  pageSize = 20,
+  baseUrl,
+  timeout = 60,
+} = {}) {
+  const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
+  if (categoryCode) params.set('category_code', String(categoryCode));
+  if (tags) params.set('tags', String(tags));
+  if (outputFormat) params.set('output_format', String(outputFormat));
+  return request('GET', `/openapi/v1/agent/agents?${params.toString()}`, { baseUrl, timeout });
+}
+
+/** Call a visible Agent using the non-streaming OpenAPI contract. */
+export function callAgent({
+  promptCode,
+  message,
+  variables,
+  sessionId,
+  modelId,
+  temperature,
+  maxTokens,
+  images,
+  workflowCode,
+  baseUrl,
+  timeout = 180,
+} = {}) {
+  const body = {
+    prompt_code: String(promptCode || '').trim(),
+    message: String(message ?? ''),
+    stream: false,
+  };
+  if (!body.prompt_code) throw new TypeError('promptCode is required');
+  if (!body.message) throw new TypeError('message is required');
+  if (variables !== undefined) body.variables = variables;
+  if (sessionId) body.session_id = String(sessionId);
+  if (modelId) body.model_id = String(modelId);
+  if (temperature !== undefined) body.temperature = temperature;
+  if (maxTokens !== undefined) body.max_tokens = maxTokens;
+  if (images?.length) body.images = images;
+  if (workflowCode) body.workflow_code = String(workflowCode);
+  return request('POST', '/openapi/v1/agent/call', { body, baseUrl, timeout });
 }
 
 const MIME_TYPES = {

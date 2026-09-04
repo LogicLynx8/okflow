@@ -12,7 +12,9 @@
   },
   "scripts": {
     "setup": "node bin/okflow.mjs setup",
-    "models": "node bin/okflow.mjs models"
+    "models": "node bin/okflow.mjs models",
+    "sync-models": "node bin/sync-model-references.mjs",
+    "test": "node --test test/*.test.mjs"
   },
   "dependencies": {}
 }

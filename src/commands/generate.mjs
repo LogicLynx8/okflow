@@ -2,14 +2,16 @@
  * generate：提交生成任务，可选轮询到完成。
  *
  * prompt 支持 --prompt-file，因为中文长文本经 shell 转义极易损坏；
- * config 原样透传不做校验，避免 CLI 成为参数映射的第二处真相来源。
+ * 提交前使用公开模型的 capabilities.params 校验，避免本地文档或 Agent 猜测参数。
  */
 import { readFileSync } from 'node:fs';
 
 import { submitGeneration, uploadFile } from '../lib/api.mjs';
 import { required, num, UsageError } from '../lib/args.mjs';
+import { validateGenerationRequest } from '../lib/model-capabilities.mjs';
 import { info, ok, warn, step, json } from '../lib/output.mjs';
 import { pollUntilDone } from '../lib/poll.mjs';
+import { getLivePublicModel } from './request.mjs';
 
 export function help() {
   console.log(`
@@ -25,8 +27,8 @@ export function help() {
   --prompt-file <路径>    从文件读取，长提示词或含特殊字符时必须用这个
 
 选项:
-  --config <JSON>         模型参数，如 '{"resolution":"1080p","duration":"15"}'
-  --config-file <路径>    从文件读取模型参数
+  --config <JSON>         兼容短参数；复杂请求优先使用 request init/submit
+  --config-file <路径>    从文件读取模型参数；提交前按线上能力契约校验
   --images <url1,url2>    输入图片，用于图生图/图生视频
   --image-file <path1,path2>  Upload local reference images before generation
   --upload-timeout <seconds>  Upload request timeout, default 300
@@ -105,6 +107,20 @@ export async function run(args) {
   const imageFiles = parseListArg(args, 'image-file');
   const uploadTimeout = num(args, 'upload-timeout', 300);
 
+  const modelContract = await getLivePublicModel(model, {
+    baseUrl,
+    timeout: Math.min(num(args, 'timeout', 600), 60),
+  });
+  const placeholderImages = [
+    ...images,
+    ...imageFiles.map((_, index) => `https://local-upload.invalid/reference-${index + 1}`),
+  ];
+  validateGenerationRequest({
+    model,
+    config,
+    ...(placeholderImages.length ? { images: placeholderImages } : {}),
+  }, modelContract);
+
   for (const [index, filePath] of imageFiles.entries()) {
     if (!quiet) step(`Uploading reference image ${index + 1}/${imageFiles.length}: ${filePath}`);
     const uploaded = await uploadFile({
@@ -124,10 +140,13 @@ export async function run(args) {
     if (images.length) step(`输入图片: ${images.length} 张`);
   }
 
-  const submitted = await submitGeneration({
+  const requestBody = validateGenerationRequest({
     model,
     config,
     images: images.length ? images : undefined,
+  }, modelContract);
+  const submitted = await submitGeneration({
+    ...requestBody,
     baseUrl,
     timeout: 120,
   });

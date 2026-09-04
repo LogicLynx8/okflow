@@ -1,4 +1,7 @@
-# gpt-image-2（引擎代号 PRISM-I2）
+# gpt-image-2（引擎代号 PRISM-I2，历史资料）
+
+> 该文件不会自动同步。生成请求只能使用 `references/models/` 中由公开模型 API
+> `capabilities.params` 生成的契约；本文件仅供理解历史行为，不得据此组装参数。
 
 文生图 / 图生图模型，指令遵循能力强，适合复杂构图和精确文字排版需求。
 
