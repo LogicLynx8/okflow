@@ -1,9 +1,15 @@
 ---
 name: okflow
-description: Use when an Agent must discover or call visible online okflow Agents, chain an Agent-generated prompt into media generation, generate media through okflow, or discover, create, update, preview, publish, or search okflow knowledge-base notes through OpenAPI; covers API authentication, Agent prompt codes, models, generation tasks, history, Markdown sync, protected media, creation-reference and application-reference blocks, presets, and canvas operations.
+slug: okflow
+displayName: OKFlow AI 多模态创作与智能体 CLI
+version: 1.0.0
+summary: 通过 OKFlow OpenAPI 调用线上智能体，生成图片、视频和音乐，同步模型参数与知识库，并安全调度 MCP 工具。
+description: 使用 OKFlow OpenAPI 查询公开 AI 模型与 capabilities.params、调用线上 Agent、生成图片/视频/音乐、维护知识库或安全调度 MCP 工具时使用；付费生成前按实时模型契约校验请求。
+tags: [ai-agent, image-generation, video-generation, music-generation, openapi, mcp, knowledge-base]
+homepage: https://github.com/LogicLynx8/okflow
 ---
 
-# okflow 媒体生成、线上 Agent 与知识库 OpenAPI
+# OKFlow AI 多模态创作、线上 Agent 与知识库 OpenAPI
 
 通过 okflow 开放 API 发现和调用线上 Agent、生成图片/视频/音乐，以及维护知识库笔记。
 媒体和 Agent 调用可使用本目录下的 Node.js CLI；知识库任务优先按下文直接调用 OpenAPI，
