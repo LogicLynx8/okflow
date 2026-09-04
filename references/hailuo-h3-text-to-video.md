@@ -1,7 +1,8 @@
 # hailuo-h3-text-to-video（引擎代号 NEBULA-V3，历史资料）
 
-> 该文件不会自动同步。生成请求只能使用 `references/models/` 中由公开模型 API
-> `capabilities.params` 生成的契约；本文件仅供理解历史行为，不得据此组装参数。
+> 该文件不会自动同步。生成请求只能使用用户本地
+> `~/.okflow/model-references/` 中由公开模型 API `capabilities.params` 生成的契约；
+> 本文件仅供理解历史行为，不得据此组装参数。
 
 文生视频模型。只吃文字，不接受参考图。输出 2K 无声视频。
 

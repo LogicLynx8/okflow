@@ -4,7 +4,7 @@ import { dirname, resolve } from 'node:path';
 import { submitGeneration } from '../lib/api.mjs';
 import { num, positional, required, UsageError } from '../lib/args.mjs';
 import { createRequestTemplate, findPublicModel, validateGenerationRequest } from '../lib/model-capabilities.mjs';
-import { fetchModelContract, loadLocalModelCatalog, syncModelReferences } from '../lib/model-references.mjs';
+import { ensureLocalModelCatalog, fetchModelContract, syncModelReferences } from '../lib/model-references.mjs';
 import { info, json, ok, step } from '../lib/output.mjs';
 import { pollUntilDone } from '../lib/poll.mjs';
 
@@ -15,8 +15,8 @@ export function help() {
 用 capabilities.params 创建、校验并提交磁盘 JSON 请求，避免在命令行拼接 JSON。
 
 子命令:
-  init      同步公开模型契约并生成请求 JSON 模板
-  validate  使用本地同步契约校验请求文件，不调用生成接口
+  init      使用用户本地模型契约生成请求 JSON 模板，缺失时自动同步
+  validate  使用用户本地模型契约校验请求文件，缺失时自动同步
   submit    使用最新线上契约重新校验，然后提交请求
 
 用 'okflow request <子命令> --help' 查看详细参数。
@@ -34,7 +34,7 @@ function initHelp() {
   console.log(`
 用法: okflow request init --model <模型名> --output <request.json> [选项]
 
-先同步公开模型 capabilities.params，再生成只包含声明字段的 JSON 模板。
+使用用户本地缓存的公开模型 capabilities.params；缓存或目标模型缺失时自动同步。
 不会猜测无默认值的枚举；必填且无默认值的字段写为 null，填写后再校验。
 
 选项:
@@ -51,11 +51,12 @@ function validateHelp() {
   console.log(`
 用法: okflow request validate <request.json> [选项]
 
-使用本地 references/models/catalog.json 校验请求，不发起生成请求。
+使用用户目录中的模型契约缓存校验请求，不发起生成请求。
+缓存不存在、损坏或不含请求中的模型时，会自动同步公开模型契约。
 
 选项:
   --refresh               校验前先同步最新公开模型契约
-  --base-url <url>        --refresh 时覆盖 API 地址
+  --base-url <url>        自动同步或 --refresh 时覆盖 API 地址
   --timeout <秒>          同步超时，默认 60
   --json                  输出机器可读结果
 `);
@@ -101,9 +102,10 @@ export async function validateLiveGenerationRequest(requestBody, { baseUrl, time
 async function runInit(args) {
   const modelName = required(args, 'model');
   const outputPath = resolve(required(args, 'output'));
-  const result = await syncModelReferences({
+  const result = await ensureLocalModelCatalog({
     baseUrl: args['base-url'],
     timeout: num(args, 'timeout', 60),
+    modelName,
   });
   const model = findPublicModel(result.models, modelName);
   const request = createRequestTemplate(model);
@@ -118,7 +120,7 @@ async function runInit(args) {
   } finally {
     await handle?.close();
   }
-  const output = { valid: false, reason: 'fill_required_placeholders_then_validate', file: outputPath, model: modelName, contract_sha256: result.remote_contract_sha256 };
+  const output = { valid: false, reason: 'fill_required_placeholders_then_validate', file: outputPath, model: modelName, contract_sha256: result.contract_sha256 };
   if (args.json) json(output);
   else {
     ok(`请求模板已生成: ${outputPath}`);
@@ -135,7 +137,12 @@ async function runValidate(args) {
     const result = await syncModelReferences({ baseUrl: args['base-url'], timeout: num(args, 'timeout', 60) });
     models = result.models;
   } else {
-    models = await loadLocalModelCatalog();
+    const result = await ensureLocalModelCatalog({
+      baseUrl: args['base-url'],
+      timeout: num(args, 'timeout', 60),
+      modelName: requestBody.model,
+    });
+    models = result.models;
   }
   const model = findPublicModel(models, requestBody.model);
   const normalized = validateGenerationRequest(requestBody, model);

@@ -1,13 +1,20 @@
 import { createHash, randomUUID } from 'node:crypto';
 import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { homedir } from 'node:os';
 import { dirname, join, resolve } from 'node:path';
-import { fileURLToPath } from 'node:url';
 
 import { listModels } from './api.mjs';
 
-const HERE = dirname(fileURLToPath(import.meta.url));
-export const DEFAULT_MODEL_REFERENCES_DIR = resolve(HERE, '..', '..', 'references', 'models');
+export const DEFAULT_MODEL_REFERENCES_DIR = resolve(homedir(), '.okflow', 'model-references');
 const CONTRACT_FIELDS = ['id', 'model_name', 'display_name', 'description', 'model_type', 'updated_time', 'capabilities'];
+
+export class ModelReferenceCacheError extends Error {
+  constructor(message, code) {
+    super(message);
+    this.name = 'ModelReferenceCacheError';
+    this.code = code;
+  }
+}
 
 function stableValue(value) {
   if (Array.isArray(value)) return value.map(stableValue);
@@ -190,7 +197,48 @@ export async function loadLocalModelCatalog(targetDir = process.env.OKFLOW_MODEL
     if (!Array.isArray(parsed)) throw new Error('catalog.json 根节点不是数组');
     return parsed;
   } catch (error) {
-    if (error.code === 'ENOENT') throw new Error(`本地模型参数缓存不存在，请先运行 node bin/sync-model-references.mjs`);
-    throw new Error(`无法读取本地模型参数缓存 ${file}: ${error.message}`);
+    if (error.code === 'ENOENT') {
+      throw new ModelReferenceCacheError(`本地模型参数缓存不存在: ${file}`, 'MODEL_CACHE_MISSING');
+    }
+    throw new ModelReferenceCacheError(`无法读取本地模型参数缓存 ${file}: ${error.message}`, 'MODEL_CACHE_INVALID');
   }
+}
+
+export async function ensureLocalModelCatalog({
+  baseUrl,
+  timeout = 60,
+  targetDir = process.env.OKFLOW_MODEL_REFERENCES_DIR || DEFAULT_MODEL_REFERENCES_DIR,
+  modelName,
+} = {}) {
+  const resolvedTarget = resolve(targetDir);
+  let models;
+  let syncReason;
+  try {
+    models = await loadLocalModelCatalog(resolvedTarget);
+    if (models.length === 0) syncReason = 'cache_empty';
+    else if (modelName && !models.some((model) => model?.model_name === modelName)) syncReason = 'model_missing';
+  } catch (error) {
+    if (!(error instanceof ModelReferenceCacheError)) throw error;
+    syncReason = error.code === 'MODEL_CACHE_MISSING' ? 'cache_missing' : 'cache_invalid';
+  }
+
+  if (!syncReason) {
+    const manifest = await readManifest(resolvedTarget);
+    return {
+      models,
+      references_dir: resolvedTarget,
+      synchronized: false,
+      sync_reason: null,
+      contract_sha256: manifest?.contract_sha256 ?? null,
+    };
+  }
+
+  const synced = await syncModelReferences({ baseUrl, timeout, targetDir: resolvedTarget });
+  return {
+    models: synced.models,
+    references_dir: resolvedTarget,
+    synchronized: true,
+    sync_reason: syncReason,
+    contract_sha256: synced.remote_contract_sha256,
+  };
 }

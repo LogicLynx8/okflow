@@ -4,3 +4,4 @@ downloads/
 *.log
 .tmp/
 *.zip
+references/models/

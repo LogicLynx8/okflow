@@ -113,12 +113,13 @@ node bin/okflow.mjs request submit ./request.json --wait
 - **脚本集成**：所有命令支持 `--json`，只输出结果 JSON，方便接进你的自动化流水线。
 - **线上 Agent**：先跑 `agent list` 获取当前 Key 可见的 `prompt_code`；`agent call` 只支持非流式调用，`agent image` 会把 Agent 输出严格写入生图的 `config.prompt`。
 - **写 prompt 避坑**：人物用通用描述（「一位穿白裙的年轻女子」）而不是具体人名；避免像已有作品原创设定的专有名词。命中内容审核的任务会「很快失败且没有错误信息」，遇到这种特征先改 prompt 重试。
-- **按模型查参数**：运行 `node bin/sync-model-references.mjs`，再读取自动生成的 `references/models/INDEX.md`；参数唯一来源是公开模型 API 的 `capabilities.params`。
+- **按模型查参数**：模型缓存不随 Skill 打包；首次需要时会自动同步到用户目录 `~/.okflow/model-references/`。也可运行 `node bin/sync-model-references.mjs` 主动更新，再读取其中的 `INDEX.md`。参数唯一来源是公开模型 API 的 `capabilities.params`。
 
 ## 不猜参数的 JSON 请求流程
 
-复杂 JSON 不要直接拼在命令行里。CLI 会把云端 `capabilities.params` 同步成机器可读
-`catalog.json` 和逐模型 Markdown，并在付费提交前再次按最新线上契约校验：
+复杂 JSON 不要直接拼在命令行里。CLI 会把云端 `capabilities.params` 同步到用户本地
+`~/.okflow/model-references/`，生成机器可读 `catalog.json` 和逐模型 Markdown；缓存或目标模型
+不存在时自动获取，并在付费提交前再次按最新线上契约校验：
 
 ```bash
 node bin/sync-model-references.mjs --check-only --json

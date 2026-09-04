@@ -130,6 +130,41 @@ test('request validate uses the local catalog and does not call the network', as
   assert.equal(parsed.request.config.provider_mode, 'fixed-mode');
 });
 
+test('request validate fetches the public catalog when the local cache is missing', async (t) => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'okflow-request-auto-cache-'));
+  const referencesDir = join(tempDir, 'refs');
+  const requestFile = join(tempDir, 'request.json');
+  await writeFile(requestFile, JSON.stringify({ model: 'capable-model', config: { prompt: 'first local validation' } }), 'utf8');
+  const state = { models: [capableModel()], generationBodies: [] };
+  const mock = await startMock(state);
+  t.after(() => mock.close());
+  t.after(() => rm(tempDir, { recursive: true, force: true }));
+
+  const result = await runCli(mock.baseUrl, referencesDir, ['request', 'validate', requestFile, '--json']);
+  assert.equal(result.code, 0, result.stderr);
+  assert.deepEqual(mock.requests.map((request) => request.url.pathname), ['/openapi/v1/image/models']);
+  assert.equal(Array.isArray(JSON.parse(await readFile(join(referencesDir, 'catalog.json'), 'utf8'))), true);
+});
+
+test('request validate refreshes when the requested model is absent from local cache', async (t) => {
+  const tempDir = await mkdtemp(join(tmpdir(), 'okflow-request-auto-model-'));
+  const referencesDir = join(tempDir, 'refs');
+  const requestFile = join(tempDir, 'request.json');
+  await mkdir(referencesDir, { recursive: true });
+  await writeFile(join(referencesDir, 'catalog.json'), JSON.stringify([capableModel({ model_name: 'old-model' })]), 'utf8');
+  await writeFile(requestFile, JSON.stringify({ model: 'capable-model', config: { prompt: 'new model validation' } }), 'utf8');
+  const state = { models: [capableModel()], generationBodies: [] };
+  const mock = await startMock(state);
+  t.after(() => mock.close());
+  t.after(() => rm(tempDir, { recursive: true, force: true }));
+
+  const result = await runCli(mock.baseUrl, referencesDir, ['request', 'validate', requestFile, '--json']);
+  assert.equal(result.code, 0, result.stderr);
+  assert.deepEqual(mock.requests.map((request) => request.url.pathname), ['/openapi/v1/image/models']);
+  const catalog = JSON.parse(await readFile(join(referencesDir, 'catalog.json'), 'utf8'));
+  assert.deepEqual(catalog.map((model) => model.model_name), ['capable-model']);
+});
+
 test('capability validation rejects unknown, required, enum, range, type, count and conditional errors', () => {
   const model = capableModel();
   const invalidRequests = [

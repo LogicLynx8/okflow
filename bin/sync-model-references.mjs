@@ -8,13 +8,13 @@ function help() {
   console.log(`
 用法: node bin/sync-model-references.mjs [选项]
 
-从公开模型 API 同步 capabilities.params 到 references/models/。
+从公开模型 API 同步 capabilities.params 到用户本地缓存。
 
 选项:
   --check-only           只比较本地与远端契约，不写文件
   --base-url <url>       覆盖 API 地址
   --timeout <秒>         默认 60
-  --references-dir <路径> 覆盖输出目录（主要用于测试/隔离环境）
+  --references-dir <路径> 覆盖输出目录（默认 ~/.okflow/model-references）
   --json                 输出机器可读结果
 `);
 }

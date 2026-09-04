@@ -193,17 +193,19 @@ node bin/okflow.mjs models --type text2video    # 只看文生视频
 关闭该过滤的命令选项。先跑这个，再决定 `--model` 传什么。**不要凭记忆猜模型名** ——
 平台的模型清单会变，猜错会得到「模型不存在」而不是有意义的报错。
 
-### 模型参数 References（生成前必须同步）
+### 用户本地模型参数缓存
 
-公开模型接口返回的 `capabilities.params` 是模型专属请求参数的唯一权威。安装或更新
-Skill 后，以及任何依赖模型参数的生成操作前，先检查并同步：
+公开模型接口返回的 `capabilities.params` 是模型专属请求参数的唯一权威。模型目录不随
+Skill 打包；CLI 将它保存到用户目录 `~/.okflow/model-references/`。缓存不存在、损坏，
+或目标模型不在缓存中时，`request init` 和 `request validate` 会自动同步。需要主动检查
+或更新时运行：
 
 ```bash
 node bin/sync-model-references.mjs --check-only --json
 node bin/sync-model-references.mjs
 ```
 
-同步器原子更新 `references/models/`：`catalog.json` 是机器可读精确契约，`INDEX.md`
+同步器原子更新用户本地缓存：`catalog.json` 是机器可读精确契约，`INDEX.md`
 用于导航，`models/*.md` 是逐模型可读说明。不得手工修改这些生成文件，也不得用旧示例、
 历史记忆或供应商文档覆盖云端契约。同步失败时不得声称本地缓存为最新；可以读取旧缓存
 排查，但不得据此添加未声明参数。
@@ -225,9 +227,10 @@ node bin/okflow.mjs request validate ./request.json
 node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
 ```
 
-`request init` 会先同步最新公开模型契约，只写通用 `config.prompt`、声明的默认值、锁定值、
-隐藏固定值和必填 `null` 占位；不会擅自选择没有默认值的第一个枚举。`validate` 使用本地
-缓存，适合反复编辑；需要主动刷新时加 `--refresh`。`submit` 必定在付费 POST 前重新获取
+`request init` 优先使用用户本地契约，缓存或目标模型缺失时自动同步；只写通用
+`config.prompt`、声明的默认值、锁定值、隐藏固定值和必填 `null` 占位，不会擅自选择没有
+默认值的第一个枚举。`validate` 同样在缺失时自动同步，命中缓存时可离线反复编辑；需要
+主动刷新时加 `--refresh`。`submit` 必定在付费 POST 前重新获取
 线上契约并校验，因此旧请求文件不能绕过参数变更。未知字段、条件不成立字段、缺失必填、
 错误类型、枚举、范围、步长、媒体 URL 或数量超限都会阻止提交。
 
@@ -302,7 +305,7 @@ TASK_ID=$(node bin/okflow.mjs generate --model v8.1 --prompt "..." --json | node
 
 ## 参数权威与旧文档
 
-模型专属参数只认同步生成的 `references/models/catalog.json` 与线上实时
+模型专属参数只认用户本地 `~/.okflow/model-references/catalog.json` 与线上实时
 `capabilities.params`。`references/gpt-image-2.md`、
 `references/hailuo-h3-text-to-video.md` 是历史手写资料，只可用于理解提示词或排障，
 不得用于决定字段、默认值、枚举或范围。
