@@ -311,12 +311,10 @@ TASK_ID=$(node bin/okflow.mjs generate --model v8.1 --prompt "..." --json | node
 
 退出码约定：0 成功，1 失败（含任务失败、参数错误、凭证缺失）。
 
-## 参数权威与旧文档
+## 参数权威
 
 模型专属参数只认用户本地 `~/.okflow/model-references/catalog.json` 与线上实时
-`capabilities.params`。`references/gpt-image-2.md`、
-`references/hailuo-h3-text-to-video.md` 是历史手写资料，只可用于理解提示词或排障，
-不得用于决定字段、默认值、枚举或范围。
+`capabilities.params`。不要使用手写模型资料决定字段、默认值、枚举或范围。
 
 ## Preset Styles and Prompt Variables
 
