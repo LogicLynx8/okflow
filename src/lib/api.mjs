@@ -107,6 +107,42 @@ export function getTaskStatus(taskId, { baseUrl, timeout } = {}) {
   });
 }
 
+/** 提交平台标准 TTS 任务。model 与 speaker_id 至少提供一个。 */
+export function submitTtsSpeech({ body, baseUrl, timeout = 180 } = {}) {
+  return request('POST', '/openapi/v1/audio/speech', { body, baseUrl, timeout });
+}
+
+/** 查询平台标准 TTS 任务状态。 */
+export function getTtsTaskStatus(taskId, { baseUrl, timeout = 60 } = {}) {
+  return request('GET', `/openapi/v1/audio/tasks/${encodeURIComponent(taskId)}`, {
+    baseUrl,
+    timeout,
+  });
+}
+
+/** 查询当前 API Key 用户隔离的生成历史。 */
+export function listGenerationHistory({
+  page = 1,
+  size = 20,
+  modelName,
+  vendorName,
+  requestType,
+  generationStatus,
+  startDate,
+  endDate,
+  baseUrl,
+  timeout = 60,
+} = {}) {
+  const params = new URLSearchParams({ page: String(page), size: String(size) });
+  if (modelName) params.set('model_name', String(modelName));
+  if (vendorName) params.set('vendor_name', String(vendorName));
+  if (requestType) params.set('request_type', String(requestType));
+  if (generationStatus) params.set('generation_status', String(generationStatus));
+  if (startDate) params.set('start_date', String(startDate));
+  if (endDate) params.set('end_date', String(endDate));
+  return request('GET', `/openapi/v1/image/history?${params.toString()}`, { baseUrl, timeout });
+}
+
 /** List the Agents that the current API key is allowed to call. */
 export function listAgents({
   categoryCode,
@@ -194,6 +230,24 @@ export async function uploadFile({
   return request('POST', '/openapi/v1/resources/upload', {
     body: form,
     bodyType: 'multipart',
+    baseUrl,
+    timeout,
+  });
+}
+
+/** Refresh one OSS URL without uploading the underlying object again. */
+export function signOssUrl(url, { baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/openapi/v1/oss/sign-url', {
+    body: { url },
+    baseUrl,
+    timeout,
+  });
+}
+
+/** Refresh a batch of OSS URLs while preserving input order. */
+export function signOssUrls(urls, { baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/openapi/v1/oss/sign-urls', {
+    body: { urls },
     baseUrl,
     timeout,
   });

@@ -1,8 +1,8 @@
 {
   "name": "okflow",
-  "version": "0.1.0",
+  "version": "1.4.0",
   "private": true,
-  "description": "通过 okflow 开放 API 生成图片/视频/音乐的命令行工具",
+  "description": "通过 okflow 开放 API 生成图片、视频、音频和音乐的命令行工具",
   "type": "module",
   "engines": {
     "node": ">=18"
@@ -14,6 +14,7 @@
     "setup": "node bin/okflow.mjs setup",
     "models": "node bin/okflow.mjs models",
     "sync-models": "node bin/sync-model-references.mjs",
+    "package:skillhub": "node bin/package-skillhub.mjs",
     "test": "node --test test/*.test.mjs"
   },
   "dependencies": {}

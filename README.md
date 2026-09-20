@@ -2,7 +2,7 @@
 
 **面向 AI Agent 的一站式 OpenAPI 与命令行工具：生成 AI 图片、视频和音乐，解析公开社交平台内容，调用线上智能体，维护知识库，并安全调度 MCP 工具。**
 
-OKFlow CLI 适合 AI 生图、文生图、图生图、AI 视频、文生视频、图生视频、AI 写歌、BGM、社媒内容解析、智能体调用、知识库同步和自动化工作流。它从公开模型的 `capabilities.params` 获取真实参数契约，在付费生成前完成校验，减少参数幻觉和无效请求。
+OKFlow CLI 适合 AI 生图、文生图、图生图、AI 视频、文生视频、图生视频、AI 写歌、BGM、异步任务恢复、社媒内容解析、智能体调用、知识库同步和自动化工作流。它从公开模型的 `capabilities.params` 获取真实参数契约，在付费生成前完成校验，减少参数幻觉和无效请求。
 
 除了生成内容，它还可以按链接或关键词获取小红书笔记、抖音作品、公众号文章、B站、知乎、微博、视频号、YouTube、TikTok、Instagram、LinkedIn、Reddit 等平台的公开文章、帖子、视频、字幕、评论与趋势，适合竞品内容采集、热点研究和选题素材整理。
 
@@ -129,8 +129,10 @@ node bin/okflow.mjs request submit ./request.json --wait
 ## 进阶技巧
 
 - **视频任务分开提交和等待**：视频生成通常要 5-15 分钟，先不加 `--wait` 拿到 taskId，回头用 `status <taskId> --wait --timeout 1200` 挂着等——轮询中断了也不用重新花钱提交。
+- **本地异常后先恢复任务**：遇到 `SIGTERM`、终端退出、网络错误或轮询超时，不要直接重提。先用 `history --model <模型名> --size 100 --json` 查询当前 Key 的近期任务，再对疑似 `task_id` 执行 `status <taskId> --wait`。`history` 只读且不产生生成费用。
 - **长 prompt 用文件**：`--prompt-file ./my-prompt.txt`，避免命令行转义把中文长文本搞坏。
 - **下载产物**：`node bin/okflow.mjs download <taskId>`，产物存到 `./downloads/<taskId>/`。
+- **刷新过期锚图地址**：单条使用 `sign-url <旧URL>`；多条先写入 `{"urls":[...]}` JSON 文件，再使用 `sign-urls <文件> --output <结果文件>`。只刷新 OSS 签名，不重新上传或提交生成。
 - **脚本集成**：所有命令支持 `--json`，只输出结果 JSON，方便接进你的自动化流水线。
 - **线上 Agent**：先跑 `agent list` 获取当前 Key 可见的 `prompt_code`；`agent call` 只支持非流式调用，`agent image` 会把 Agent 输出严格写入生图的 `config.prompt`。
 - **写 prompt 避坑**：人物用通用描述（「一位穿白裙的年轻女子」）而不是具体人名；避免像已有作品原创设定的专有名词。命中内容审核的任务会「很快失败且没有错误信息」，遇到这种特征先改 prompt 重试。
@@ -155,6 +157,48 @@ node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
 错误枚举/类型/范围、媒体 URL 或数量超限也会在请求前失败。`generate` 和 `agent image`
 仍保留兼容，但同样不能绕过这套实时校验。
 
+## 找回本地中断的异步任务
+
+本地等待进程退出不代表云端失败。生成请求可能已经被受理，并在本地程序结束后继续运行。
+再次提交会创建新任务并再次消耗积分，所以恢复顺序必须是“查历史 -> 核对 -> 查状态”：
+
+```bash
+node bin/okflow.mjs history --model <模型名> --status processing --size 100 --json
+node bin/okflow.mjs history --model <模型名> --status completed --size 100 --json
+node bin/okflow.mjs status <疑似任务ID> --wait --timeout 1200
+```
+
+`history` 还支持 `--vendor`、`--request-type`、`--start-date`、`--end-date`、`--page`
+和 `--size`。使用 `--json` 可完整读取分页数据；普通输出只展示任务 ID、模型、状态、
+请求类型、创建时间和产物数，不展开提示词。只有近期历史不存在匹配任务，或云端明确
+返回 `failed` 后，才考虑重新提交。
+
+## 刷新过期的 OSS 锚图 URL
+
+旧 URL 仍在且 OSS 对象未删除时，不需要重新上传原图。单条刷新：
+
+```bash
+node bin/okflow.mjs sign-url "<旧 OSS URL>" --json
+```
+
+三张锚图等批量场景先保存 JSON 文件：
+
+```json
+{
+  "urls": ["<锚图1旧URL>", "<锚图2旧URL>", "<锚图3旧URL>"]
+}
+```
+
+```bash
+node bin/okflow.mjs sign-urls ./anchor-urls.json \
+  --output ./anchor-urls-refreshed.json \
+  --json
+```
+
+批量上限为 100 条，返回顺序不变。这两个命令只调用 OSS 签名 OpenAPI，不上传文件、不
+创建生成任务，也不消耗媒体生成积分。应长期保存 canonical URL，在实际使用前刷新临时
+签名；对象已删除时重新签名也无法恢复内容。
+
 ## 常见问题
 
 | 现象 | 怎么办 |
@@ -163,6 +207,7 @@ node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
 | 401 Unauthorized | Key 无效或过期，去控制台确认状态 |
 | `模型不存在` | 别猜模型名，跑 `models` 拿准确清单 |
 | 轮询超时 | 任务还在跑，用 `status <taskId>` 继续查 |
+| 本地进程中断且 taskId 丢失 | 用 `history --json` 找回任务，再用 `status <taskId> --wait` 续查，不要直接重提 |
 | 任务很快 failed 且无错误信息 | 内容审核拦截，按上面的避坑建议改 prompt |
 
 更多用法：`node bin/okflow.mjs <命令> --help`。
@@ -170,6 +215,16 @@ node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
 ---
 
 ## 开始创作
+
+## SkillHub 精简发布包
+
+上传第二版时使用：
+
+```bash
+node bin/package-skillhub.mjs
+```
+
+脚本生成 `.tmp/skillhub-okflow-<version>.zip`。发布包保留 CLI、知识库说明和精简入口，排除测试、缓存、下载物、Git 元数据以及预同步的 `references/mcp-tools/platforms/*.md`；安装后运行 `node bin/sync-mcp-references.mjs` 获取当前平台目录。GitHub 仓库中的本 README 仍是完整开发与使用文档。
 
 素材生产这件事，交给 AI；创意和审美，留给你。
 

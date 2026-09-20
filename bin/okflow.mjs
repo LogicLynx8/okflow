@@ -13,14 +13,18 @@ import * as setup from '../src/commands/setup.mjs';
 import * as models from '../src/commands/models.mjs';
 import * as generate from '../src/commands/generate.mjs';
 import * as status from '../src/commands/status.mjs';
+import * as history from '../src/commands/history.mjs';
 import * as download from '../src/commands/download.mjs';
 import * as upload from '../src/commands/upload.mjs';
+import * as signUrl from '../src/commands/sign-url.mjs';
+import * as signUrls from '../src/commands/sign-urls.mjs';
 import * as knowledge from '../src/commands/knowledge.mjs';
 import * as mcp from '../src/commands/mcp.mjs';
 import * as agent from '../src/commands/agent.mjs';
 import * as request from '../src/commands/request.mjs';
+import * as tts from '../src/commands/tts.mjs';
 
-const COMMANDS = { setup, models, generate, request, status, download, upload, knowledge, mcp, agent };
+const COMMANDS = { setup, models, generate, request, tts, status, history, download, upload, 'sign-url': signUrl, 'sign-urls': signUrls, knowledge, mcp, agent };
 
 function printGlobalHelp() {
   console.log(`
@@ -30,10 +34,14 @@ function printGlobalHelp() {
   setup               初始化：检查环境 + 装依赖 + 校验凭证
   models              列出可用模型
   generate            提交生成任务（可选 --wait 轮询到完成）
+  tts                 提交标准 TTS 语音合成任务
   request <子命令>    从 capabilities.params 创建、校验、提交 JSON 请求文件
   status <taskId>     查询任务状态
+  history             查询当前 API Key 的生成任务历史
   download <taskId>   下载已完成任务的产物
   upload <file>       上传本地文件并返回 URL
+  sign-url <url>      刷新单个 OSS 临时签名 URL
+  sign-urls <file>    批量刷新 JSON 文件中的 OSS URL
   mcp dispatch         预检 References 后调用一个 MCP 工具
   agent <子命令>       列出、调用线上 Agent，或用 Agent 提示词生图
 
