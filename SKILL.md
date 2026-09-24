@@ -1,6 +1,15 @@
 ---
 name: okflow
-description: 当用户明确要用 OKFlow 生成或查询 AI 图片、视频、语音、音效、音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等公开内容，调用 OKFlow 线上 Agent，或同步 OKFlow 知识库时使用。需要 OKFLOW_API_KEY；生成和付费 MCP 调用必须先按实时契约校验。不要用于通用网页浏览、PDF/OCR、纯文本写作或私密内容；仅出现通用 Agent、MCP、OpenAPI、知识库等词时不要触发。
+description: 当用户明确要用 OKFlow 生成或查询 AI 图片、视频、语音、音效、音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等公开内容，调用 OKFlow 线上 Agent，或同步 OKFlow 知识库时使用。可用 `okflow auth login` 浏览器授权或 `OKFLOW_API_KEY`；生成和付费 MCP 调用必须先按实时契约校验。不要用于通用网页浏览、PDF/OCR、纯文本写作或私密内容；仅出现通用 Agent、MCP、OpenAPI、知识库等词时不要触发。
+slug: okflow
+version: 1.4.0
+display_name: OKFlow AI生图·视频·音频·音乐与社媒内容解析
+display_name_en: OKFlow AI Image, Video, Audio, Music & Social Content
+description_zh: 用 OKFlow 生成 AI 图片、视频、语音、音效和音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等平台的公开内容，并调用线上 Agent、同步知识库。支持浏览器授权登录，付费生成前按实时模型契约校验参数。
+description_en: Generate AI images, videos, speech, sound effects and music with OKFlow; parse public content from Xiaohongshu, Douyin, WeChat, Bilibili, Zhihu, YouTube, TikTok, Instagram and more; invoke online Agents and sync knowledge bases. Supports browser-based authorization; paid generation is validated against live model contracts before submission.
+summary: 用 OKFlow 生成图片、视频、语音、音效和音乐，解析公开社媒内容，并调用线上 Agent 与知识库。
+tags: [ai-agent, image-generation, video-generation, audio-generation, music-generation, social-media-data, content-extraction, openapi, mcp, knowledge-base]
+homepage: https://github.com/LogicLynx8/okflow
 metadata:
   slug: okflow
   displayName: OKFlow AI生图·视频·音频·音乐与社媒内容解析
@@ -26,16 +35,25 @@ metadata:
 
 ## 初始化与凭证
 
+推荐使用 Device Grant 登录：
+
+```bash
+node bin/okflow.mjs auth login
+```
+
+交互模式默认调用系统浏览器打开 `verification_uri_complete`；页面自动读取并清除 URL 中的设备码，用户只点击“同意授权”。默认申请 `openapi:invoke` 与 `wallet:balance:read`，前者仍受服务端既有角色、资源归属、租户和计费规则约束，后者只允许读取本人余额概览。`--json` 不打开浏览器，适合自动化；`--no-browser` 保留完整链接供无图形环境手动打开。`auth status` 只显示账户、Client、scope 和到期时间，`auth logout` 撤销 refresh family 并清理本地凭据。
+
 ```bash
 node bin/okflow.mjs setup
 ```
 
-凭证优先级为环境变量 `OKFLOW_API_KEY`，其次是本目录 `.env` 中的同名键。Key 通常形如 `ak_xxx`，不要写入 Git。默认服务地址为 `https://okflow.cn`，联调可用 `OKFLOW_BASE_URL` 或命令行 `--base-url` 覆盖。
+凭证优先级为环境变量 `OKFLOW_API_KEY`，其次是 OAuth access token，最后是本目录 `.env` 中的 API Key。Key 通常形如 `ak_xxx`，不要写入 Git。默认服务地址为 `https://okflow.cn`，联调可用 `OKFLOW_BASE_URL` 或命令行 `--base-url` 覆盖。
 
 ## 命令速查
 
 | 命令 | 用途 |
 | --- | --- |
+| `auth login/status/logout` | 默认浏览器 Device Grant 登录、脱敏状态和撤销登出 |
 | `setup` | 检查 Node、依赖和 API Key |
 | `models` | 列出当前 Key 可用的公开模型 |
 | `generate` | 兼容模式提交媒体生成任务 |
@@ -75,6 +93,8 @@ node bin/okflow.mjs request submit ./request.json --wait --timeout 1200
 ```bash
 node bin/okflow.mjs generate --model <模型名> --prompt "一张产品发布会海报，16:9" --wait
 ```
+
+长中文提示词必须先写入文件，再使用 `--prompt-file` 提交；不要把长提示词直接拼接在命令行中，也不要先探索命令参数。
 
 模型参数唯一以线上 `capabilities.params` 为准。`request submit` 会在付费 POST 前再次获取并校验线上契约；模型不存在、参数缺失、类型/枚举/范围错误时必须停止，不要猜参数或手写付费请求。视频通常需要较长等待，可先提交拿 `taskId`，之后用 `status <taskId> --wait`。
 

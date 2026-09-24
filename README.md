@@ -88,11 +88,26 @@ Agent 和图片生成能力，可能产生两笔费用。
 
 CLI 零第三方依赖，只要 Node.js ≥ 18，clone 下来就能跑。
 
-**1. 拿 Key**
+**推荐：浏览器授权登录**
+
+```bash
+node bin/okflow.mjs auth login
+```
+
+命令会创建 Device Grant，并使用系统默认浏览器打开包含设备码的完整授权地址。页面自动读取并从地址栏移除设备码；用户只需点击“同意授权”，CLI 会继续轮询并安全保存凭证。默认 scope 允许 CLI 调用当前账号可用的 OpenAPI，并只读查询本人余额概览；不包含余额流水、充值、支付、退款或管理端财务能力。无图形环境可使用 `--no-browser` 后手动打开终端显示的完整链接；自动化脚本使用 `--json`，不会打开浏览器，也不会输出 access/refresh token。
+
+```bash
+node bin/okflow.mjs auth status --json
+node bin/okflow.mjs auth logout --json
+```
+
+如果显式配置 `OKFLOW_API_KEY`，它仍作为 CI 和旧脚本的最高优先级覆盖。
+
+**兼容方式：使用 API Key**
 
 注册 [okflow.cn](https://okflow.cn) → 控制台 →「开放 API」→ 创建 API Key，拿到 `ak_xxx`。
 
-**2. 配 Key**
+配置 Key：
 
 在本目录新建 `.env` 文件（首次运行 `setup` 也会自动帮你建好）：
 

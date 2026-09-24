@@ -23,15 +23,17 @@ import * as mcp from '../src/commands/mcp.mjs';
 import * as agent from '../src/commands/agent.mjs';
 import * as request from '../src/commands/request.mjs';
 import * as tts from '../src/commands/tts.mjs';
+import * as auth from '../src/commands/auth.mjs';
 
-const COMMANDS = { setup, models, generate, request, tts, status, history, download, upload, 'sign-url': signUrl, 'sign-urls': signUrls, knowledge, mcp, agent };
+const COMMANDS = { setup, models, generate, request, tts, auth, status, history, download, upload, 'sign-url': signUrl, 'sign-urls': signUrls, knowledge, mcp, agent };
 
 function printGlobalHelp() {
   console.log(`
 用法: okflow <命令> [选项]
 
 命令:
-  setup               初始化：检查环境 + 装依赖 + 校验凭证
+  setup               初始化 WorkBuddy OAuth 环境
+  auth login/status/logout  WorkBuddy OAuth Device 登录、状态与登出
   models              列出可用模型
   generate            提交生成任务（可选 --wait 轮询到完成）
   tts                 提交标准 TTS 语音合成任务

@@ -8,6 +8,7 @@ import { readFile } from 'node:fs/promises';
 import { basename, extname } from 'node:path';
 
 import { getApiKey, getBaseUrl } from './config.mjs';
+import { getStoredAccessToken } from './oauth-credentials.mjs';
 
 /** 凭证缺失时抛出的专用错误，便于上层给出配置指引而不是打印堆栈。 */
 export class MissingCredentialError extends Error {
@@ -27,21 +28,27 @@ export class ApiError extends Error {
   }
 }
 
-function buildHeaders({ json = true } = {}) {
-  const key = getApiKey();
-  if (!key) throw new MissingCredentialError();
+function resolveCredential() {
+  // An explicitly exported API key remains the CI/legacy override.
+  if (process.env.OKFLOW_API_KEY?.trim()) return process.env.OKFLOW_API_KEY.trim();
+  return getStoredAccessToken() || getApiKey();
+}
+
+function buildHeaders({ json = true, anonymous = false, credential } = {}) {
+  const key = anonymous ? '' : credential || resolveCredential();
+  if (!key && !anonymous) throw new MissingCredentialError();
   const headers = {
-    Authorization: `Bearer ${key}`,
   };
+  if (key) headers.Authorization = `Bearer ${key}`;
   if (json) headers['Content-Type'] = 'application/json';
   return headers;
 }
 
-async function request(method, path, { body, bodyType = 'json', baseUrl, timeout = 60 } = {}) {
+async function request(method, path, { body, bodyType = 'json', baseUrl, timeout = 60, anonymous = false, credential } = {}) {
   // 先构造 headers：凭证缺失要以 MissingCredentialError 抛出，
   // 放进下面的 try 会被包装成「请求失败」，用户就看不到配置指引了。
   const isJson = bodyType === 'json';
-  const headers = buildHeaders({ json: isJson });
+  const headers = buildHeaders({ json: isJson, anonymous, credential });
   const url = `${getBaseUrl(baseUrl)}${path}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout * 1000);
@@ -253,6 +260,26 @@ export function signOssUrls(urls, { baseUrl, timeout = 60 } = {}) {
   });
 }
 
+/** Start an OAuth Device Authorization Grant without requiring an API key. */
+export function requestDeviceAuthorization({ clientId, scope, baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/user/oauth/device/authorize', {
+    body: { client_id: clientId, scope },
+    baseUrl,
+    timeout,
+    anonymous: true,
+  });
+}
+
+/** Exchange a device, authorization-code, or refresh grant for OAuth tokens. */
+export function exchangeOAuthToken({ body, baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/user/oauth/token', { body, baseUrl, timeout, anonymous: true });
+}
+
+/** Revoke an OAuth token or token family. */
+export function revokeOAuthToken({ token, baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/user/oauth/revoke', { body: { token }, baseUrl, timeout, anonymous: true });
+}
+
 /** Synchronize storage Markdown into an Agent-owned knowledge base article. */
 export function syncKnowledgeMarkdown({ body, baseUrl, timeout = 300 } = {}) {
   return request('POST', '/openapi/v1/knowledge-bases/sync/markdown', {
@@ -260,6 +287,78 @@ export function syncKnowledgeMarkdown({ body, baseUrl, timeout = 300 } = {}) {
     baseUrl,
     timeout,
   });
+}
+
+export function knowledgeSchema({ baseUrl, timeout = 60 } = {}) {
+  return request('GET', '/openapi/v1/knowledge-bases/schema', { baseUrl, timeout });
+}
+
+export function listKnowledgeBases({ page = 1, pageSize = 20, keyword, type, status, baseUrl, timeout = 60 } = {}) {
+  const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
+  if (keyword) params.set('keyword', String(keyword));
+  if (type) params.set('type', String(type));
+  if (status !== undefined) params.set('status', String(status));
+  return request('GET', `/openapi/v1/knowledge-bases?${params.toString()}`, { baseUrl, timeout });
+}
+
+export function createKnowledgeBase({ body, baseUrl, timeout = 60 } = {}) {
+  return request('POST', '/openapi/v1/knowledge-bases', { body, baseUrl, timeout });
+}
+
+export function getKnowledgeBase(id, { baseUrl, timeout = 60 } = {}) {
+  return request('GET', `/openapi/v1/knowledge-bases/${encodeURIComponent(id)}`, { baseUrl, timeout });
+}
+
+export function updateKnowledgeBase(id, { body, baseUrl, timeout = 60 } = {}) {
+  return request('PATCH', `/openapi/v1/knowledge-bases/${encodeURIComponent(id)}`, { body, baseUrl, timeout });
+}
+
+export function deleteKnowledgeBase(id, { baseUrl, timeout = 60 } = {}) {
+  return request('DELETE', `/openapi/v1/knowledge-bases/${encodeURIComponent(id)}`, { baseUrl, timeout });
+}
+
+export function listKnowledgeArticles(baseId, { page = 1, pageSize = 20, keyword, type, status, parentId, rootOnly, tree, includeContent, baseUrl, timeout = 60 } = {}) {
+  const params = new URLSearchParams({ page: String(page), page_size: String(pageSize) });
+  if (keyword) params.set('keyword', String(keyword));
+  if (type) params.set('type', String(type));
+  if (status !== undefined) params.set('status', String(status));
+  if (parentId !== undefined) params.set('parent_id', String(parentId));
+  if (rootOnly) params.set('root_only', 'true');
+  if (tree) params.set('tree', 'true');
+  if (includeContent) params.set('include_content', 'true');
+  return request('GET', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles?${params.toString()}`, { baseUrl, timeout });
+}
+
+export function createKnowledgeArticle(baseId, { body, baseUrl, timeout = 60 } = {}) {
+  return request('POST', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles`, { body, baseUrl, timeout });
+}
+
+export function getKnowledgeArticle(baseId, articleId, { baseUrl, timeout = 60 } = {}) {
+  return request('GET', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}`, { baseUrl, timeout });
+}
+
+export function updateKnowledgeArticle(baseId, articleId, { body, baseUrl, timeout = 60 } = {}) {
+  return request('PATCH', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}`, { body, baseUrl, timeout });
+}
+
+export function deleteKnowledgeArticle(baseId, articleId, { baseUrl, timeout = 60 } = {}) {
+  return request('DELETE', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}`, { baseUrl, timeout });
+}
+
+export function publishKnowledgeArticle(baseId, articleId, { baseUrl, timeout = 300 } = {}) {
+  return request('POST', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}/publish`, { baseUrl, timeout });
+}
+
+export function updateKnowledgeArticleDraft(baseId, articleId, { body, baseUrl, timeout = 60 } = {}) {
+  return request('PATCH', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}/draft`, { body, baseUrl, timeout });
+}
+
+export function updateKnowledgeArticlePricing(baseId, articleId, { body, baseUrl, timeout = 60 } = {}) {
+  return request('PATCH', `/openapi/v1/knowledge-bases/${encodeURIComponent(baseId)}/articles/${encodeURIComponent(articleId)}/pricing`, { body, baseUrl, timeout });
+}
+
+export function searchKnowledge({ body, baseUrl, timeout = 180 } = {}) {
+  return request('POST', '/openapi/v1/knowledge-bases/search', { body, baseUrl, timeout });
 }
 
 /** Read the published MCP reference catalog for local Agent synchronization. */

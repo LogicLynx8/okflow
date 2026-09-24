@@ -18,6 +18,7 @@ const FILES = [
   'bin/sync-model-references.mjs',
   'src',
   'references/knowledge-openapi.md',
+  'references/audio-generation.md',
 ];
 
 const RELEASE_README = `# OKFlow\n\nOKFlow 是一个面向 AI Agent 的 CLI：生成图片、视频和音乐，解析公开社媒内容，调用线上 Agent，并同步知识库。\n\n## 快速开始\n\n\`\`\`bash\nnode bin/okflow.mjs setup\nnode bin/okflow.mjs models --json\n\`\`\`\n\n模型生成使用 \`request init/validate/submit\`，参数以线上 \`capabilities.params\` 为准。公开内容解析先运行 \`node bin/sync-mcp-references.mjs\`，再按 \`references/mcp-tools/INDEX.md\` 选择平台并用 \`mcp dispatch\` 调度当前 \`tool_ref\`。\n\n本包不携带预同步 MCP 平台目录；安装后同步即可获得最新能力。详见 \`SKILL.md\`。\n`;
