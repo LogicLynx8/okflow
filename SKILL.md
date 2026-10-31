@@ -41,13 +41,21 @@ metadata:
 node bin/okflow.mjs auth login
 ```
 
-交互模式默认调用系统浏览器打开 `verification_uri_complete`；页面自动读取并清除 URL 中的设备码，用户只点击“同意授权”。默认申请 `openapi:invoke` 与 `wallet:balance:read`，前者仍受服务端既有角色、资源归属、租户和计费规则约束，后者只允许读取本人余额概览。`--json` 不打开浏览器，适合自动化；`--no-browser` 保留完整链接供无图形环境手动打开。`auth status` 只显示账户、Client、scope 和到期时间，`auth logout` 撤销 refresh family 并清理本地凭据。
+交互模式默认调用系统浏览器打开 `verification_uri_complete`；页面自动读取并清除 URL 中的设备码，用户只点击“同意授权”。默认申请 `openapi:invoke` 与 `wallet:balance:read`，前者仍受服务端既有角色、资源归属、租户和计费规则约束，后者只允许读取本人余额概览。`--json` 只改变输出格式，仍会打开浏览器；`--no-browser` 关闭自动打开并保留完整链接供无图形环境手动访问。`auth status` 只显示账户、Client、scope 和到期时间，`auth logout` 撤销 refresh family 并清理本地凭据。
 
 ```bash
 node bin/okflow.mjs setup
 ```
 
 凭证优先级为环境变量 `OKFLOW_API_KEY`，其次是 OAuth access token，最后是本目录 `.env` 中的 API Key。Key 通常形如 `ak_xxx`，不要写入 Git。默认服务地址为 `https://okflow.cn`，联调可用 `OKFLOW_BASE_URL` 或命令行 `--base-url` 覆盖。
+
+`auth login` 与 `auth logout` 的授权地址**始终默认为官网 `https://okflow.cn`**：`OKFLOW_BASE_URL` 和 `.env` 只影响 API 调用，不会把用户带到测试站点；只有显式传入 `--base-url` 才会对别的站点发起设备授权或撤销。切换站点时会自动丢弃属于其他站点的 pending session，并重新申请设备码。
+
+OAuth Device Grant 只使用服务端登记的 `client_id`：默认 `okflow-cli`，WorkBuddy 使用 `workbuddy-cli`；不要传入任意 `source`、`template` 或未登记客户端。CLI 会处理 `authorization_pending`、`slow_down`、拒绝、过期和进程信号；中断时保留 pending session，重新运行 `auth login` 可恢复。
+
+访问令牌约 15 分钟的有效期不等于整个授权期限。受保护 API 在 access token 到期前 30 秒自动执行 refresh grant，并安全持久化轮换后的凭证；服务端返回 401 时自动续期并最多重试原请求一次。`auth status --json` 的 `expires_at` 仅表示访问令牌到期时间，`refresh_available: true` 表示具备续期凭证；不要因为访问令牌到期就要求用户重新登录，直接继续调用本 Skill 的命令即可。
+
+只有缺少续期凭证，或刷新明确返回 `invalid_grant`（授权失效/撤销）时，才要求重新运行 `auth login`。网络超时、临时服务端错误或异常响应不会清除授权，稍后重试即可；禁止循环刷新。不要读取或复制旧 token 绕过 CLI 请求层。生图等任务中断后先用 `history`、`status` 恢复，不能因为令牌到期重复提交付费任务。凭证缓存使用私有权限和原子替换；token 不得出现在普通输出、JSON、错误消息或 `DEBUG=1` 堆栈中。显式 `OKFLOW_API_KEY` 仍是 CI/旧脚本的最高优先级兼容覆盖。
 
 ## 命令速查
 

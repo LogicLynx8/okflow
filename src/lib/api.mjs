@@ -8,7 +8,13 @@ import { readFile } from 'node:fs/promises';
 import { basename, extname } from 'node:path';
 
 import { getApiKey, getBaseUrl } from './config.mjs';
-import { getStoredAccessToken } from './oauth-credentials.mjs';
+import {
+  clearCredentials,
+  getStoredCredentials,
+  isAccessTokenExpired,
+  saveCredentials,
+} from './oauth-credentials.mjs';
+import { redactSecrets } from './secrets.mjs';
 
 /** 凭证缺失时抛出的专用错误，便于上层给出配置指引而不是打印堆栈。 */
 export class MissingCredentialError extends Error {
@@ -21,21 +27,113 @@ export class MissingCredentialError extends Error {
 /** API 返回非 2xx 或业务 code 非 200 时抛出。 */
 export class ApiError extends Error {
   constructor(message, { status, body } = {}) {
-    super(message);
+    super(redactSecrets(message));
     this.name = 'ApiError';
     this.status = status;
-    this.body = body;
+    this.body = redactSecrets(body);
   }
 }
 
-function resolveCredential() {
+export class OAuthReauthenticationRequiredError extends Error {
+  constructor() {
+    super('OAuth 授权已失效或缺少续期凭证，请重新运行 auth login');
+    this.name = 'OAuthReauthenticationRequiredError';
+  }
+}
+
+let refreshInFlight = null;
+
+function decodePayload(token) {
+  try {
+    const payload = String(token).split('.')[1];
+    return payload ? JSON.parse(Buffer.from(payload, 'base64url').toString('utf8')) : {};
+  } catch {
+    return {};
+  }
+}
+
+function tokenExpiry(expiresIn, token) {
+  const payload = decodePayload(token);
+  if (payload.exp) return new Date(Number(payload.exp) * 1000).toISOString();
+  return new Date(Date.now() + Number(expiresIn || 0) * 1000).toISOString();
+}
+
+async function refreshCredentialOnce(credentials, { baseUrl, timeout }, retryRotated = true) {
+  if (!credentials.refresh_token || !credentials.client_id) throw new OAuthReauthenticationRequiredError();
+  let tokens;
+  try {
+    tokens = await exchangeOAuthToken({
+      baseUrl,
+      timeout,
+      body: {
+        grant_type: 'refresh_token',
+        client_id: credentials.client_id,
+        refresh_token: credentials.refresh_token,
+      },
+    });
+  } catch (error) {
+    const oauthError = error.body?.error || error.body?.data?.error || error.body?.detail?.error || error.message;
+    if (error instanceof ApiError && error.status >= 400 && error.status < 500 && /\binvalid_grant\b/i.test(String(oauthError))) {
+      const current = getStoredCredentials();
+      if (current.refresh_token !== credentials.refresh_token || current.access_token !== credentials.access_token) {
+        if (!isAccessTokenExpired(current, Date.now() + 30000)) return String(current.access_token);
+        if (retryRotated && current.refresh_token) return refreshCredentialOnce(current, { baseUrl, timeout }, false);
+      } else {
+        clearCredentials();
+      }
+      throw new OAuthReauthenticationRequiredError();
+    }
+    throw error;
+  }
+
+  const expiresAt = tokenExpiry(tokens?.expires_in, tokens?.access_token);
+  if (!tokens?.access_token || !(Date.parse(expiresAt) > Date.now())) {
+    throw new ApiError('OAuth 续期响应缺少有效访问令牌，请稍后重试；已保留原授权凭证');
+  }
+  const current = getStoredCredentials();
+  if (current.refresh_token !== credentials.refresh_token || current.access_token !== credentials.access_token) {
+    if (!isAccessTokenExpired(current, Date.now() + 30000)) return String(current.access_token);
+    throw new ApiError('OAuth 凭证在续期期间已变更，请重试；未覆盖当前凭证');
+  }
+  const payload = decodePayload(tokens.access_token);
+  saveCredentials({
+    ...credentials,
+    version: 1,
+    subject: payload.sub ? String(payload.sub) : credentials.subject,
+    scope: String(tokens.scope || payload.scope || credentials.scope?.join(' ') || '').split(/\s+/).filter(Boolean),
+    access_token: tokens.access_token,
+    refresh_token: tokens.refresh_token || credentials.refresh_token,
+    acquired_at: new Date().toISOString(),
+    expires_at: expiresAt,
+    pending: undefined,
+  });
+  return String(tokens.access_token);
+}
+
+async function refreshStoredCredentials(credentials, options) {
+  if (!refreshInFlight) refreshInFlight = refreshCredentialOnce(credentials, options);
+  try {
+    return await refreshInFlight;
+  } finally {
+    refreshInFlight = null;
+  }
+}
+
+async function resolveCredential({ baseUrl, timeout, rejectedToken } = {}) {
   // An explicitly exported API key remains the CI/legacy override.
   if (process.env.OKFLOW_API_KEY?.trim()) return process.env.OKFLOW_API_KEY.trim();
-  return getStoredAccessToken() || getApiKey();
+  if (refreshInFlight) return refreshInFlight;
+  const credentials = getStoredCredentials();
+  if (!isAccessTokenExpired(credentials, Date.now() + 30000) && credentials.access_token !== rejectedToken) return String(credentials.access_token);
+  if (credentials.access_token || credentials.refresh_token) {
+    // 续期必须回到签发凭证的站点，否则官网拿到的 refresh token 会被送到联调站点。
+    return refreshStoredCredentials(credentials, { baseUrl: credentials.base_url || baseUrl, timeout });
+  }
+  return getApiKey();
 }
 
 function buildHeaders({ json = true, anonymous = false, credential } = {}) {
-  const key = anonymous ? '' : credential || resolveCredential();
+  const key = anonymous ? '' : credential;
   if (!key && !anonymous) throw new MissingCredentialError();
   const headers = {
   };
@@ -44,11 +142,14 @@ function buildHeaders({ json = true, anonymous = false, credential } = {}) {
   return headers;
 }
 
-async function request(method, path, { body, bodyType = 'json', baseUrl, timeout = 60, anonymous = false, credential } = {}) {
+async function request(method, path, { body, bodyType = 'json', baseUrl, timeout = 60, anonymous = false, credential, retried = false } = {}) {
   // 先构造 headers：凭证缺失要以 MissingCredentialError 抛出，
   // 放进下面的 try 会被包装成「请求失败」，用户就看不到配置指引了。
   const isJson = bodyType === 'json';
-  const headers = buildHeaders({ json: isJson, anonymous, credential });
+  const resolvedCredential = anonymous ? '' : credential || await resolveCredential({ baseUrl, timeout });
+  const usingStoredOAuth = !anonymous && !credential && !process.env.OKFLOW_API_KEY?.trim()
+    && getStoredCredentials().access_token === resolvedCredential;
+  const headers = buildHeaders({ json: isJson, anonymous, credential: resolvedCredential });
   const url = `${getBaseUrl(baseUrl)}${path}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout * 1000);
@@ -71,11 +172,17 @@ async function request(method, path, { body, bodyType = 'json', baseUrl, timeout
   }
 
   const text = await resp.text();
+  if (resp.status === 401 && usingStoredOAuth && !retried) {
+    const renewedToken = await resolveCredential({ baseUrl, timeout, rejectedToken: resolvedCredential });
+    return request(method, path, {
+      body, bodyType, baseUrl, timeout, anonymous, credential: renewedToken, retried: true,
+    });
+  }
   let parsed;
   try {
     parsed = JSON.parse(text);
   } catch {
-    throw new ApiError(`响应不是合法 JSON (HTTP ${resp.status}): ${text.slice(0, 300)}`, {
+    throw new ApiError(`响应不是合法 JSON (HTTP ${resp.status}): ${redactSecrets(text.slice(0, 300))}`, {
       status: resp.status,
       body: text,
     });

@@ -7,7 +7,7 @@
  */
 import { parseArgs, UsageError } from '../src/lib/args.mjs';
 import { fail, step, info } from '../src/lib/output.mjs';
-import { MissingCredentialError, ApiError } from '../src/lib/api.mjs';
+import { MissingCredentialError, ApiError, OAuthReauthenticationRequiredError } from '../src/lib/api.mjs';
 
 import * as setup from '../src/commands/setup.mjs';
 import * as models from '../src/commands/models.mjs';
@@ -78,25 +78,37 @@ async function main() {
   return impl.run(args);
 }
 
+// 直接 process.exit() 会在 Windows 上与未关闭的 fetch keep-alive 句柄竞争，
+// 触发 libuv 的 !(handle->flags & UV_HANDLE_CLOSING) 断言崩溃。设置 exitCode
+// 让事件循环自然退出，既保留退出码，也避免崩溃。
 main()
-  .then((code) => process.exit(code ?? 0))
+  .then((code) => { process.exitCode = code ?? 0; })
   .catch((err) => {
     if (err instanceof MissingCredentialError) {
       fail(err.message);
       step("跑 'node bin/okflow.mjs setup' 查看配置指引");
-      process.exit(1);
+      process.exitCode = 1;
+      return;
+    }
+    if (err instanceof OAuthReauthenticationRequiredError) {
+      fail(err.message);
+      step("跑 'node bin/okflow.mjs auth login' 重新授权");
+      process.exitCode = 1;
+      return;
     }
     if (err instanceof ApiError) {
       fail(`API 调用失败: ${err.message}`);
       if (err.status) step(`HTTP 状态码: ${err.status}`);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     if (err instanceof UsageError) {
       fail(err.message);
-      process.exit(1);
+      process.exitCode = 1;
+      return;
     }
     fail(err.message || String(err));
     if (process.env.DEBUG) console.error(err.stack);
     else info('设置环境变量 DEBUG=1 可查看完整堆栈');
-    process.exit(1);
+    process.exitCode = 1;
   });

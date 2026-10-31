@@ -94,7 +94,13 @@ CLI 零第三方依赖，只要 Node.js ≥ 18，clone 下来就能跑。
 node bin/okflow.mjs auth login
 ```
 
-命令会创建 Device Grant，并使用系统默认浏览器打开包含设备码的完整授权地址。页面自动读取并从地址栏移除设备码；用户只需点击“同意授权”，CLI 会继续轮询并安全保存凭证。默认 scope 允许 CLI 调用当前账号可用的 OpenAPI，并只读查询本人余额概览；不包含余额流水、充值、支付、退款或管理端财务能力。无图形环境可使用 `--no-browser` 后手动打开终端显示的完整链接；自动化脚本使用 `--json`，不会打开浏览器，也不会输出 access/refresh token。
+命令会创建 Device Grant，并使用系统默认浏览器打开包含设备码的完整授权地址。页面自动读取并从地址栏移除设备码；用户只需点击“同意授权”，CLI 会继续轮询并安全保存凭证。默认 scope 允许 CLI 调用当前账号可用的 OpenAPI，并只读查询本人余额概览；不包含余额流水、充值、支付、退款或管理端财务能力。`--json` 只改变输出格式，仍会打开浏览器，也不会输出 access/refresh token；无图形环境使用 `--no-browser` 关闭自动打开，并手动访问终端显示的完整链接。
+
+`auth login` 与 `auth logout` 的授权地址始终默认为官网 `https://okflow.cn`。`OKFLOW_BASE_URL` 和本目录 `.env` 只影响 API 调用，不会把用户带到测试站点；只有显式传入 `--base-url` 才会对别的站点发起设备授权或撤销。切换站点时会自动丢弃属于其他站点的 pending session 并重新申请设备码；登出时会优先回到凭证签发站点撤销授权。
+
+CLI 只接受服务端登记的 `client_id`（默认 `okflow-cli`，WorkBuddy 使用 `workbuddy-cli`），不接受任意 `--source` 或 `--template`。设备轮询遇到 `slow_down` 会按服务端要求退避；遇到拒绝或过期会清理 pending session。收到 `SIGTERM`/`SIGINT` 时会保留未完成的 Device Grant，再次执行 `auth login` 可继续，不会重复创建授权事务。
+
+凭证文件默认保存到用户目录并使用私有文件权限。access token 通常为 15 分钟有效期，不代表整个授权到期。CLI 在访问令牌到期前 30 秒自动调用 refresh grant，并原子保存新凭证；受保护接口返回 401 时自动续期并最多重试一次。`auth status --json` 返回的 `refresh_available` 表示是否具备自动续期凭证，不要只根据 `expires_at` 判断需要重新登录。只有缺少续期凭证或服务端明确返回 `invalid_grant` 时才需要重新授权；网络超时、临时服务端错误或异常响应保留授权供稍后重试。不会循环重试或把 token 写入日志、JSON、错误或 DEBUG 输出。
 
 ```bash
 node bin/okflow.mjs auth status --json
