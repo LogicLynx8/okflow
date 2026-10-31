@@ -2,82 +2,89 @@
 
 - 来源平台：`Threads`
 - 能力分段：`threads`
-- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
-- Tool count: 11
+- Reference version: `sha256:7101f2f686e885c845f46663dcbe08d7c1ed1dbc6f1964fd25114ee3d35b88b6`
+- Tool count: 12
 
-## `mcp_02bd1c39e8a40f5951f3df74`
-
-获取帖子评论/Get post comments
-
-- Risk: `read`
-- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"post_id","type":"string","required":true}]`
-
-## `mcp_12e757ea5ae087e017b53b2e`
-
-获取帖子详情/Get post detail
-
-- Risk: `read`
-- Parameters: `[{"name":"post_id","type":"string","required":true}]`
-
-## `mcp_389354ac8f9121298a8359cb`
-
-获取用户帖子列表/Get user posts
-
-- Risk: `read`
-- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_3e974bc9ea0298070141623e`
-
-获取用户回复列表/Get user replies
-
-- Risk: `read`
-- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_523410656fa706ad6ccb7c1a`
-
-获取用户转发列表/Get user reposts
-
-- Risk: `read`
-- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_5841eb1cba3d0804a23c519c`
-
-搜索热门内容/Search top content
-
-- Risk: `read`
-- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"query","type":"string","required":true}]`
-
-## `mcp_94e7b328ad9830794ab6f47d`
-
-根据用户ID获取用户信息/Get user info by ID
-
-- Risk: `read`
-- Parameters: `[{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_b7aa8f58619032f82e3c4475`
-
-获取用户信息/Get user info
-
-- Risk: `read`
-- Parameters: `[{"name":"username","type":"string","required":true}]`
-
-## `mcp_bfba2315f0a1d8f8ef85f507`
+## `mcp_2b98ba1fa0af2cbb8c3ba4e4`
 
 获取帖子详情 V2(支持链接)/Get post detail V2(supports URL)
 
 - Risk: `read`
 - Parameters: `[{"name":"post_id","type":"string","required":false},{"name":"url","type":"string","required":false}]`
 
-## `mcp_ebb096ed7071d4de1d8ebfa2`
+## `mcp_3c2132ba0fb0bf61285cb0b4`
 
-搜索最新内容/Search recent content
+搜索热门内容（无分页）/Search top content (no pagination)
 
 - Risk: `read`
 - Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"query","type":"string","required":true}]`
 
-## `mcp_ee2f93505ff0c9ce62751fa5`
+## `mcp_4e61da4de1494097300d8aa5`
+
+搜索帖子/Search posts
+
+- Risk: `read`
+- Parameters: `[{"name":"query","type":"string","required":true}]`
+
+## `mcp_71c06af7343f75dcaabea707`
+
+搜索最新内容（无分页）/Search recent content (no pagination)
+
+- Risk: `read`
+- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"query","type":"string","required":true}]`
+
+## `mcp_896d22f6e636447d6fcd7d85`
+
+获取用户回复列表（无分页）/Get user replies (no pagination)
+
+- Risk: `read`
+- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
+
+## `mcp_899e12321cf118bad3877258`
+
+获取用户信息/Get user info
+
+- Risk: `read`
+- Parameters: `[{"name":"username","type":"string","required":true}]`
+
+## `mcp_8a57a5732a85e08798f70719`
+
+获取帖子评论（无分页）/Get post comments (no pagination)
+
+- Risk: `read`
+- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"post_id","type":"string","required":true}]`
+
+## `mcp_9ef4316f8d48729809e03203`
 
 搜索用户档案/Search profiles
 
 - Risk: `read`
 - Parameters: `[{"name":"query","type":"string","required":true}]`
+
+## `mcp_aed3e290dd1de389ee199c29`
+
+获取用户帖子列表（无分页）/Get user posts (no pagination)
+
+- Risk: `read`
+- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
+
+## `mcp_b4a138de22fb3e6c11bf4fe1`
+
+获取帖子详情/Get post detail
+
+- Risk: `read`
+- Parameters: `[{"name":"post_id","type":"string","required":true}]`
+
+## `mcp_e6cb519a4cb6767c79b4922b`
+
+获取用户转发列表（无分页）/Get user reposts (no pagination)
+
+- Risk: `read`
+- Parameters: `[{"name":"end_cursor","type":"string","required":false},{"name":"user_id","type":"string","required":true}]`
+
+## `mcp_ee7c08ffcfd5eb0d8fac5248`
+
+根据用户ID获取用户信息/Get user info by ID
+
+- Risk: `read`
+- Parameters: `[{"name":"user_id","type":"string","required":true}]`

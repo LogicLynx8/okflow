@@ -2,565 +2,565 @@
 
 - 来源平台：`抖音`
 - 能力分段：`douyin-3`
-- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
+- Reference version: `sha256:7101f2f686e885c845f46663dcbe08d7c1ed1dbc6f1964fd25114ee3d35b88b6`
 - Tool count: 80
 
-## `mcp_7c538f2e41e6e4165288f043`
+## `mcp_7b16924b77707619a8152e51`
 
-# [中文] ### 用途: - 获取抖音音乐热榜数据 ### 参数: - chart_type: 榜单类型，默认值为'hot'，支持下面的值： - 'hot': 热门榜 - 'trending': 飙升榜 - 'original': 原创榜 - cursor: 游标，默认值为'0'，用于分页获取数据，每次请求后会返回下一个游标值，并且通过 `has_more` 字段指示是否有更多数据可供获取。 ### 返回: - 音乐热搜榜数据 # [English] ### Purpose: - Get Douyin music hot search list data ### Parameters: -
-
-- Risk: `read`
-- Parameters: `[{"name":"chart_type","type":"string","required":false},{"name":"cursor","type":"string","required":false}]`
-
-## `mcp_7cd7dd56216b9af0dd4433f8`
-
-# [中文] ### 用途: - 获取抖音创作者平台热门挑战榜单数据 ### 返回: - 热门挑战榜单数据 # [English] ### Purpose: - Get Douyin creator platform hot challenge billboard data ### Return: - Hot challenge billboard data # [示例/Example] 无需参数，直接调用即可获取当前热门挑战榜单 No parameters required, call directly to get current hot challenge billboard
+# [中文] ### 用途: - 获取首页推荐的趋势报告列表 ### 返回: - 推荐报告列表（含报告ID、标题、封面、发布时间等） # [English] ### Purpose: - Get the list of recommended trend insight reports on the home page
 
 - Risk: `read`
 - Parameters: `[]`
 
-## `mcp_7dcc7688faec57fbb90c0c49`
+## `mcp_7b3caefe2dca5fcc881ed9fd`
 
-生成短链接
-
-- Risk: `read`
-- Parameters: `[{"name":"target_url","type":"string","required":true}]`
-
-## `mcp_7e2f444c05048f9516768444`
-
-提取单个作品id/Extract single video id
+# [中文] ### 用途: - 获取账号作品分析 ### 参数: - sec_uid: 用户sec_id - day: 天数，默认7天 ### 返回: - 账号作品分析 # [English] ### Purpose: - Get the account work analysis ### Parameters: - sec_uid: User sec_id - day: Number of days, default 7 days ### Return: - Account work analysis
 
 - Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
+- Parameters: `[{"name":"sec_uid","type":"string","required":true}]`
 
-## `mcp_80ad5223a1ed81e0d6ade31d`
+## `mcp_7ba90557c9d124f829b76dce`
 
-# [中文] ### 用途: - 获取与指定达人相似的达人列表 ### 参数: - user_id: 达人抖音 uid（纯数字，如 "3100268042915212"） ### 返回: - 相似达人列表 # [English] ### Purpose: - Get similar daren/creators to a specified user ### Parameters: - user_id: Douyin uid (numeric, e.g. "3100268042915212") ### Return: - List of similar daren # [示例/Example]
+抖音视频频道数据/Douyin video channel data
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"refresh_index","type":"integer","required":false},{"name":"tag_id","type":"integer","required":true}]`
+
+## `mcp_7bcddced10b12006461ed78f`
+
+# [中文] ### 用途: - 生成抖音分享链接，唤起抖音APP，跳转指定用户主页。 ### 参数: - uid: 用户id - sec_uid: 用户sec_uid - 注意: 请确保user_id和sec_uid都有值，否则无法跳转到指定用户主页。 ### 返回: - 分享链接 # [English] ### Purpose: - Generate Douyin share link, call Douyin APP, and jump to the specified user profile ### Parameters: - uid: User id - sec_uid: User
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_uid","type":"string","required":true},{"name":"uid","type":"string","required":true}]`
+
+## `mcp_7c505ca78d412e4b42df8e4b`
+
+# [中文] ### 用途: - 获取指定垂类的视频发布数量随时间变化趋势 - 用于了解某垂类的内容供给热度变化 ### 参数: - tag_id: 垂类ID（**必填，不支持 0=全部**，需传入具体垂类 ID，可通过 fetch_item_filter_options 获取） - start_date: 起始日期 YYYYMMDD（含） - end_date: 结束日期 YYYYMMDD（含） ### 返回: - 按日聚合的发布量数据（日期 + 当日发布作品数） # [English] ### Purpose: - Get the content publish volume trend
+
+- Risk: `read`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"start_date","type":"string","required":true},{"name":"tag_id","type":"string","required":true}]`
+
+## `mcp_7cfeca05745dbcd1f752f873`
+
+获取创作者连接指数日趋势/Get Author Daily Link Score
+
+- Risk: `read`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"industry_id","type":"integer","required":false},{"name":"link_score_type","type":"integer","required":true},{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_7ddcd8df8c1c95f4798c85b1`
+
+# [中文] ### 用途: - 获取 DOU+ 视频排行榜（热门榜），可按时间范围、垂类、榜单维度筛选 ### 参数: - time_range: 时间范围，1 / 2 / 3，默认 2 - tag_id: 垂类ID，默认 634（娱乐）。完整对照：601剧情, 602明星, 606音乐, 607二次元, 608游戏, 609时事, 612舞蹈, 614三农, 615科技, 616财经, 617亲子, 619生活, 621健康, 623情感, 624文化, 625职场, 626教育, 627摄影, 628美食, 629旅行, 631时尚, 633体育, 634娱乐, 635汽车 - dim_
 
 - Risk: `write`
-- Parameters: `[{"name":"user_id","type":"string","required":true}]`
+- Parameters: `[{"name":"adv_id","type":"any","required":false},{"name":"dim_type","type":"any","required":false},{"name":"tag_id","type":"any","required":false},{"name":"time_range","type":"any","required":false}]`
 
-## `mcp_8190fae2e79464912e625937`
+## `mcp_7e040b94dcd60616662ff902`
 
-# [中文] ### 用途: - 获取视频搜索的关键词自动补全建议 ### 参数: - query: 搜索关键词 ### 返回: - 匹配的关键词建议列表 # [English] ### Purpose: - Get keyword auto-complete suggestions for video search ### Parameters: - query: Search keyword ### Return: - Matched keyword suggestion list # [示例/Example] query = "打瓦"
-
-- Risk: `write`
-- Parameters: `[{"name":"query","type":"string","required":true}]`
-
-## `mcp_830b1e6a5a3494e46ddb856f`
-
-# [中文] ### 用途: - 对比多个达人的趋势数据（粉丝增长、互动量等） ### 参数: - user_list: 达人抖音 uid 列表，逗号分隔，**最多5个** - days: 对比天数，仅支持 7 或 30 ### 返回: - 每个达人在指定天数内的趋势数据对比 # [English] ### Purpose: - Compare trend data of multiple daren/creators (follower growth, engagement, etc.) ### Parameters: - user_list: Daren uid list, comma s
+批量获取视频数据(播放量/点赞等)/Multi Get Item Stats
 
 - Risk: `write`
-- Parameters: `[{"name":"days","type":"string","required":false},{"name":"user_list","type":"string","required":true}]`
+- Parameters: `[{"name":"item_ids","type":"array","required":true},{"name":"need_cover_url","type":"boolean","required":false},{"name":"platform_source","type":"integer","required":false}]`
 
-## `mcp_83e427a6d70e4c4e47ece54e`
-
-# [中文] ### 用途: - 获取指定抖音账号在 DOU+ 投放页可推广的作品列表，包含每个作品的点赞、评论、播放等数据 ### 参数: - sec_uid: 投放账号的 sec_uid（必填） - count: 返回作品数量，默认 30 - target_id: 推广目标（DOU+ 页面上的目标卡片）ID，默认 31（点赞评论量）。31=点赞评论量, 32=粉丝量, 33=主页浏览量, 37=视频播放量, 40=直播间人气, 45=评论链接点击, 63=展示给粉丝, 78=高质量互动。**只拉作品列表的话用默认 31 即可** - aim_ids: 可选高级参数——投放优化目标编码（多个
-
-- Risk: `write`
-- Parameters: `[{"name":"aim_ids","type":"any","required":false},{"name":"count","type":"any","required":false},{"name":"sec_uid","type":"string","required":true},{"name":"target_id","type":"any","required":false}]`
-
-## `mcp_841e5c6a00fa4d084b258fef`
-
-获取创作者CP合作信息/Get Author CP Info
-
-- Risk: `read`
-- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
-
-## `mcp_848471c3204e5cb80cf5ad12`
-
-获取投稿作品列表/Fetch item list
-
-- Risk: `write`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"any","required":false},{"name":"end_time","type":"integer","required":true},{"name":"fields","type":"string","required":false},{"name":"need_cooperation","type":"boolean","required":false},{"name":"need_long_article","type":"boolean","required":false},{"name":"order_by","type":"integer","required":false},{"name":"start_time","type":"integer","required":true}]`
-
-## `mcp_851af5f6bc2533b8d9249572`
-
-# [中文] ### 用途: - 获取视频榜 ### 参数: - page: 页码，默认1 - page_size: 每页数量，默认10 - date_window: 时间窗口(小时)，可选 1/24/72/168，代表近1小时/近1天/近3天/近7天，默认24 - sub_type: 榜单分类，1001 视频总榜 1002 低粉爆款 1003 高完播率 1004 高涨粉率 1005 高点赞率 - keyword: 搜索关键词，对榜单按关键词过滤，空为全部 - tags: 垂类标签筛选，空则为全部，标签id从 fetch_content_tag 接口获取 ### 请求示例: ```json {
-
-- Risk: `write`
-- Parameters: `[{"name":"date_window","type":"integer","required":false},{"name":"keyword","type":"string","required":false},{"name":"page","type":"integer","required":false},{"name":"page_size","type":"integer","required":false},{"name":"sub_type","type":"integer","required":false},{"name":"tags","type":"array","required":false}]`
-
-## `mcp_85dff97057dacf9221426a61`
-
-# [中文] ### 用途: - 获取创作指南各类型数据的有效日期范围 ### 返回: - 创作指南可查询的起止日期 # [English] ### Purpose: - Get valid date range for the creation guide section
-
-- Risk: `read`
-- Parameters: `[]`
-
-## `mcp_89f80bc28bea9bbb914e5849`
-
-获取kol粉丝趋势V1/Get kol Daily Fans V1
-
-- Risk: `read`
-- Parameters: `[{"name":"endDate","type":"string","required":true},{"name":"kolId","type":"string","required":true},{"name":"startDate","type":"string","required":true}]`
-
-## `mcp_8a0bfc34d5cd228194661dcc`
-
-# [中文] ### 用途: - 获取账号粉丝数据趋势 ### 参数: - sec_uid: 用户sec_id - option: 选项，2 新增点赞量 3 新增作品量 4 新增评论量 5 新增分享量 - date_window: 数据点粒度(小时)，可选 1/24，代表每小时一个点/每天一个点，默认24 ### 返回: - 账号粉丝数据趋势 # [English] ### Purpose: - Get the account fan data trend ### Parameters: - sec_uid: User sec_id - option: Option, 2 New like 3
-
-- Risk: `read`
-- Parameters: `[{"name":"date_window","type":"integer","required":false},{"name":"option","type":"integer","required":false},{"name":"sec_uid","type":"string","required":true}]`
-
-## `mcp_8b730d6d3d0b0bf863667ace`
-
-# [中文] ### 用途: - 获取城市列表 ### 参数: - 无 ### 返回: - 中国城市列表 # [English] ### Purpose: - Get city list ### Parameters: - None ### Return: - Chinese city list
-
-- Risk: `read`
-- Parameters: `[]`
-
-## `mcp_8b8eccb68e6dadb6ecab2d63`
-
-获取用户主页二维码/Get User Profile QRCode
-
-- Risk: `read`
-- Parameters: `[{"name":"core_user_id","type":"any","required":false},{"name":"sec_uid","type":"any","required":false}]`
-
-## `mcp_8c5a3b61b15b8a4be1bc8e6d`
-
-# [中文] ### 用途: - 获取关键词指数搜索框的热门推荐词，用作关键词指数分析的输入建议 - 注意: 这不是实时热点榜，实时热点和飙升热点请用 fetch_current_hot_topic ### 参数: - app_name: 平台选择，aweme=抖音，toutiao=头条（头条当前返回空列表） - type: 推荐词类型，0=搜索热词（纯词，id 固定为 "0"），1=内容热词（带话题 id） ### 返回: - update_time: 数据更新日期（按天更新，非实时） - trend_words: 推荐词列表，含 id 和 word # [English] ### Purp
-
-- Risk: `read`
-- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"type","type":"integer","required":false}]`
-
-## `mcp_8c7a6c37a15185942f4a7903`
-
-获取作品点赞观众画像-仅限热门榜/Fetch work like audience portrait - hot list only
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"option","type":"integer","required":false}]`
-
-## `mcp_8c818162971f59f099a9307b`
-
-# [中文] ### 用途: - 获取内容词详情 ### 参数: - keyword: 搜索关键字 - word_id: 内容词id - query_day: 查询日期，格式为YYYYMMDD ### 返回: - 内容词详情 # [English] ### Purpose: - Get the details of content words ### Parameters: - keyword: Search keyword - word_id: Content word id - query_day: Query date, format is YYYYMMDD ### Return: -
-
-- Risk: `read`
-- Parameters: `[{"name":"keyword","type":"string","required":true},{"name":"query_day","type":"integer","required":true},{"name":"word_id","type":"string","required":true}]`
-
-## `mcp_8cf37a3293fedf111706262b`
-
-# [中文] ### 用途: - 获取指定音乐的详情数据 ### 参数: - music_id: 音乐id ### 返回: - 音乐详情数据 # [English] ### Purpose: - Get details of specified music ### Parameters: - music_id: Music id ### Return: - Music details data # [示例/Example] music_id = "7136850194742315016"
-
-- Risk: `read`
-- Parameters: `[{"name":"music_id","type":"string","required":true}]`
-
-## `mcp_8e43b05c9942018eabee48d4`
-
-# [中文] ### 用途: - 获取指定垂类下创作热门话题 ### 参数: - tag_id: 垂类ID（同 fetch_item_query 的 category_id） - **本接口不支持 "0=全部"，必须传入具体的垂类 ID**（如 "601"=剧情, "628"=美食 等） - 完整垂类列表见 fetch_item_filter_options - period: 时间周期 "1"/"3"/"7" - end_date: 结束日期。**仅当 period=7 时必须为周日**，period=1/3 时可为任意日期 - rank_type: 排序类型，"index"=指数, "ri
-
-- Risk: `write`
-- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"rank_type","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
-
-## `mcp_8ed8244e3390ea1c840d6bbd`
-
-投放数据明细/Delivery analysis detail
-
-- Risk: `write`
-- Parameters: `[{"name":"query","type":"object","required":true}]`
-
-## `mcp_8f7e0c0dd1d94da39b1529bd`
-
-# [中文] ### 用途: - 按标题/关键词搜索 DOU+ 视频，支持游标翻页 ### 参数: - keyword: 视频标题/关键词（必填） - cursor: 翻页游标，首页传 0，后续传上一页响应里的 cursor - count: 每页数量，默认 12 ### 返回: - 匹配的视频列表，以及翻页信息 # [English] ### Purpose: - Search DOU+ videos by title/keyword, with cursor pagination ### Parameters: - keyword: Video title or keyword (requ
-
-- Risk: `write`
-- Parameters: `[{"name":"count","type":"any","required":false},{"name":"cursor","type":"any","required":false},{"name":"keyword","type":"string","required":true}]`
-
-## `mcp_90cc20aeaa29c74f2e8307f9`
-
-# [中文] ### 用途: - 获取指定视频的评论回复数据 ### 参数: - item_id: 作品id - comment_id: 评论id - cursor: 游标 - count: 数量 ### 返回: - 评论回复数据 # [English] ### Purpose: - Get comment replies data of specified video ### Parameters: - item_id: Video id - comment_id: Comment id - cursor: Cursor - count: Number ### Return: - Comme
-
-- Risk: `read`
-- Parameters: `[{"name":"comment_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"item_id","type":"string","required":true}]`
-
-## `mcp_916a5e457f389c838b5b8322`
-
-获取创作者星图连接指数/Get Author Link Info
-
-- Risk: `read`
-- Parameters: `[{"name":"industy_tag","type":"integer","required":false},{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
-
-## `mcp_93ce28aecef53039c0a5eb9c`
-
-# [中文] ### 用途: - 获取指定垂类下、指定热门关键词的相关视频列表 - 用于查看某个热门关键词具体由哪些视频贡献 ### 参数: - tag_id: 垂类ID（与 fetch_item_query 的 category_id 含义一致） - period: 时间周期 "1"=近1天 / "3"=近3天 / "7"=近7天 - end_date: 结束日期 YYYYMMDD。**仅当 period=7 时必须为周日**（如 20260412），period=1/3 时可为任意日期 - keyword: 热门关键词（**必须**先调 fetch_content_creative_key
-
-- Risk: `write`
-- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"keyword","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
-
-## `mcp_951afc7a2b6590e071201acd`
-
-获取星图热榜分类/Get Ranking List Catalog
-
-- Risk: `read`
-- Parameters: `[{"name":"biz_scene","type":"string","required":false},{"name":"codes","type":"string","required":false}]`
-
-## `mcp_95e2644f028200fb227caf19`
-
-# [中文] ### 用途: - 获取抖音创作者中心某个话题/热点/道具/音乐的相关视频列表 - 通过其他榜单接口（如 fetch_creator_hot_spot_billboard、fetch_creator_hot_topic_billboard）拿到 query_id 后，再用本接口拉取该条目下的相关视频 ### 参数: - query_id: 查询ID（话题ID/热点ID等） - billboard_type: 榜单类型 - 2: 热点 - 3: 话题 - 4: 道具 - 5: 音乐 - limit: 每页数量 (默认 20, 范围 1-100) - offset: 偏移量 (分页起
-
-- Risk: `read`
-- Parameters: `[{"name":"billboard_type","type":"integer","required":false},{"name":"limit","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"query_id","type":"string","required":true}]`
-
-## `mcp_970c54f08d4b501c7404296a`
-
-# [中文] ### 用途: - 获取抖音视频合集作品列表数据 ### 参数: - mix_id: 合集id - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量，请保持默认，否则会出现BUG。 ### 返回: - 视频合集作品列表数据 # [English] ### Purpose: - Get Douyin video mix post list data ### Parameters: - mix_id: Mix id - cursor: Cursor, used for paging, the first page is 0,
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"mix_id","type":"string","required":true}]`
-
-## `mcp_97967200ef609672156ea4c8`
-
-# [中文] ### 用途: - 获取指定用户主页的作品列表（简洁版接口，支持游标翻页） ### 参数: - sec_uid: 用户 sec_uid（必填） - cursor: 翻页游标（字符串），首页传 "0"，后续传上一页响应里的 cursor - count: 每页数量，默认 10 ### 返回: - 用户作品列表，以及翻页信息 # [English] ### Purpose: - Get a user's homepage works (concise endpoint, cursor pagination) ### Parameters: - sec_uid: User sec_ui
-
-- Risk: `write`
-- Parameters: `[{"name":"count","type":"any","required":false},{"name":"cursor","type":"any","required":false},{"name":"sec_uid","type":"string","required":true}]`
-
-## `mcp_979fbbbe565ec704032f5db6`
-
-获取创作者每日粉丝趋势/Get Author Daily Fans
-
-- Risk: `read`
-- Parameters: `[{"name":"author_id","type":"string","required":true},{"name":"author_type","type":"any","required":false},{"name":"end_date","type":"any","required":false},{"name":"platform_source","type":"integer","required":false},{"name":"start_date","type":"any","required":false}]`
-
-## `mcp_990a9c331e27db1125ff40ac`
-
-头条创作者搜索/Search Toutiao Creator
-
-- Risk: `read`
-- Parameters: `[{"name":"author_list_id","type":"any","required":false},{"name":"burst_text_rate_max","type":"any","required":false},{"name":"burst_text_rate_min","type":"any","required":false},{"name":"cpe_max","type":"any","required":false},{"name":"cpe_min","type":"any","required":false},{"name":"cpm_max","type":"any","required":false},{"name":"cpm_min","type":"any","required":false},{"name":"expected_play_max","type":"any","required":false},{"name":"expected_play_min","type":"any","required":false},{"name":"extra_filter","type":"any","required":false},{"name":"fans_max","type":"any","required":false},{"name":"fans_min","type":"any","required":false},{"name":"first_industry_id","type":"any","required":false},{"name":"gender","type":"any","required":false},{"name":"interact_rate_max","type":"any","required":false},{"name":"interact_rate_min","type":"any","required":false},{"name":"keyword","type":"string","required":true},{"name":"marketing_target","type":"integer","required":false},{"name":"page","type":"integer","required":false},{"name":"persona_tags","type":"any","required":false},{"name":"play_over_rate_max","type":"any","required":false},{"name":"play_over_rate_min","type":"any","required":false},{"name":"price_max","type":"any","required":false},{"name":"price_min","type":"any","required":false},{"name":"price_type","type":"any","required":false},{"name":"sort_field","type":"string","required":false},{"name":"sort_type","type":"integer","required":false},{"name":"tag","type":"any","required":false},{"name":"task_category","type":"integer","required":false}]`
-
-## `mcp_99312c2d126c88fbed518cdf`
-
-# [中文] ### 用途: - 获取指定垂类下创作热门关键词 ### 参数: - tag_id: 垂类ID（与 fetch_item_query 的 category_id 含义一致） - **本接口不支持 "0=全部"，必须传入具体的垂类 ID**（如 "601"=剧情, "628"=美食 等） - 完整垂类列表见 fetch_item_filter_options - period: 时间周期，可选 "1"(近1天) / "3"(近3天) / "7"(近7天) - end_date: 结束日期（YYYYMMDD）。**仅当 period=7 时必须为周日**，period=1/3 时可为
-
-- Risk: `write`
-- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
-
-## `mcp_99e27172a85c410064d946a9`
-
-# [中文] ### 用途: - 抖音直播间弹幕参数获取 ### 参数: - room_id: 直播间号 - user_unique_id: 用户唯一ID ### 返回: - 弹幕参数数据 # [English] ### Purpose: - Douyin live room danmaku parameters ### Parameters: - room_id: Live room id - user_unique_id: User unique ID ### Return: - Danmaku parameter data
-
-- Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":true},{"name":"user_unique_id","type":"string","required":true}]`
-
-## `mcp_9a25969f307cf4d508d2448f`
-
-# [中文] ### 用途: - 获取单个作品数据 V2，若此接口失效，请使用 `/fetch_one_video` 接口，或使用APP接口。 ### 参数: - aweme_id: 作品id ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data V2, if this interface fails, please use the `/fetch_one_video` interface, or use the APP interface. ### Parameters: - aweme_id: Video id ##
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
-
-## `mcp_9a893dfe6305c10ff6bc6cc7`
-
-# [中文] ### 用途: - 获取抖音搜索关键词的联想推荐结果（V2 版本）。 - 根据用户已输入的关键词前缀，返回相关搜索词建议，用于实现搜索框实时补全。 ### 备注: - 返回条数由抖音决定，不支持指定数量。 - `history_words` 为可选项，传入用户此前搜索过的词（英文逗号分隔）会影响联想词排序。 - 相比 V1，V2 直接给出纯词列表 `words`，无需再从原始结构中提取。 ### 参数: - keyword: 已输入的关键词，如 "人工智能" - history_words: 可选，历史搜索词，如 "猫咪,美食" ### 请求体示例： ```json payloa
-
-- Risk: `write`
-- Parameters: `[{"name":"history_words","type":"string","required":false},{"name":"keyword","type":"string","required":false}]`
-
-## `mcp_9b1adfce5cfbfea2478e7853`
-
-获取粉丝画像/Fetch fan portrait
-
-- Risk: `read`
-- Parameters: `[{"name":"option","type":"integer","required":false},{"name":"sec_uid","type":"string","required":true}]`
-
-## `mcp_9b48f77bd3486ab0722b950b`
-
-# [中文] ### 用途: - 获取抖音 App 中话题(挑战/标签)搜索的结果，使用 V2 版本 API。 - 支持关键词搜索，返回匹配的话题详情，包括话题名称、话题封面、浏览量、参与人数等。 ### 备注: - 本接口专注于搜索话题（Challenge/Hashtag）内容，不包含视频或直播等其他类型。 - 初次请求时 `cursor` 传入 0，`search_id` 传空字符串，后续翻页请使用上一次返回的 `cursor` 和 `search_id`。 ### 参数: - keyword: 搜索关键词，如 "游戏" - cursor: 翻页游标（首次请求传 0，翻页时使用上次响应的
-
-- Risk: `write`
-- Parameters: `[{"name":"backtrace","type":"string","required":false},{"name":"content_type","type":"string","required":false},{"name":"cursor","type":"integer","required":false},{"name":"filter_duration","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"publish_time","type":"string","required":false},{"name":"search_id","type":"string","required":false},{"name":"sort_type","type":"string","required":false}]`
-
-## `mcp_9b7c19b0b3f2ac5dbd2fd4ee`
-
-# [中文] ### 用途: - 获取指定话题的详情数据 ### 参数: - ch_id: 话题id ### 返回: - 话题详情数据 # [English] ### Purpose: - Get details of specified hashtag ### Parameters: - ch_id: Hashtag id ### Return: - Hashtag details data # [示例/Example] ch_id = 1575791821492238
-
-- Risk: `read`
-- Parameters: `[{"name":"ch_id","type":"integer","required":true}]`
-
-## `mcp_9b7c935cd2ecc3a9c8ff6d0d`
-
-获取创作者粉丝画像分布/Get Author Fans Distribution
-
-- Risk: `read`
-- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
-
-## `mcp_9b9c242d7a69e71c1ef80272`
-
-# [中文] ### 用途: - 生成抖音分享链接，唤起抖音APP，跳转指定作品详情页。 ### 参数: - aweme_id: 作品id ### 返回: - 分享链接 # [English] ### Purpose: - Generate Douyin share link, call Douyin APP, and jump to the specified video ### Parameters: - aweme_id: Video id ### Return: - Share link # [示例/Example] aweme_id = "7197598285882789120"
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
-
-## `mcp_9c6effd80271eb781c7addc1`
-
-# [中文] ### 用途: - 生成弹幕xb签名 ### 参数: - user_agent: 用户浏览器代理 - room_id: 房间号 - user_unique_id: 用户唯一ID ### 返回: - 弹幕xb签名 # [English] ### Purpose: - Generate danmu xb signature ### Parameters: - user_agent: User browser agent - room_id: Room ID - user_unique_id: User unique ID ### Return: - Danmu xb signatur
-
-- Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":true},{"name":"user_agent","type":"string","required":true},{"name":"user_unique_id","type":"string","required":true}]`
-
-## `mcp_9dadee17acc354299bd7e899`
-
-# [中文] ### 用途: - 根据视频ID来增加作品的播放数 - 该接口默认使用游客登录凭据，如果需要使用登录用户的登录凭据，请在参数中传入。 - 单一作品每次调用增加1次播放数，请求约 `1000` 次后会被抖音限制，需要等待一段时间（如：2小时后）后再继续调用。 - 该限制是针对作品的，不是针对接口的，在未登录的情况下，使用不同IP的浏览器或在APP中浏览作品，该作品的播放数也不会增加。 - 可以携带抖音网页端的登录凭据来请求此接口，但是不保证一定有效，需要自行测试。 - 上述的限制是根据测试结果得出的，具体限制可能会有所不同，仅供参考。 ### 参数: - aweme_t
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_type","type":"integer","required":true},{"name":"item_id","type":"string","required":true}]`
-
-## `mcp_9dffaf2c305480bf0c9e8307`
-
-# [中文] ### 用途: - 获取抖音创作者平台的商单任务列表 - 支持多种筛选条件，包括行业分类、付费类型、平台渠道等 ### 重要参数使用说明: #### 行业分类组合规则: - **industry_lv1=-1 (全部)**: 当选择全部一级行业时，industry_lv2参数将被忽略，无需设置 - **industry_lv1=具体值**: 当选择具体一级行业时，可配合industry_lv2进行二级筛选 - industry_lv2=-1: 该一级行业下的所有二级分类 - industry_lv2=具体值: 该一级行业下的具体二级分类 #### 可选参数 (选择"全部"时无需传
-
-- Risk: `read`
-- Parameters: `[{"name":"cursor","type":"integer","required":false},{"name":"greater_than_cost_progress","type":"any","required":false},{"name":"industry_lv1","type":"integer","required":false},{"name":"industry_lv2","type":"integer","required":false},{"name":"keyword","type":"any","required":false},{"name":"limit","type":"integer","required":false},{"name":"mission_type","type":"integer","required":false},{"name":"pay_type","type":"any","required":false},{"name":"platform_channel","type":"any","required":false},{"name":"publish_time_start","type":"any","required":false},{"name":"quick_selector_scene","type":"any","required":false},{"name":"tab_scene","type":"integer","required":false}]`
-
-## `mcp_9ea7085915f62815fc4a5c74`
-
-# [中文] ### 用途: - 获取单个作品数据，支持文章、图文、视频等。 - V3版本的接口，解决了版权限制问题，可以获取更多受限内容，比如 V1，V2版本返回的Reason为8的内容和部分文章或短剧等。 ### 参数: - aweme_id: 作品id ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data, support article, photo, video, etc. - V3 version of the interface, which solves the copyright restriction
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
-
-## `mcp_9edfdbd709ac68a4b538c434`
-
-抖音APP注册设备/Douyin APP register device
-
-- Risk: `read`
-- Parameters: `[{"name":"proxy","type":"string","required":false}]`
-
-## `mcp_a096fe83825345054510fba7`
-
-# [中文] ### 用途: - 获取单个视频评论数据 ### 参数: - aweme_id: 作品id - cursor: 游标 - count: 数量 ### 返回: - 评论数据 # [English] ### Purpose: - Get single video comments data ### Parameters: - aweme_id: Video id - cursor: Cursor - count: Number ### Return: - Comments data # [示例/Example] aweme_id = "7372484719365098803" cur
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false}]`
-
-## `mcp_a0ff8c1e3fd849c5ce3bbbae`
-
-# [中文] ### 用途: - 获取抖音视频合集详情数据 ### 参数: - mix_id: 合集id ### 返回: - 视频合集详情数据 # [English] ### Purpose: - Get Douyin video mix detail data ### Parameters: - mix_id: Mix id ### Return: - Video mix detail data # [示例/Example] mix_id = "7302011174286002217"
-
-- Risk: `read`
-- Parameters: `[{"name":"mix_id","type":"string","required":true}]`
-
-## `mcp_a273b3ecff88fa686bd22637`
-
-批量获取视频信息/Batch Get Video Information
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"array","required":true}]`
-
-## `mcp_a28bc5b19f56141f9add4781`
-
-# [中文] ### 用途: - 获取同城热点榜 ### 参数: - page: 页码 - page_size: 每页数量 - order: 排序方式 - rank 按热度排序 - rank_diff 按排名变化 - city_code: 城市编码，从城市列表获取，空为全部 - sentence_tag: 热点分类标签，从热点榜分类获取，多个分类用逗号分隔，空为全部 - keyword: 热点搜索词 ### 返回: - 同城热点榜 # [English] ### Purpose: - Get the city hot list ### Parameters: - page: Page numb
-
-- Risk: `read`
-- Parameters: `[{"name":"city_code","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"order","type":"string","required":true},{"name":"page","type":"integer","required":true},{"name":"page_size","type":"integer","required":true},{"name":"sentence_tag","type":"string","required":false}]`
-
-## `mcp_a2ff270a2f69878a8ef8cefb`
-
-# [中文] ### 用途: - 获取用户的短剧合集列表 ### 参数: - user_id: 用户id，与sec_user_id二选一即可 - sec_user_id: 用户加密id，与user_id二选一即可 - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 ### 返回: - 用户短剧合集列表数据 ### 备注: - 该接口返回用户发布的所有短剧合集 - 响应中的 series_id 可用于获取短剧详情和视频列表 # [English] ### Purpose: - Get user's series/playlet collection list
-
-- Risk: `read`
-- Parameters: `[{"name":"cursor","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"user_id","type":"string","required":false}]`
-
-## `mcp_a4c328066d3d0c8bb5b663b6`
-
-获取创作者位置信息/Get Author Local Info
-
-- Risk: `read`
-- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false},{"name":"time_range","type":"integer","required":false}]`
-
-## `mcp_a5146e0f7591bd92a39bb80b`
+## `mcp_7e34765f4731362d9e803d08`
 
 获取创作者基本信息/Get Author Base Info
 
 - Risk: `read`
 - Parameters: `[{"name":"need_linkage_info","type":"boolean","required":false},{"name":"need_sec_uid","type":"boolean","required":false},{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false},{"name":"recommend","type":"boolean","required":false}]`
 
-## `mcp_a5c0028acb2c10caee53a915`
+## `mcp_7eadfd32f98fa65b2cc8115d`
 
-获取kol转化能力分析V1/Get kol Conversion Ability Analysis V1
-
-- Risk: `read`
-- Parameters: `[{"name":"_range","type":"string","required":true},{"name":"kolId","type":"string","required":true}]`
-
-## `mcp_a5e707a328327341bc94a301`
-
-提取直播间号/Extract webcast id
+# [中文] ### 用途: - 获取热点榜分类的id与热度 - 注意：使用start_date和end_date参数需要移除snapshot_time参数才可以生效 ### 参数: - billboard_type: 榜单类型 - rise 上升热点榜 - city 城市热点榜 - total 热点总榜 - snapshot_time: 快照时间 - start_date: 快照开始时间 - end_date: 快照结束时间 - keyword: 热点搜索词 ### 返回: - 热点榜分类 # [English] ### Purpose: - Get the id and popularit
 
 - Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
+- Parameters: `[{"name":"billboard_type","type":"string","required":true},{"name":"end_date","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"snapshot_time","type":"string","required":false},{"name":"start_date","type":"string","required":false}]`
 
-## `mcp_a5f6e27db7def4a9e2fd1f22`
-
-可调用工具
-
-- Risk: `read`
-- Parameters: `[{"name":"kolId","type":"string","required":true},{"name":"platformChannel","type":"string","required":true}]`
-
-## `mcp_a6bc0daae4bf707fc94fc1be`
-
-# [中文] ### 用途: - 获取指定趋势报告的完整详情 - 包含报告标题、封面、发布时间、所属产品、正文内容、图片资源、PDF 下载链接等 ### 参数: - report_id: 报告 ID（字符串），可从 fetch_report_search 或 fetch_insight_recommend 返回结果中获取 ### 返回: - 报告完整数据：title, cover, publish_time, business, content, images, pdf_url 等 # [English] ### Purpose: - Get full detail of a trend in
-
-- Risk: `read`
-- Parameters: `[{"name":"report_id","type":"string","required":true}]`
-
-## `mcp_a6fbd494fe683e1933db4105`
-
-# [中文] ### 用途: - 获取抖音品牌热榜分类数据 ### 返回: - 品牌热搜榜分类数据 # [English] ### Purpose: - Get Douyin brand hot search category data ### Return: - Hot brand search category data # [示例/Example] pass
-
-- Risk: `read`
-- Parameters: `[]`
-
-## `mcp_a7eec93eca2f2974183961c5`
-
-# [中文] ### 用途: - 获取指定垂类下视频时长分布数据 - 用于了解该垂类创作者偏好的视频时长结构 ### 参数: - tag_id: 垂类ID（**必填，不支持 0=全部**，需传入具体垂类 ID，可通过 fetch_item_filter_options 获取） - period: 时间粒度，"week"=按周（end_date 必须为周日）, "month"=按月（end_date 必须为月末） - end_date: 结束日期 YYYYMMDD，需与 period 对齐 ### 返回: - 各时长区间（如 0-15 秒/15-60 秒/60-180 秒/大于 180 秒）的视
-
-- Risk: `write`
-- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
-
-## `mcp_a940c5eb9d8082e2089dea76`
-
-# [中文] ### 用途: - 生成抖音视频分享二维码 ### 参数: - object_id: 作品id或作者uid ### 返回: - 二维码数据 # [English] ### Purpose: - Generate Douyin video share QR code ### Parameters: - object_id: Video id or author uid ### Return: - QR code data # [示例/Example] object_id = "7348044435755846962"
-
-- Risk: `read`
-- Parameters: `[{"name":"object_id","type":"string","required":true}]`
-
-## `mcp_a9c3fc14905846aeefbaed82`
-
-获取kol连接用户V1/Get kol Link Struct V1
-
-- Risk: `read`
-- Parameters: `[{"name":"kolId","type":"string","required":true}]`
-
-## `mcp_aa2a02be472354eba6178631`
-
-# [中文] ### 用途: - 获取抖音创作者平台的行业分类配置 - 返回所有可用的行业分类层级结构 - **建议在调用商单任务列表接口前先调用此接口获取完整的行业分类信息** ### 重要说明: - 此接口已优化为Redis缓存，首次调用后数据将缓存30天 - 缓存键: `douyin_creator:industry_categories` - 数据结构包含一级行业和二级行业的完整映射关系 ### 数据结构: ```json { "status_code": 0, "status_msg": "success", "data": { "industry_categories": [ {"
-
-- Risk: `read`
-- Parameters: `[]`
-
-## `mcp_abe249b2984bffbe82a60962`
-
-获取单个视频播放量(含详情)/Get Item Play Count
-
-- Risk: `read`
-- Parameters: `[{"name":"item_id","type":"string","required":true},{"name":"need_cover_url","type":"boolean","required":false},{"name":"platform_source","type":"integer","required":false}]`
-
-## `mcp_ac0216e7593289a4c58722db`
-
-获取kol粉丝画像V1/Get kol Fans Portrait V1
-
-- Risk: `read`
-- Parameters: `[{"name":"fansType","type":"string","required":false},{"name":"kolId","type":"string","required":true}]`
-
-## `mcp_acd7d29c15d8fee04f2f39e2`
-
-获取kol热词分析评论V1/Get Author Hot Comment Tokens V1
-
-- Risk: `read`
-- Parameters: `[{"name":"kolId","type":"string","required":true}]`
-
-## `mcp_ae14a40afd33e6a9ec9517a2`
-
-# [中文] ### 用途: - 按抖音号或抖音昵称搜索直播间（V2 版本），支持游标翻页。 - 适合定位某个主播的直播间，而不是按内容关键词泛搜直播。 ### 备注: - `keyword` 匹配的是主播的抖音号或昵称，传入内容类关键词（如 "游戏"）通常匹配不到结果。 - 本接口不支持排序、发布时间、时长等筛选条件。 - 每页固定 10 条，不支持指定数量。 - 首次请求 `cursor` 传 0，翻页时传上一页响应里返回的 `cursor`。 ### 参数: - keyword: 抖音号 或 抖音昵称（必填），如 "小耳朵" - cursor: 翻页游标（首次请求传 0） ### 请求体
-
-- Risk: `write`
-- Parameters: `[{"name":"cursor","type":"integer","required":false},{"name":"keyword","type":"string","required":false}]`
-
-## `mcp_ae14e2062bba5484bcd4886c`
-
-# [中文] ### 用途: - 获取指定用户的直播流数据V2 ### 参数: - room_id: 直播间room_id ### 返回: - 直播流数据 ### 备注: modify_time字段是直播间的最后更新时间，也就相当于开播时间，如果下播也不会重置回0，而是一直保持最后的更新时间。 # [English] ### Purpose: - Gets the live stream data of the specified user V2 ### Parameters: - room_id: Room room_id ### Return: - Live stream data ###
-
-- Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":true}]`
-
-## `mcp_aeaf0af64c2333f9c3207072`
-
-# [中文] ### 用途: - 搜索抖音用户，支持抖音号和抖音昵称搜索 ### 参数: - user_name: 用户名 (支持抖音号和抖音昵称) - 抖音号: 如 "rmrbxmt" - 抖音昵称: 如 "Y"、"人民日报" ### 返回: - 最多返回20个匹配的用户信息 - 包含用户基本信息如头像、昵称、抖音号等 # [English] ### Purpose: - Search Douyin users by Douyin ID or nickname ### Parameters: - user_name: Username (supports Douyin ID and nick
-
-- Risk: `read`
-- Parameters: `[{"name":"user_name","type":"string","required":true}]`
-
-## `mcp_aed4a2027e753626194aca56`
+## `mcp_80e6455ab34d5865370eed35`
 
 获取视频的最高画质播放链接/Get the highest quality play URL of the video
 
 - Risk: `read`
 - Parameters: `[{"name":"aweme_id","type":"string","required":false},{"name":"region","type":"string","required":false},{"name":"share_url","type":"string","required":false}]`
 
-## `mcp_af39a373fb377ff2afbc0a50`
+## `mcp_8180d028c1eba3867efdaae8`
 
-# [中文] ### 用途: - 获取指定视频在抖音指数「视频分析」中的基础详情 ### 参数: - item_id: 视频ID（抖音 aweme id，纯数字字符串） ### 返回: - 视频标题、封面、时长、发布时间、作者信息及基础数据等 # [English] ### Purpose: - Get the basic detail of a video in Douyin Index video analysis ### Parameters: - item_id: Video ID (Douyin aweme id, numeric string) ### Return: - Vide
+获取投稿分析概览/Fetch item analysis overview
+
+- Risk: `write`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"genres","type":"array","required":false},{"name":"primary_verticals","type":"array","required":true},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_81f5003199fb9f65ce760c09`
+
+# [中文] ### 用途: - 获取指定用户的信息 ### 参数: - sec_user_id: 用户sec_user_id ### 返回: - 用户信息，包含性别，年龄，直播等级，直播间牌子 ### 说明： - 性别：1为男，2为女，0为未知，在live_user字段中。 - 年龄：在user字段中，-1为未知。 # [English] ### Purpose: - Get information of specified user ### Parameters: - sec_user_id: User sec_user_id ### Return: - User information,
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_user_id","type":"string","required":true}]`
+
+## `mcp_821388b371037c25eea944ea`
+
+获取达人主页视频列表V1/Get Author Homepage Videos V1
+
+- Risk: `read`
+- Parameters: `[{"name":"oAuthorId","type":"string","required":true},{"name":"onlyAssign","type":"boolean","required":false},{"name":"page","type":"integer","required":false},{"name":"videoType","type":"string","required":false}]`
+
+## `mcp_82a62e5d8f02c9bd4ae4768e`
+
+获取作品弹幕分析/Fetch item bullet analysis
 
 - Risk: `write`
 - Parameters: `[{"name":"item_id","type":"string","required":true}]`
 
-## `mcp_b071b87faa9302cd1662938a`
+## `mcp_82bc1dbd28296562adc8c38b`
 
-# [中文] ### 用途: - 获取抖音创作者中心热门视频榜单数据 ### 参数: - billboard_tag: 榜单标签，0=全部，其他值请通过config接口获取 - 0: 全部 - 333: 美食 - 334: 旅行 - 299: 泛生活 - 335: 汽车 - 336: 科技 - 302: 游戏 - 296: 二次元 - 337: 娱乐 - 311: 明星 - 298: 体育 - 300: 文化教育 - 301: 校园 - 297: 政务 - 305: 时尚 - 306: 才艺 - 669: 财经 - 314: 随拍 - 307: 动植物 - 309: 图文控 - 308: 剧情
+获取视频整体表现趋势/Get Item Report Trend
+
+- Risk: `write`
+- Parameters: `[{"name":"item_id","type":"string","required":true}]`
+
+## `mcp_84309b33a859b6dab48deed6`
+
+获取视频的最高画质播放链接/Get the highest quality play URL of the video
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":false},{"name":"region","type":"string","required":false},{"name":"share_url","type":"string","required":false}]`
+
+## `mcp_848925f5d887a36339b2bc7f`
+
+获取创作者连接指标日趋势/Get Author Daily Link
+
+- Risk: `read`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"industry_id","type":"integer","required":false},{"name":"link_type","type":"integer","required":true},{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_84efdae281105c4cd12395d2`
+
+# [中文] ### 用途: - 获取抖音创作者平台热门音乐榜单数据 ### 参数: - billboard_tag: 榜单标签，0=全部，其他值请通过配置接口获取 - order_key: 排序键 (1=播放最高, 2=点赞最多, 4=热度最高, 5=投稿最多) - time_filter: 时间筛选 (1=24小时, 2=7天, 3=30天) ### 返回: - 热门音乐榜单数据 # [English] ### Purpose: - Get Douyin creator platform hot music billboard data ### Parameters: - billboar
 
 - Risk: `read`
 - Parameters: `[{"name":"billboard_tag","type":"integer","required":false},{"name":"order_key","type":"integer","required":false},{"name":"time_filter","type":"integer","required":false}]`
 
-## `mcp_b17b0192f6f3ae0228861674`
+## `mcp_858d1b3e5a0a00b800c7c7b4`
 
-搜索MCN机构列表/Get Demander MCN List
-
-- Risk: `read`
-- Parameters: `[{"name":"mcn_name","type":"string","required":false},{"name":"order_by","type":"string","required":false},{"name":"page","type":"integer","required":false}]`
-
-## `mcp_b17b540cf12c714503d606f0`
-
-获取创作者受众画像分布/Get Author Audience Distribution
+# [中文] ### 用途: - 获取单个视频评论数据 ### 参数: - aweme_id: 作品id - cursor: 游标 - count: 数量 ### 返回: - 评论数据 # [English] ### Purpose: - Get single video comments data ### Parameters: - aweme_id: Video id - cursor: Cursor - count: Number ### Return: - Comments data # [示例/Example] aweme_id = "7372484719365098803" cur
 
 - Risk: `read`
-- Parameters: `[{"name":"link_type","type":"any","required":false},{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false}]`
 
-## `mcp_b24c5b5303dbdf5754a9d25f`
+## `mcp_85fbc55a26b45be855753792`
 
-获取kol性价比能力分析V1/Get kol Cp Info V1
-
-- Risk: `read`
-- Parameters: `[{"name":"kolId","type":"string","required":true}]`
-
-## `mcp_b2db237fab9567c4f88ca00e`
-
-# [中文] ### 用途: - 获取抖音创作者热点榜单数据 ### 参数: - billboard_tag: 热点标签，多个标签用逗号分隔 可选值: - 站内玩法: 1004,1000,1002,1003,1001 - 话题互动: 20001,20006,20000,20003,20005,20002,20 - 娱乐: 2007,2000,2011,2012,2009,2010,2004,2005,2003,2008,2001,2002,2006 - 社会: 4005,4006,4007,4003,4004,4000 - 二次元: 13000 - 交通: 23000 - 亲子: 19000
+# [中文] ### 用途: - 获取单个热点的完整分析数据，一次请求覆盖热点详情页的全部模块 ### 参数: - topic_name: 热点名称，可从 fetch_current_hot_topic 的结果中获取 ### 返回: - trend_item: 热点指数趋势（按时间点的指数值） - content_item: 热门内容列表（视频标题、链接、封面、作者、点赞/评论数等） - play_rank_author_item: 相关达人榜（按播放量排序） - digg_rank_author_item: 相关达人榜（按点赞数排序） - fans_rank_author_item: 相关达
 
 - Risk: `read`
-- Parameters: `[{"name":"billboard_tag","type":"string","required":false},{"name":"city_code","type":"any","required":false},{"name":"hot_search_type","type":"integer","required":false}]`
+- Parameters: `[{"name":"topic_name","type":"string","required":true}]`
 
-## `mcp_b36e458a7cfd69f08c36dbb4`
+## `mcp_863a15d85ad4590a42a75056`
 
-# [中文] ### 用途: - 获取抖音 App 中综合搜索栏的搜索结果（非单独视频搜索）。 - 支持关键词、排序方式、发布时间、视频时长、内容类型等筛选条件。 - 支持翻页查询，通过 `cursor`、`search_id` 和 `backtrace` 分页。 ### 备注: - 初次请求时 `cursor` 传入 0，`search_id` 和 `backtrace` 传空字符串。 - 翻页时需从上一次响应中获取 `cursor`、`search_id` 和 `backtrace` 字段值。 - 返回的内容包含视频、作者、话题标签、播放信息、音乐、互动数据等丰富信息。 ### 参数: -
+# [中文] ### 用途: - 获取单个作品视频弹幕数据 ### 参数: - item_id: 作品id - duration: 视频总时长 - end_time: 结束时间 - start_time: 开始时间 ### 返回: - 视频弹幕数据 # [English] ### Purpose: - Get single video danmaku data ### Parameters: - item_id: Video id - duration: Video total duration - end_time: End time - start_time: Start time ###
+
+- Risk: `read`
+- Parameters: `[{"name":"duration","type":"integer","required":true},{"name":"end_time","type":"integer","required":true},{"name":"item_id","type":"string","required":true},{"name":"start_time","type":"integer","required":true}]`
+
+## `mcp_8a7ac0317dabdad29f4fc250`
+
+获取粉丝画像/Fetch fan portrait
+
+- Risk: `read`
+- Parameters: `[{"name":"option","type":"integer","required":false},{"name":"sec_uid","type":"string","required":true}]`
+
+## `mcp_8a82bdad541527ef994fbcc9`
+
+获取达人广场筛选项取值/Get Search Field Options
+
+- Risk: `read`
+- Parameters: `[{"name":"platform_source","type":"integer","required":false},{"name":"task_category","type":"integer","required":false}]`
+
+## `mcp_8aa7de541b62ecb1e6597dcb`
+
+获取创作者粉丝画像分布/Get Author Fans Distribution
+
+- Risk: `read`
+- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
+
+## `mcp_8ba56f4eeedf1c7a8d97e886`
+
+根据抖音号获取游客星图kolid/Get XingTu kolid by Douyin unique_id
+
+- Risk: `read`
+- Parameters: `[{"name":"unique_id","type":"string","required":true}]`
+
+## `mcp_8c85e3294b0917aaa85c00d7`
+
+# [中文] ### 用途: - 获取热点总榜 ### 参数: - page: 页码 - page_size: 每页数量 - type: 快照类型 snapshot 按时刻查看 range 按时间范围。 - 备注：snapshot_time 在 snapshot时有效，start_date 和 end_date 在 range 时有效 - snapshot_time: 快照时间 格式yyyyMMddHHmmss - start_date: 快照开始时间 格式yyyyMMdd - end_date: 快照结束时间 格式yyyyMMdd - sentence_tag: 热点分类标签，从热点榜分类获
+
+- Risk: `read`
+- Parameters: `[{"name":"end_date","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"page","type":"integer","required":true},{"name":"page_size","type":"integer","required":true},{"name":"sentence_tag","type":"string","required":false},{"name":"snapshot_time","type":"string","required":false},{"name":"start_date","type":"string","required":false},{"name":"type","type":"string","required":true}]`
+
+## `mcp_8e793e2f7132f2fa8413777b`
+
+获取内容趋势指南/Get Content Trend Guide
+
+- Risk: `read`
+- Parameters: `[]`
+
+## `mcp_8e915f550978e3a9fd0a5ed5`
+
+# [中文] ### 用途: - 获取指定垂类下创作热门关键词 ### 参数: - tag_id: 垂类ID（与 fetch_item_query 的 category_id 含义一致） - **本接口不支持 "0=全部"，必须传入具体的垂类 ID**（如 "601"=剧情, "628"=美食 等） - 完整垂类列表见 fetch_item_filter_options - period: 时间周期，可选 "1"(近1天) / "3"(近3天) / "7"(近7天) - end_date: 结束日期（YYYYMMDD）。**仅当 period=7 时必须为周日**，period=1/3 时可为
+
+- Risk: `write`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
+
+## `mcp_8ede60cc491591069c12edaf`
+
+获取创作者评论热词/Get Author Hot Comment Tokens
+
+- Risk: `read`
+- Parameters: `[{"name":"author_id","type":"string","required":true},{"name":"num","type":"integer","required":false},{"name":"without_emoji","type":"boolean","required":false}]`
+
+## `mcp_8f9bc6d93246945cd844ccab`
+
+# [中文] ### 用途: - 获取指定用户的直播流数据V2 ### 参数: - room_id: 直播间room_id ### 返回: - 直播流数据 ### 备注: modify_time字段是直播间的最后更新时间，也就相当于开播时间，如果下播也不会重置回0，而是一直保持最后的更新时间。 # [English] ### Purpose: - Gets the live stream data of the specified user V2 ### Parameters: - room_id: Room room_id ### Return: - Live stream data ###
+
+- Risk: `read`
+- Parameters: `[{"name":"room_id","type":"string","required":true}]`
+
+## `mcp_8fe48880f465dabeeaac37e5`
+
+可调用工具
+
+- Risk: `write`
+- Parameters: `[{"name":"item_ids","type":"string","required":true},{"name":"sec_uid","type":"string","required":true},{"name":"target_id","type":"any","required":false}]`
+
+## `mcp_90d1832a48bcb95bf92852e6`
+
+根据抖音sec_user_id获取游客星图kolid/Get XingTu kolid by Douyin sec_user_id
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_user_id","type":"string","required":true}]`
+
+## `mcp_9187dbd20fbd9a2f902dec0e`
+
+# [中文] ### 用途: - 获取抖音 App 中学校信息的搜索结果。 - 根据关键词返回学校名称列表，常用于用户设置学校资料、兴趣推荐等场景。 ### 备注: - 本接口专注于学校信息搜索，仅返回学校的名称字段。 - 初次请求时 `cursor` 应传 0，分页时使用上一次返回的 `cursor`。 - 本接口响应体较简单，适合快速检索学校数据。 ### 参数: - keyword: 搜索关键词，如学校名称 "北京大学"、地区名 "北京" ### 请求体示例： ```json payload = { "keyword": "北京大学" } ``` ### 返回（部分常用字段，实际返回字段
+
+- Risk: `write`
+- Parameters: `[{"name":"keyword","type":"string","required":false}]`
+
+## `mcp_91e64219f5cebac5821e97ba`
+
+获取kol粉丝画像V1/Get kol Fans Portrait V1
+
+- Risk: `read`
+- Parameters: `[{"name":"fansType","type":"string","required":false},{"name":"kolId","type":"string","required":true}]`
+
+## `mcp_92a5443a2744e1ed234f38e9`
+
+# [中文] ### 用途: - 生成抖音分享链接，唤起抖音APP，跳转指定关键词搜索结果。 ### 参数: - keyword: 关键词 ### 返回: - 分享链接 # [English] ### Purpose: - Generate Douyin share link, call Douyin APP, and jump to the specified keyword search result ### Parameters: - keyword: Keyword ### Return: - Share link # [示例/Example] keyword = "雷军"
+
+- Risk: `read`
+- Parameters: `[{"name":"keyword","type":"string","required":true}]`
+
+## `mcp_935e301cd5d955bcfe01692e`
+
+# [中文] ### 用途: - 根据分享链接获取单个作品数据 （本质上基于 `/fetch_one_video` 接口实现，建议有能力自行获取视频ID以提升接口响应速度） - 返回的视频画质比APP接口高一些，但是响应字段没有APP接口多。 ### 参数: - share_url: 分享链接 ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data by sharing link (Essentially implemented based on the `/fetch_one_video` interface, it i
+
+- Risk: `read`
+- Parameters: `[{"name":"share_url","type":"string","required":true}]`
+
+## `mcp_941dea32f363f2a2e5c024b8`
+
+# [中文] ### 用途: - 获取抖音 App 中讨论区/问答内容的搜索结果。 - 支持关键词、排序方式、发布时间、内容类型等筛选条件。 ### 备注: - 此接口专注于讨论区内容搜索（如问答讨论视频），不包含其他类型的内容。 - 初次请求时 `cursor` 传入 0，`search_id` 传空字符串。 - 返回内容包括视频信息、作者信息、播放信息、互动数据、话题标签等。 ### 参数: - keyword: 搜索关键词，例如 "出国留学" - cursor: 翻页游标（首次请求传 0，翻页时使用上次响应的 cursor） - sort_type: 排序方式 - `0`: 综合排序 -
 
 - Risk: `write`
 - Parameters: `[{"name":"backtrace","type":"string","required":false},{"name":"content_type","type":"string","required":false},{"name":"cursor","type":"integer","required":false},{"name":"filter_duration","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"publish_time","type":"string","required":false},{"name":"search_id","type":"string","required":false},{"name":"sort_type","type":"string","required":false}]`
 
-## `mcp_b6d56c0871a07e51c1957a9c`
+## `mcp_960f2f3a5dc033516fdaaf5d`
+
+# [中文] ### 用途: - 获取品牌主动排行周榜数据 ### 参数: - brand_name: 品牌名称 - start_date/end_date: 日期范围 - app_name: 平台选择 ### 返回: - 品牌在该周的主动排行数据 # [English] ### Purpose: - Get brand initiative rank weekly data ### Parameters: - brand_name/: Brand info - start_date/end_date: Date range in YYYYMMDD - app_name: Platform #
+
+- Risk: `write`
+- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"brand_name","type":"string","required":true},{"name":"end_date","type":"string","required":true},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_96660dc70fb6ad6f7ad9b01d`
+
+短剧作品/Series Video
+
+- Risk: `read`
+- Parameters: `[{"name":"content_type","type":"integer","required":true},{"name":"count","type":"integer","required":true},{"name":"offset","type":"integer","required":true}]`
+
+## `mcp_96d5c9e1147685587c963f9e`
+
+# [中文] ### 用途: - 获取抖音热榜数据，包括： - 热点榜 - 种草榜 - 娱乐榜 - 社会榜 - 挑战榜 ### 参数: - board_type: - 0: 热点榜（默认） - 2: 其他榜单，如种草榜等，需要传入对应的board_sub_type参数。 - board_sub_type: - 空字符串: 热点榜（默认） - seeding: 种草榜 - 2: 娱乐榜 - 4: 社会榜 - hotspot_challenge: 挑战榜 ### 返回: - 热搜榜数据 # [English] ### Purpose: - Get Douyin hot search list da
+
+- Risk: `read`
+- Parameters: `[{"name":"board_sub_type","type":"string","required":false},{"name":"board_type","type":"string","required":false}]`
+
+## `mcp_979c54c9962623b8d7845ce0`
+
+获取kol星图指数V1/Get kol Xingtu Index V1
+
+- Risk: `read`
+- Parameters: `[{"name":"kolId","type":"string","required":true}]`
+
+## `mcp_9c424a77471ec498fb97f600`
+
+# [中文] ### 用途: - 获取抖音 App 中通过关键词搜索到的视频内容。 - 专注于视频内容的搜索结果，不包含其他类型。 ### 备注: - 初次请求时 `cursor` 传 0，`search_id` 传空字符串。 - 返回的视频包含作者信息、播放地址、封面、互动数据等。 - 同时返回一组关键词推荐 (`guide_search_words`) 用于引导用户继续搜索。 ### 参数: - keyword: 搜索关键词，例如 "人工智能" - cursor: 翻页游标（首次请求传 0，翻页时使用上次响应的 cursor） - sort_type: 排序方式 - `0`: 综合排序 -
+
+- Risk: `write`
+- Parameters: `[{"name":"backtrace","type":"string","required":false},{"name":"content_type","type":"string","required":false},{"name":"cursor","type":"integer","required":false},{"name":"filter_duration","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"publish_time","type":"string","required":false},{"name":"search_id","type":"string","required":false},{"name":"sort_type","type":"string","required":false}]`
+
+## `mcp_9c81319d89a5eb48ef954ee8`
+
+# [中文] ### 用途: - 使用UID获取用户开播信息 ### 参数: - uid: 用户UID ### 返回: - 用户开播信息，包含room_id与live_status # [English] ### Purpose: - Get user live information by UID ### Parameters: - uid: User UID ### Return: - User live information, including room_id and live_status # [示例/Example] uid = "3081254195702747"
+
+- Risk: `read`
+- Parameters: `[{"name":"uid","type":"string","required":true}]`
+
+## `mcp_9db4f6e493b79ee806b3d6c3`
+
+# [中文] ### 用途: - 获取关键词的人群画像分析数据 ### 参数: - keyword: 要分析的关键词 - start_date: 开始日期，格式 YYYYMMDD - end_date: 结束日期，格式 YYYYMMDD - app_name: 平台选择，aweme=抖音，toutiao=头条 ### 返回: - 性别分布、年龄分布、地域分布、兴趣分布等人群画像数据 # [English] ### Purpose: - Get crowd portrait analysis for a keyword ### Parameters: - keyword: The keyword
+
+- Risk: `write`
+- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"end_date","type":"string","required":true},{"name":"keyword","type":"string","required":true},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_9e40ab6783c6b478b3ed0f50`
+
+# [中文] ### 用途: - 获取品牌热门视频功能可查询的时间范围 - 用于在请求其他品牌相关接口前确定合法的日期边界 ### 参数: - 无 ### 返回: - 时间范围信息（起止日期、周期单位等） # [English] ### Purpose: - Get the queryable time scope for the brand hot videos feature - Used to determine valid date boundaries before calling other brand endpoints ### Parameters: - None ### Re
+
+- Risk: `write`
+- Parameters: `[]`
+
+## `mcp_9f24d25210d47ddfd1e923a2`
+
+获取创作者视频触达分布/Get Author Touch Distribution
+
+- Risk: `read`
+- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
+
+## `mcp_9f89b4e92af6d004cff70b3e`
+
+# [中文] ### 用途: - 按分类搜索/筛选 DOU+ 达人 ### 参数: - name: 达人分类名/搜索词（取自"获取达人分类"接口）；留空为全部 - page: 页码，从 0 开始，默认 0 - limit: 每页数量，默认 20 ### 返回: - 达人列表 # [English] ### Purpose: - Search & filter DOU+ talents by category ### Parameters: - name: Category name or keyword (from the talent category endpoint); empty fo
+
+- Risk: `write`
+- Parameters: `[{"name":"limit","type":"any","required":false},{"name":"name","type":"any","required":false},{"name":"page","type":"any","required":false}]`
+
+## `mcp_a0857ca0693531cfe0ed2ff4`
+
+# [中文] ### 用途: - 获取抖音创作者平台热门课程数据或精选专题课程 ### 参数: - order: 排序方式 (1=推荐排序, 2=最受欢迎, 3=最新上传) - limit: 每页数量 (建议24，范围1-100) - offset: 偏移量 (起始位置) - category_id: 精选专题分类ID (不传则获取热门课程，传入则获取指定分类的精选专题) 可选值: - 6976547830546582816: 知识品类 - 6976547923849006336: 生活品类 - 6976547940311633165: 娱乐品类 - 6976547972108635404:
+
+- Risk: `read`
+- Parameters: `[{"name":"category_id","type":"any","required":false},{"name":"limit","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"order","type":"integer","required":false}]`
+
+## `mcp_a0e38c52b5db10f2d3af6a5b`
+
+# [中文] ### 用途: - 根据抖音号获取指定用户的信息 ### 参数: - unique_id: 用户unique_id ### 返回: - 用户信息 # [English] ### Purpose: - Get information of specified user by unique_id ### Parameters: - unique_id: User unique_id ### Return: - User information # [示例/Example] unique_id = "TheChief"
+
+- Risk: `read`
+- Parameters: `[{"name":"unique_id","type":"string","required":true}]`
+
+## `mcp_a178e33cd20a090c60f69364`
+
+获取作品总览数据/Fetch item overview data
+
+- Risk: `write`
+- Parameters: `[{"name":"fields","type":"any","required":false},{"name":"ids","type":"string","required":true}]`
+
+## `mcp_a17abdad3d762b04c55a9022`
+
+# [中文] ### 用途: - 获取抖音视频合集详情数据 ### 参数: - mix_id: 合集id ### 返回: - 视频合集详情数据 # [English] ### Purpose: - Get Douyin video mix detail data ### Parameters: - mix_id: Mix id ### Return: - Video mix detail data # [示例/Example] mix_id = "7302011174286002217"
+
+- Risk: `read`
+- Parameters: `[{"name":"mix_id","type":"string","required":true}]`
+
+## `mcp_a19b22ff75154f68af364c38`
+
+# [中文] ### 用途: - 获取创作指南各类型数据的有效日期范围 ### 返回: - 创作指南可查询的起止日期 # [English] ### Purpose: - Get valid date range for the creation guide section
+
+- Risk: `read`
+- Parameters: `[]`
+
+## `mcp_a365de3d7b416b65e9ee99d7`
+
+# [中文] ### 用途: - 获取话题搜索的自动补全建议列表 ### 参数: - keyword: 话题关键词 - app_name: 平台选择，aweme=抖音，toutiao=头条 ### 返回: - 匹配的话题列表 # [English] ### Purpose: - Get topic search auto-complete suggestion list ### Parameters: - keyword: Topic keyword - app_name: Platform, aweme=Douyin, toutiao=Toutiao ### Return: - Matche
+
+- Risk: `write`
+- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"keyword","type":"string","required":true}]`
+
+## `mcp_a37824da13b886112841d359`
+
+# [中文] ### 用途: - 获取批量用户信息，最多支持50个用户 ### 参数: - sec_user_ids: 用户sec_user_id列表，用逗号分隔，最多50个 ### 返回: - 批量用户信息 # [English] ### Purpose: - Get batch user profile, up to 50 users ### Parameters: - sec_user_ids: User sec_user_id list, separated by commas, up to 50 ### Return: - Batch user profile # [示例/Examp
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_user_ids","type":"string","required":true}]`
+
+## `mcp_a3a41a7de52f0d278f6148ce`
+
+获取kol视频表现V1/Get kol Video Performance V1
+
+- Risk: `read`
+- Parameters: `[{"name":"kolId","type":"string","required":true},{"name":"onlyAssign","type":"boolean","required":true}]`
+
+## `mcp_a3dab1e8a705ef825a84e256`
+
+获取优秀行业分类列表/Get Excellent Case Category List
+
+- Risk: `read`
+- Parameters: `[{"name":"platform_source","type":"integer","required":false}]`
+
+## `mcp_a4ef7a5bfc37a29fbee2d1a0`
+
+# [中文] ### 用途: - 获取品牌的雷达图数据（多维度评分） ### 参数: - brand_name: 品牌名称 - start_date/end_date: 日期范围，格式 YYYYMMDD - app_name: 平台选择 ### 返回: - 品牌多维度评分雷达图数据 # [English] ### Purpose: - Get brand radar chart data (multi-dimensional scores) ### Parameters: - brand_name: Brand name - start_date/end_date: Date range in
+
+- Risk: `write`
+- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"brand_name","type":"string","required":true},{"name":"end_date","type":"string","required":true},{"name":"start_date","type":"string","required":true}]`
+
+## `mcp_a5674ca78183342786e39f5b`
+
+获取星图IP活动详情/Get IP Activity Detail
+
+- Risk: `read`
+- Parameters: `[{"name":"id","type":"integer","required":true}]`
+
+## `mcp_a569dca3e926ce1d5e425f88`
+
+获取kol转化能力分析V1/Get kol Conversion Ability Analysis V1
+
+- Risk: `read`
+- Parameters: `[{"name":"_range","type":"string","required":true},{"name":"kolId","type":"string","required":true}]`
+
+## `mcp_a693cd6cc63e48216864c01d`
+
+批量获取视频信息 V1/Batch Get Video Information V1
+
+- Risk: `write`
+- Parameters: `[{"name":"body","type":"array","required":true}]`
+
+## `mcp_a72bf57b8b9cfb228a83d475`
+
+# [中文] ### 用途: - 获取搜索用户名或抖音号 ### 参数: - keyword: 搜索的用户名或抖音号 - cursor: 游标，默认空 ### 返回: - 搜索结果 # [English] ### Purpose: - Get the search username or Douyin number ### Parameters: - keyword: Search username or Douyin number - cursor: Cursor, default empty ### Return: - Search result
+
+- Risk: `read`
+- Parameters: `[{"name":"cursor","type":"integer","required":true},{"name":"keyword","type":"string","required":true}]`
+
+## `mcp_a781523edb6d90472ebcccf6`
+
+# [中文] ### 用途: - 获取高涨粉率榜 ### 参数: - page: 页码 - page_size: 每页数量 - date_window: 时间窗口(小时)，可选 1/24/72/168，代表近1小时/近1天/近3天/近7天，默认24 - keyword: 搜索关键词，对榜单按关键词过滤，空为全部 - tags: 垂类标签筛选，空则为全部，标签id从 fetch_content_tag 接口获取 ### 请求示例: ```json { "page": 1, "page_size": 10, "date_window": 24, "keyword": "", "tags": [ {
+
+- Risk: `write`
+- Parameters: `[{"name":"date_window","type":"integer","required":false},{"name":"keyword","type":"string","required":false},{"name":"page","type":"integer","required":false},{"name":"page_size","type":"integer","required":false},{"name":"tags","type":"array","required":false}]`
+
+## `mcp_a8bbb002df372d3104d8faf0`
+
+批量获取创作者信息/Multi Get Author Info
+
+- Risk: `write`
+- Parameters: `[{"name":"author_ids","type":"array","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
+
+## `mcp_a91113465861d654fdf7505c`
+
+# [中文] ### 用途: - 获取抖音创作者平台热门挑战榜单数据 ### 返回: - 热门挑战榜单数据 # [English] ### Purpose: - Get Douyin creator platform hot challenge billboard data ### Return: - Hot challenge billboard data # [示例/Example] 无需参数，直接调用即可获取当前热门挑战榜单 No parameters required, call directly to get current hot challenge billboard
+
+- Risk: `read`
+- Parameters: `[]`
+
+## `mcp_a9e47c70f0ca6fe2299277a7`
+
+# [中文] ### 用途: - 获取单个作品数据，支持图文、视频等。 ### 参数: - aweme_id: 作品id ### 返回: - 作品数据 ### 备注: - 如果接口出现返回空的情况，请使用一样的参数去请求 Web 版本接口，具体响应状态码参考： - JSON PATH: $.data.filter_list[0].reason - 8：该内容因海外版权限制，暂时无法观看（短剧，电影片段等） - 8：视频不存在或已被删除 - 5：该内容被标记为私人内容，没有公开展示权限 - 10：该内容被标记为部分可见，仅作者选择的部分用户可见 - 更多状态码请提交给我们的客户支持进行补充。 #
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
+
+## `mcp_ab2fc4a074ee99e26a0c6768`
 
 # [中文] ### 用途: - 获取抖音创作者活动详情数据 ### 参数: - activity_id: 活动ID（从活动列表接口获取） ### 返回: - 创作者活动详情数据 # [English] ### Purpose: - Get Douyin creator activity detail data ### Parameters: - activity_id: Activity ID (obtained from activity list interface) ### Return: - Creator activity detail data # [示例/Example] ac
 
 - Risk: `read`
 - Parameters: `[{"name":"activity_id","type":"string","required":true}]`
 
-## `mcp_b847994ebd17edf3c710997a`
+## `mcp_acc3f6fa98f7f372b87dd742`
 
-获取kol内容表现V1/Get kol Rec Videos V1
+# [中文] ### 用途: - 获取关键词指数搜索框的热门推荐词，用作关键词指数分析的输入建议 - 注意: 这不是实时热点榜，实时热点和飙升热点请用 fetch_current_hot_topic ### 参数: - app_name: 平台选择，aweme=抖音，toutiao=头条（头条当前返回空列表） - type: 推荐词类型，0=搜索热词（纯词，id 固定为 "0"），1=内容热词（带话题 id） ### 返回: - update_time: 数据更新日期（按天更新，非实时） - trend_words: 推荐词列表，含 id 和 word # [English] ### Purp
 
 - Risk: `read`
-- Parameters: `[{"name":"kolId","type":"string","required":true}]`
+- Parameters: `[{"name":"app_name","type":"string","required":false},{"name":"type","type":"integer","required":false}]`
 
-## `mcp_b96e60345f6d365661387ffb`
+## `mcp_ad7f5f690fef1a8f1e662ae7`
 
-获取用户收藏夹/Get user collection
-
-- Risk: `write`
-- Parameters: `[{"name":"counts","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false}]`
-
-## `mcp_bbbf2e4632eea26e3a94a369`
-
-查询抖音用户基本信息/Query Douyin user basic information
+# [中文] ### 用途: - 获取热度飙升的搜索榜 ### 参数: - page_num: 页码 - page_size: 每页数量 - date_window: 时间窗口(小时)，可选 1/24/72/168，代表近1小时/近1天/近3天/近7天，默认24 - keyword: 搜索关键字 ### 请求示例: ```json { "page_num": 1, "page_size": 10, "date_window": 24, "keyword": "抖音" } ``` ### 返回: - 热度飙升的搜索榜 # [English] ### Purpose: - Get the sear
 
 - Risk: `write`
-- Parameters: `[{"name":"body","type":"string","required":false}]`
+- Parameters: `[{"name":"date_window","type":"integer","required":false},{"name":"keyword","type":"string","required":false},{"name":"page_num","type":"integer","required":false},{"name":"page_size","type":"integer","required":false}]`
+
+## `mcp_b072d61a28997a8339d7688f`
+
+提取单个作品id/Extract single video id
+
+- Risk: `read`
+- Parameters: `[{"name":"url","type":"string","required":true}]`
+
+## `mcp_b38f3d5f549b8827e7615fdc`
+
+获取创作者传播表现视频/Get Author Spread Videos
+
+- Risk: `read`
+- Parameters: `[{"name":"o_author_id","type":"string","required":true},{"name":"platform_channel","type":"integer","required":false},{"name":"platform_source","type":"integer","required":false}]`
+
+## `mcp_b3e937374c00b6bbe699de99`
+
+# [中文] ### 用途: - 获取粉丝兴趣作者 20个用户 ### 参数: - sec_uid: 用户sec_id ### 返回: - 粉丝兴趣作者 20个用户 # [English] ### Purpose: - Get the fan interest author 20 users ### Parameters: - sec_uid: User sec_id ### Return: - Fan interest author 20 users
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_uid","type":"string","required":true}]`
+
+## `mcp_b3ff8ed2dd96ab0c2d60f118`
+
+获取视频评论分析/Get Item Report Comments
+
+- Risk: `write`
+- Parameters: `[{"name":"item_id","type":"string","required":true}]`
+
+## `mcp_b5688f0e0225d0ac0f5a4faf`
+
+# [中文] ### 用途: - 获取抖音创作者平台内容创作的合集分类列表 ### 参数: - 无需额外参数 ### 返回: - 内容创作合集分类数据 # [English] ### Purpose: - Get Douyin creator platform content creation category list ### Parameters: - No additional parameters required ### Return: - Content creation category data
+
+- Risk: `read`
+- Parameters: `[]`
+
+## `mcp_b8882c5d6eb238701b02ad20`
+
+获取DOU+ POST请求所需的sec_token/Get DOU+ sec_token for POST requests
+
+- Risk: `write`
+- Parameters: `[]`
+
+## `mcp_bab753a13a6d9d24d813452d`
+
+获取kol数据概览V1/Get kol Data Overview V1
+
+- Risk: `read`
+- Parameters: `[{"name":"_range","type":"string","required":true},{"name":"_type","type":"string","required":true},{"name":"flowType","type":"integer","required":true},{"name":"kolId","type":"string","required":true},{"name":"onlyAssign","type":"boolean","required":false}]`
+
+## `mcp_bb034f60b2fcbeb1b11184de`
+
+# [中文] ### 用途: - 获取指定垂类下、指定热门关键词的相关视频列表 - 用于查看某个热门关键词具体由哪些视频贡献 ### 参数: - tag_id: 垂类ID（与 fetch_item_query 的 category_id 含义一致） - period: 时间周期 "1"=近1天 / "3"=近3天 / "7"=近7天 - end_date: 结束日期 YYYYMMDD。**仅当 period=7 时必须为周日**（如 20260412），period=1/3 时可为任意日期 - keyword: 热门关键词（**必须**先调 fetch_content_creative_key
+
+- Risk: `write`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"keyword","type":"string","required":true},{"name":"period","type":"string","required":false},{"name":"tag_id","type":"string","required":true}]`
+
+## `mcp_bd4ae15f86886ba3a712b248`
+
+抖音号转星图达人ID/Get Xingtu Author ID by Douyin unique_id
+
+- Risk: `read`
+- Parameters: `[{"name":"unique_id","type":"string","required":true}]`
+
+## `mcp_bdefc08da8e53e4357a64259`
+
+# [中文] ### 用途: - 获取指定话题的详情数据 ### 参数: - ch_id: 话题id ### 返回: - 话题详情数据 # [English] ### Purpose: - Get details of specified hashtag ### Parameters: - ch_id: Hashtag id ### Return: - Hashtag details data # [示例/Example] ch_id = 1575791821492238
+
+- Risk: `read`
+- Parameters: `[{"name":"ch_id","type":"integer","required":true}]`
+
+## `mcp_bf9d3f42c611168f25257af7`
+
+获取投稿表现数据/Fetch item analysis item performance
+
+- Risk: `write`
+- Parameters: `[{"name":"end_date","type":"string","required":true},{"name":"genres","type":"array","required":false},{"name":"metric_type","type":"integer","required":false},{"name":"primary_verticals","type":"array","required":true},{"name":"start_date","type":"string","required":true}]`

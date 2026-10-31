@@ -2,565 +2,565 @@
 
 - 来源平台：`TikTok`
 - 能力分段：`tiktok`
-- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
+- Reference version: `sha256:7101f2f686e885c845f46663dcbe08d7c1ed1dbc6f1964fd25114ee3d35b88b6`
 - Tool count: 80
 
-## `mcp_0124c8ea834e6adb7cfd1fb4`
+## `mcp_00f4ff19b6d23248fba01c26`
 
-获取分享短链接/Get share short link
-
-- Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
-
-## `mcp_03c76098d8aec006b836139c`
-
-# [中文] ### 用途: - 获取 TikTok Shop 创作者账号在指定时间范围内的直播表现数据概览。 - 默认统计从 `start_date` 当月起 1 个自然月（如传入 2025-04-01，则统计整个 4 月的数据）。 ### 返回内容说明: - `segments`（分段数据列表）: - `time_selector`: 时间范围设置（周期、起止时间戳、时区、语言） - `filter.creator_id`: 创作者 ID - `timed_stats`: 每个时间段（通常按日或月分段）的直播表现数据，包含： - `live_revenue.amount`: 直播带货收入
-
-- Risk: `write`
-- Parameters: `[{"name":"proxy","type":"any","required":false},{"name":"start_date","type":"string","required":false}]`
-
-## `mcp_085fea8facb76c927320328d`
-
-# [中文] ### 用途: - 获取广告在同行业中的百分位排名数据 - 了解广告在各项指标上相对于同行的表现水平 - 帮助评估广告效果并制定优化策略 ### 参数: - material_id: 广告素材ID，必填参数 - metric: 分析指标，可选值： - ctr_percentile: 点击率百分位（默认） - time_attr_conversion_rate_percentile: 时间归因转化率百分位 - click_cnt_percentile: 点击次数百分位 - time_attr_convert_cnt_percentile: 时间归因转化次数百分位 - show_cn
-
-- Risk: `write`
-- Parameters: `[{"name":"material_id","type":"string","required":true},{"name":"metric","type":"string","required":false},{"name":"period_type","type":"integer","required":false}]`
-
-## `mcp_08d170308ae0ff55e8e7b71c`
-
-# [中文] ### 用途: - 生成TikTok分享链接，唤起TikTok APP，跳转指定用户主页。 ### 参数: - uid: 用户id，从用户主页接口中获取。 - 注意: 如果未能跳转，请确保APP已经在后台运行。 ### 返回: - 分享链接 # [English] ### Purpose: - Generate TikTok share link, call TikTok APP, and jump to the specified user profile ### Parameters: - uid: User id, obtained from the user profil
-
-- Risk: `read`
-- Parameters: `[{"name":"uid","type":"string","required":true}]`
-
-## `mcp_0a1ff89f288f3fb4983e7749`
-
-# [中文] ### 用途: - 生成TikTok Web的哈希ID ### 参数: - email: 邮箱地址 ### 返回: - 生成的哈希ID字符串 # [English] ### Purpose: - Generate hashed ID for TikTok Web ### Parameters: - email: Email address ### Return: - Generated hashed ID string # [示例/Example] email = "test@example.com"
-
-- Risk: `read`
-- Parameters: `[{"name":"email","type":"string","required":true}]`
-
-## `mcp_0b286ef3d539e127bd6ea9a8`
-
-通过分享链接获取商品ID/Get Product ID by Share Link
-
-- Risk: `read`
-- Parameters: `[{"name":"share_link","type":"string","required":true}]`
-
-## `mcp_0cad79b028f50dceaacee2aa`
-
-获取搜索板块配置/Get search modules config
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"string","required":false}]`
-
-## `mcp_0d5630a4389defb7b0dc512a`
-
-# [中文] ### 用途: - 搜索照片 ### 参数: - keyword: 搜索关键词 - count: 每页数量，建议保持默认值20。 - offset: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取，一般这个值的关键字为offset或者cursor。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
-
-## `mcp_0dfefbe331b9ed33552891c0`
-
-# [中文] ### 用途: - 搜索商品(移动端接口) - 数据结构更精简，响应更快 ### 参数: - search_word: 搜索关键词 (必填) - offset: 偏移量 (默认0) - page_token: 分页标记 - region: 地区代码 (US/GB/SG/MY/PH/TH/VN/ID) ### 返回数据结构: ```json { "code": 0, "message": "success", "data": { "products": [...], // 商品列表 "has_more": true, // 是否有更多 "load_more_params": {}
-
-- Risk: `read`
-- Parameters: `[{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"search_word","type":"string","required":true}]`
-
-## `mcp_0f027bffc373646ccf8baabc`
-
-提取直播间弹幕/Extract live room danmaku
-
-- Risk: `read`
-- Parameters: `[{"name":"danmaku_type","type":"string","required":true},{"name":"live_room_url","type":"string","required":true}]`
-
-## `mcp_116eef1ac38f3b7bf1a102b3`
-
-生成 XGnarly 和 XBogus /Generate XGnarly and XBogus
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"any","required":false},{"name":"url","type":"string","required":true}]`
-
-## `mcp_12c9690cb91bd8baf35aa763`
-
-获取支持的国家地区列表/Get supported location list
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"string","required":false}]`
-
-## `mcp_15506272af60442e68149632`
-
-获取单个作品数据 V2/Get single video data V2
-
-- Risk: `read`
-- Parameters: `[{"name":"itemId","type":"string","required":true},{"name":"region","type":"string","required":false}]`
-
-## `mcp_18a29fc95396ca711e3fc246`
-
-# [中文] ### 用途: - TikTok APP加密算法，用于生成请求头中的加密参数。 - 生成的加密参数列表： - `x-ladon` - `x-khronos` - `x-argus` - `x-gorgon` （8404） ### 参数: - url: 需要加密的完整URL - data: 如果接口是POST请求，请填写POST请求的数据参与加密计算，GET请求时传入空字符串即可。 - device_info: 设备信息，可选参数，如果不填写则使用默认设备信息，设备信息会修改传入的URL中的参数。 ### 返回: - 加密参数列表 # [English] ### Purpose:
-
-- Risk: `write`
-- Parameters: `[{"name":"data","type":"string","required":false},{"name":"device_info","type":"object","required":false},{"name":"url","type":"string","required":false}]`
-
-## `mcp_18b7a50e942f1001df65594e`
-
-# [中文] ### 用途: - 生成随机浏览器指纹数据，可用于自定义msToken请求 ### 参数: - browser_type: 指定浏览器类型，可选值: - chrome_windows: Chrome + Windows - chrome_mac: Chrome + macOS - firefox_windows: Firefox + Windows - firefox_mac: Firefox + macOS - 不传则随机选择 ### 返回: - 浏览器指纹数据 # [English] ### Purpose: - Generate random browser fingerp
-
-- Risk: `read`
-- Parameters: `[{"name":"browser_type","type":"string","required":false}]`
-
-## `mcp_1936f1ae7fea5598d3b25cc2`
-
-批量查询Gift ID对应的礼物名称($0.025/次,建议50个)/Batch get gift names by gift IDs ($0.025/call, suggest 50)
-
-- Risk: `write`
-- Parameters: `[{"name":"gift_ids","type":"array","required":true}]`
-
-## `mcp_1d206139bb2f713c1b0f6d12`
-
-# [中文] ### 用途: - 获取创作者搜索洞察详情数据，用于查询特定搜索词条的搜索统计数据 ### 参数: - query_id_str: 搜索词条ID，从 fetch_creator_search_insights 接口返回的数据中获取 - time_range: 时间范围，可选值: - past_7_days: 过去7天 - past_30_days: 过去30天（默认） - past_60_days: 过去60天 - past_6_months: 过去6个月 - custom: 自定义时间（需配合 start_date 和 end_date 使用，不能超过6个月） - start_
-
-- Risk: `read`
-- Parameters: `[{"name":"dimension_list","type":"string","required":false},{"name":"end_date","type":"integer","required":false},{"name":"query_id_str","type":"string","required":true},{"name":"start_date","type":"integer","required":false},{"name":"time_range","type":"string","required":false}]`
-
-## `mcp_2122d2f10ea1c51445318c72`
-
-# [中文] ### 用途: - 获取用户的个人信息 ### 参数: - secUid: 用户secUid - uniqueId: 用户uniqueId - secUid和uniqueId至少提供一个, 优先使用uniqueId, 也就是用户主页的链接中的用户名。 ### 返回: - 用户的个人信息 # [English] ### Purpose: - Get user profile ### Parameters: - secUid: User secUid - uniqueId: User uniqueId - At least one of secUid and uniqueId is
-
-- Risk: `read`
-- Parameters: `[{"name":"secUid","type":"string","required":false},{"name":"uniqueId","type":"string","required":false}]`
-
-## `mcp_217ab28c82b68a3a9caeca19`
-
-# [中文] ### 用途: - 获取用户主页作品数据 ### 参数: - sec_user_id: 用户sec_user_id，优先使用sec_user_id获取用户作品数据，如果sec_user_id为空，则使用unique_id获取用户作品数据。 - max_cursor: 最大游标，用于翻页，第一页为0，第二页为第一次响应中的max_cursor值。 - count: 最大数量，建议保持默认值20。 - sort_type: 排序类型，0-最新，1-热门 - unique_id: 用户unique_id，可选参数，如果sec_user_id为空，则使用unique_id获取用户作品数据
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"sort_type","type":"integer","required":false},{"name":"unique_id","type":"string","required":false}]`
-
-## `mcp_2242d9c4a5146eb890205f61`
-
-# [中文] ### 用途: - 获取单个作品数据 V2 ### 参数: - aweme_id: 作品id ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data V2 ### Parameters: - aweme_id: Video id ### Return: - Video data # [示例/Example] aweme_id = "7350810998023949599"
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
-
-## `mcp_239787846d906e44a415d61b`
-
-# [中文] ### 用途: - 搜索指定用户的关注列表，可以用于查找某个用户的关注中是否有特定昵称的用户。 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID，可以先通过获取用户信息接口获取。 - keyword: 搜索关键词，用户的昵称中包含该关键词即可匹配。 ### 返回: - 搜索结果列表 # [English] ### Purpose: - Search following list of specified user, can be used to find whether there is a user with a specific nickname
-
-- Risk: `read`
-- Parameters: `[{"name":"keyword","type":"string","required":true},{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_25913774e27f3541590d5896`
-
-获取热门广告聚光灯/Get top ads spotlight
-
-- Risk: `write`
-- Parameters: `[{"name":"industry","type":"string","required":false},{"name":"limit","type":"integer","required":false},{"name":"page","type":"integer","required":false}]`
-
-## `mcp_289791fb34e5baa19d78a5e5`
-
-# [中文] ### 用途: - 获取指定用户的关注列表数据 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID (与sec_user_id二选一/One of user_id and sec_user_id) - sec_user_id: 用户sec_user_id，这是一个混合字母和数字的版本ID (与user_id二选一/One of user_id and sec_user_id) - count: 数量，不要超过20，保持固定。 - min_time: 最小时间，用于翻页，第一次请求使用默认值0，后续请求使用上一次请求返回的min_time值。 - page
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"min_time","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"user_id","type":"string","required":false}]`
-
-## `mcp_2993171abe422621848bcc55`
-
-# [中文] ### 用途: - 获取类似用户推荐 ### 参数: - sec_uid: 用户sec_uid - page_token: 分页标记，第一次请求时不需要传递，后续请求时传递上一次响应中的next_page_token值。 ### 返回: - 类似用户推荐 # [English] ### Purpose: - Similar User Recommendations ### Parameters: - sec_uid: User sec_uid - page_token: Page token, not required for the first request, for sub
-
-- Risk: `read`
-- Parameters: `[{"name":"sec_uid","type":"string","required":true}]`
-
-## `mcp_2b5ae5f930bbae35cfd9f485`
-
-搜索广告/Search ads
-
-- Risk: `write`
-- Parameters: `[{"name":"ad_format","type":"integer","required":false},{"name":"ad_language","type":"string","required":false},{"name":"country_code","type":"string","required":false},{"name":"industry","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"like","type":"integer","required":false},{"name":"limit","type":"integer","required":false},{"name":"objective","type":"integer","required":false},{"name":"order_by","type":"string","required":false},{"name":"page","type":"integer","required":false},{"name":"period","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
-
-## `mcp_2c76c3d1d51a33313f700388`
-
-# [中文] ### 用途: - 加密strData指纹数据，用于生成msToken请求 ### 参数: - data: 原始指纹数据字符串（请先将JSON格式然后转换成字符串进行请求） ### 返回: - 加密后的strData # [English] ### Purpose: - Encrypt strData fingerprint data for msToken request ### Parameters: - data: Raw fingerprint data string (please convert JSON format to string before request
-
-- Risk: `read`
-- Parameters: `[{"name":"data","type":"string","required":true}]`
-
-## `mcp_2ddb4ef8a20d586fa8e93678`
-
-根据TikTok的Gift ID查询对应的礼物名称 | Get gift name by TikTok gift ID
-
-- Risk: `write`
-- Parameters: `[{"name":"gift_id","type":"string","required":true}]`
-
-## `mcp_2ecd726a49253d7ee52d48a5`
-
-# [中文] ### 用途: - 根据商品分类ID获取该分类下的商品列表 - 可用于构建分类浏览功能 ### 参数: - category_id: 分类ID (必填，从fetch_products_category_list接口获取) - offset: 翻页偏移量 (默认0) - 每页默认20个商品，每次请求增加20，当响应中的 `hasMore` 为true时可继续请求下一页，否则已到最后一页。 - 例如: 第1页offset=0，第2页offset=20，第3页offset=40，以此类推。 - region: 地区代码 (US/GB/SG/MY/PH/TH/VN/ID) ### 重要提
-
-- Risk: `read`
-- Parameters: `[{"name":"category_id","type":"integer","required":true},{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false}]`
-
-## `mcp_31ce55c2d9c261cb34888586`
-
-获取用户的合辑列表/Get user mix list
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"mixId","type":"string","required":true}]`
-
-## `mcp_3543fc209098082b7e19edbd`
-
-根据直播间链接提取直播间ID/Extract live room ID from live room link
-
-- Risk: `read`
-- Parameters: `[{"name":"live_room_url","type":"string","required":true}]`
-
-## `mcp_38cb06e3acffa8304d8f2ee4`
-
-# [中文] ### 用途: - 获取指定关键词的用户搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 - user_search_follower_count（根据粉丝数排序）: - 空-不限制， - ZERO_TO_ONE_K = 0-1K， - ONE_K_TO_TEN_K-1K = 1K-10K， - TEN_K_TO_ONE_H_K = 10K-100K， - ONE_H_K_PLUS = 100K以上 - user_search_profile_type（根据账号类型排序）: - 空-不限制， - VERIFIED = 认证
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"user_search_follower_count","type":"string","required":false},{"name":"user_search_other_pref","type":"string","required":false},{"name":"user_search_profile_type","type":"string","required":false}]`
-
-## `mcp_397eaecdf1429130cd4e7e3a`
-
-# [中文] ### 用途: - 获取直播间内观众的排行榜数据 ### 参数: - room_id: 直播间id - anchor_id: 主播id ### 返回: - 排行榜数据 # [English] ### Purpose: - Get ranking list of audience in live room ### Parameters: - room_id: Live room id - anchor_id: Anchor id ### Return: - Ranking list data # [示例/Example] room_id = "7358603858249009962
-
-- Risk: `read`
-- Parameters: `[{"name":"anchor_id","type":"string","required":true},{"name":"room_id","type":"string","required":true}]`
-
-## `mcp_3a8f4f8314319b3f9e995d89`
-
-获取视频受众分析数据/Get Video Audience Analysis Data
-
-- Risk: `write`
-- Parameters: `[{"name":"item_id","type":"string","required":true},{"name":"proxy","type":"any","required":false},{"name":"start_date","type":"string","required":false}]`
-
-## `mcp_3abd0c1b18d267d95d6aa63d`
-
-提取用户sec_user_id/Extract user sec_user_id
-
-- Risk: `read`
-- Parameters: `[{"name":"url","type":"string","required":true}]`
-
-## `mcp_3b6f2d8187819112b45b41d1`
-
-# [中文] ### 用途: - 搜索视频 ### 参数: - keyword: 搜索关键词 - count: 每页数量，建议保持默认值20。 - offset: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path-2 : $.data.log_pb.impr_i
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
-
-## `mcp_3d41eb8d7068f5f381fa3747`
-
-# [中文] ### 用途: - 获取指定关键词的音乐搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量，从0开始，第二页从响应中获取cursor的值作为offset继续请求。 - count: 数量，不要超过20 - filter_by: 过滤类型，0-全部，1-标题，2-作者，默认为0-全部 - sort_type: 排序类型，0-相关度，1-最多使用，2-最新，3-时长最短，4-时长最长，默认为0-相关度 - region: 地区，默认为US-美国，可选值请参考TikTok地区代码或ISO 3166-1 alpha-2国家代码。 ### 返回: - 音乐搜
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"filter_by","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"sort_type","type":"integer","required":false}]`
-
-## `mcp_3da2e06e7a60a4e385fc8407`
-
-批量获取创作者卡片/Get creators card
-
-- Risk: `write`
-- Parameters: `[{"name":"creator_type","type":"integer","required":false},{"name":"need_loader_list","type":"array","required":false},{"name":"tt_uids","type":"array","required":false}]`
-
-## `mcp_3de6614694e224748ed3fab9`
-
-# [中文] ### ⚠️ 本接口已弃用: - 如需按类目或关键词取商品，请改用 `fetch_products_by_category_id` 或 `fetch_search_products_list` ### 用途: - 获取TikTok Shop的热卖商品列表 - 返回当前最受欢迎的商品 ### 参数: - region: 地区代码 (US/GB/SG/MY/PH/TH/VN/ID) - count: 返回商品数量，默认20 (可选)。数值越大响应越慢 - exclude_product_ids: 已获取过的商品ID，逗号分隔 (可选)，用于翻页 ### 翻页方式: - 本接口没有页码
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"exclude_product_ids","type":"string","required":false},{"name":"region","type":"string","required":false}]`
-
-## `mcp_3eb9e85855c6b1e3ee90115c`
-
-# [中文] ### 用途: - 获取单个作品由 TikTok 官方 AI 根据视频内容生成的长文与内容概览 - 可用于内容分析、选题参考、SEO 关键词挖掘等场景 ### 参数: - itemId: 作品id ### 返回: - `itemCustomTDK` 字段中包含以下内容: - `title`: AI 生成的标题 - `desc`: AI 生成的内容概览(摘要) - `keywords`: AI 提取的关键词列表 - `article`: AI 根据视频内容生成的长文正文 ### 备注: - 并非所有作品都有 AI 生成内容。若该作品没有，响应中不会出现 `itemCustomTDK
-
-- Risk: `read`
-- Parameters: `[{"name":"itemId","type":"string","required":true}]`
-
-## `mcp_4162cc3f63359a004312cb35`
-
-# [中文] ### 用途: - 获取探索作品数据 ### 参数: - categoryType: 作品分类 - 100: 动画与漫画 - 101: 表演 - 102: 美容护理 - 103: 游戏 - 104: 喜剧 - 105: 日常生活 - 106: 家庭 - 107: 情感关系 - 108: 戏剧 - 109: 穿搭 - 110: 对口型 - 111: 美食 - 112: 运动 - 113: 动物 - 114: 社会 - 115: 汽车 - 116: 教育 - 117: 健身和健康 - 118: 科技 - 119: 唱歌跳舞 - 120: 全部 - count: 每页数量 ### 返回
-
-- Risk: `read`
-- Parameters: `[{"name":"categoryType","type":"string","required":false},{"name":"count","type":"integer","required":false}]`
-
-## `mcp_446b99a26ec2ef1c49b346a2`
-
-# [中文] ### 用途: - 获取用户的作品列表 ### 参数: - secUid: 用户secUid - cursor: 翻页游标，首次请求传0，后续传上一次响应返回的 `cursor` 值 - count: 每页数量，默认为15，最大为15，超过15将按15处理。 - coverFormat: 封面格式，默认为2，可选值为1或2。 - post_item_list_request_type: 排序方式，已废弃，传任何值均返回按时间从新到旧的作品列表。 ### 返回: - 用户的作品列表，作品按发布时间从新到旧排列 - `cursor`: 下一页游标，配合 `hasMore` 使用 -
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"coverFormat","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"post_item_list_request_type","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
-
-## `mcp_44d8b7234c90d90e9d6d1135`
-
-# [中文] ### 用途: - 获取指定用户的粉丝列表数据 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID (与sec_user_id二选一/One of user_id and sec_user_id) - sec_user_id: 用户sec_user_id，这是一个混合字母和数字的版本ID (与user_id二选一/One of user_id and sec_user_id) - count: 数量，不要超过20，保持固定。 - min_time: 最小时间，用于翻页，第一次请求使用默认值0，后续请求使用上一次请求返回的min_time值。 - page
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"min_time","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"user_id","type":"string","required":false}]`
-
-## `mcp_45e1383f7e8e8c651e0edb29`
-
-检测视频虚假流量分析/Detect fake views in video
-
-- Risk: `read`
-- Parameters: `[{"name":"content_category","type":"string","required":false},{"name":"item_id","type":"string","required":true}]`
-
-## `mcp_4667002750338bc5f2061a46`
-
-# [中文] ### 用途: - 获取内容翻译数据 ### 参数: - trg_lang: 目标语言 - zh-Hans: 简体中文 - zh-Hant: 繁体中文 - en: 英语 - ja: 日语 - ko: 韩语 - fr: 法语 - de: 德语 - ru: 俄语 - es: 西班牙语 - pt: 葡萄牙语 - vi: 越南语 - th: 泰语 - id: 印尼语 - ar: 阿拉伯语 - it: 意大利语 - tr: 土耳其语 - he: 希伯来语 - pl: 波兰语 - nl: 荷兰语 - sv: 瑞典语 - da: 丹麦语 - fi: 芬兰语 - no: 挪威语 - cs: 捷克
-
-- Risk: `write`
-- Parameters: `[{"name":"src_content","type":"string","required":false},{"name":"trg_lang","type":"string","required":false}]`
-
-## `mcp_4a8df719c3c884666d7b43a4`
-
-# [中文] ### 用途: - 获取指定关键词的视频搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 - sort_type: 0-相关度，1-最多点赞 - publish_time: 0-不限制，1-最近一天，7-最近一周，30-最近一个月，90-最近三个月，180-最近半年 - region: 地区，默认为US-美国，可选值请参考TikTok地区代码或ISO 3166-1 alpha-2国家代码。 ### 返回: - 视频搜索结果 # [English] ### Purpose: - Get video search result
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"publish_time","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"sort_type","type":"integer","required":false}]`
-
-## `mcp_4cb6a810648c2c4245ca7152`
-
-# [中文] ### 用途: - 获取地点搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 ### 返回: - 地点搜索结果 # [English] ### Purpose: - Get location search results ### Parameters: - keyword: Keyword - offset: Offset - count: Number ### Return: - Location search results # [示例/Example] keyword = "Shanghai" offset = 0
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false}]`
-
-## `mcp_4d1ab546febeafc401fe70cc`
-
-# [中文] ### 用途: - 获取指定话题的详情数据 ### 参数: - ch_id: 话题id - region: 地区，支持 US, GB, FR, JP, VN, SG，默认 US ### 返回: - 话题详情数据 # [English] ### Purpose: - Get details of specified hashtag ### Parameters: - ch_id: Hashtag id - region: Region, supports US, GB, FR, JP, VN, SG, default US ### Return: - Hashtag details
-
-- Risk: `read`
-- Parameters: `[{"name":"ch_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
-
-## `mcp_4e3c0a062d221b8f18946192`
-
-# [中文] ### 用途: - 获取 TikTok Creative Center 趋势(Trends)板块的热门标签榜单 - 支持按国家/地区切换，发现不同市场的热门话题趋势 ### 参数: - time_range: 时间范围(天)，可选 7 / 30 / 90，默认7 - country_code: 国家/地区代码，默认US (可选值见 /get_location_list) - page: 页码，默认1 - limit: 每页数量，默认20 - industry_id: 一级行业ID(可选)，按行业筛选热门标签；不传则不限行业。可选值: - 10000000000: 教育 - 110
-
-- Risk: `write`
-- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"industry_id","type":"integer","required":false},{"name":"limit","type":"integer","required":false},{"name":"page","type":"integer","required":false},{"name":"time_range","type":"integer","required":false}]`
-
-## `mcp_4faaee2da8c9a11f0dc0904c`
-
-# [中文] ### 用途: - 获取直播每日榜单数据 ### 参数: - anchor_id: 主播id，可以从直播间信息接口获取，使用默认值即可，该参数会影响返回的数据，你可以尝试不同直播间的主播id。 - room_id: 直播间id，可以从直播间信息接口获取，使用默认值即可，该参数会影响返回的数据，你可以尝试不同直播间的id。 - rank_type: 榜单类型，参数值如下表： | type | rankName | 分组类型 | 说明 | |------|----------|----------|------| | 0 | `hourly_rank` | GIFT_RANK | 小
-
-- Risk: `read`
-- Parameters: `[{"name":"anchor_id","type":"string","required":false},{"name":"gap_interval","type":"integer","required":false},{"name":"rank_type","type":"integer","required":false},{"name":"region_type","type":"integer","required":false},{"name":"room_id","type":"string","required":false}]`
-
-## `mcp_5020bac9522a384d8905fb5e`
-
-通过用户名获取用户账号国家地区/Get user account country by username
-
-- Risk: `read`
-- Parameters: `[{"name":"username","type":"string","required":true}]`
-
-## `mcp_50aad6f626439bbef5f011e6`
-
-# [中文] ### 用途: - 获取 TikTok Shop 创作者账号在指定时间范围内发布的视频列表及其详细数据表现。 - 支持分页查询，每页返回指定时间段内的视频及其播放、成交等详细数据。 ### 返回内容说明: - `segments`（分段数据列表）: - `time_selector`: 查询时间范围（起止时间戳、时区、语言等） - `filter.creator_id`: 创作者账号 ID - `list_control`: - `rules`: 列表排序规则（通常按发布时间降序） - `next_pagination`: 翻页信息（是否有更多页，当前页，总页数，总记录数） -
-
-- Risk: `write`
-- Parameters: `[{"name":"page","type":"integer","required":false},{"name":"proxy","type":"any","required":false},{"name":"rules","type":"string","required":false},{"name":"start_date","type":"string","required":false}]`
-
-## `mcp_5180670aa45d9528cd07c318`
-
-可调用工具
-
-- Risk: `read`
-- Parameters: `[{"name":"user_agent","type":"string","required":true}]`
-
-## `mcp_5380593b03c1d8a96ffae940`
-
-# [中文] ### 用途: - 获取TikTok Shop商品评论 - 支持自定义每页数量、多种筛选和排序方式 ### 参数: - product_id: 商品ID (必填) - page_start: 起始页码，默认1 - 当响应中 has_more=1 时，使用当前页码 +1 进行下一页请求 - page_size: 每页评论数量，默认10 - sort_rule: 排序规则，默认1 - filter_type: 筛选类型 - 1: 默认不选择任何过滤 - 2: 包含图片或视频 - 3: 真实购买过滤 - filter_value: 星级筛选 - 6: 所有星级的评论(默认) - 5:
-
-- Risk: `read`
-- Parameters: `[{"name":"filter_type","type":"integer","required":false},{"name":"filter_value","type":"integer","required":false},{"name":"page_size","type":"integer","required":false},{"name":"page_start","type":"integer","required":false},{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false},{"name":"sort_rule","type":"integer","required":false}]`
-
-## `mcp_53d9c2a70f8786ab096dcf4b`
-
-获取创作者账号信息/Get Creator Account Info
-
-- Risk: `write`
-- Parameters: `[{"name":"proxy","type":"any","required":false}]`
-
-## `mcp_5ce9bc6da6c132ec5ab40406`
-
-检测直播间是否在线/Check if live room is online
-
-- Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":true}]`
-
-## `mcp_5f24d94bf4ecf602023789b0`
-
-# [中文] ### 用途: - 生成TikTok分享链接，唤起TikTok APP，跳转指定作品详情页。 ### 参数: - aweme_id: 作品id - 注意: 如果未能跳转，请确保APP已经在后台运行。 ### 返回: - 分享链接 # [English] ### Purpose: - Generate TikTok share link, call TikTok APP, and jump to the specified video ### Parameters: - aweme_id: Video id - Note: If you cannot jump, please ma
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
-
-## `mcp_5f3127fd17a3a0dde1ab7a4b`
-
-# [中文] ### 用途: - 搜索用户 ### 参数: - keyword: 搜索关键词 - cursor: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取，一般这个值的关键字为offset或者cursor。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path-2 : $.data.log_pb.impr_i
-
-- Risk: `read`
-- Parameters: `[{"name":"cursor","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"search_id","type":"string","required":false}]`
-
-## `mcp_5f4974a7aa42a1b7f2ce84cd`
-
-# [中文] ### 用途: - 获取单个视频评论数据 ### 参数: - aweme_id: 作品id - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量 ### 返回: - 评论数据 # [English] ### Purpose: - Get single video comments data ### Parameters: - aweme_id: Video id - cursor: Cursor, used for paging, the first page is 0, the second page is the cu
-
-- Risk: `read`
-- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false}]`
-
-## `mcp_609eddf2b13a114a2085382f`
-
-# [中文] ### 用途: - 获取指定直播间的数据 ### 参数: - room_id: 直播间id ### 返回: - 直播间数据 # [English] ### Purpose: - Get data of specified live room ### Parameters: - room_id: Live room id ### Return: - Live room data # [示例/Example] room_id = "7385461256746060575"
-
-- Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":true}]`
-
-## `mcp_63c2e3b07ecc5ec70bb4ac5d`
-
-# [中文] ### 用途: - 生成 X-Mssdk-Info 和 X-Mssdk-RC，用于 TikTok Web 设备注册、登录等场景 ### 参数: - user_agent (str, 可选): 用户代理字符串，目前不支持自定义，默认为固定的值 ### 返回: - X-Mssdk-Info: 生成的签名信息 - X-Mssdk-RC: 生成的 RC 值 - user_agent: 使用的用户代理字符串 - version: 签名使用的 webmssdk 版本 # [English] ### Purpose: - Generate X-Mssdk-Info and X-Mssdk-RC
-
-- Risk: `write`
-- Parameters: `[{"name":"user_agent","type":"any","required":false}]`
-
-## `mcp_64f834e05965126b467dc90c`
-
-# [中文] ### 用途: - 生成 XGnarly 加密，用于 TikTok Web API 请求 - 此接口使用最新版本（V5.2.0，截至2026年3月）的签名服务，不可自定义 User-Agent，会自动生成一个常见浏览器的 User-Agent - 此接口为完美还原算法，无视除验证码外的一切风控 ### 参数: - url (str): 不携带签名（X-Bogus 或 X-Gnarly）并且包含域名的请求URL，不需要进行URL编码 - body (str): 请求的API参数，适用于POST请求，如果是GET请求则不需要提供 ### 返回: - X-Gnarly 加密字符串 +
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"any","required":false},{"name":"url","type":"string","required":true}]`
-
-## `mcp_662cc69a6ab73814ca9026b7`
-
-# [中文] ### 用途: - 生成TikTok直播WSS连接所需的X-Bogus签名 ### 参数: - user_agent: 用户浏览器代理（可选，不填则使用默认UA） ### 返回: - x_bogus: WSS X-Bogus签名字符串 # [English] ### Purpose: - Generate X-Bogus signature required for TikTok Live WSS connection ### Parameters: - user_agent: User browser agent (optional, uses default UA if no
-
-- Risk: `read`
-- Parameters: `[{"name":"user_agent","type":"string","required":false}]`
-
-## `mcp_6660dd96b9ccf2a20f326ac7`
-
-# [中文] ### 用途: - 获取指定关键词的综合搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 - sort_type: 0-相关度，1-最多点赞 - publish_time: 0-不限制，1-最近一天，7-最近一周，30-最近一个月，90-最近三个月，180-最近半年 ### 返回: - 综合搜索结果 # [English] ### Purpose: - Get comprehensive search results of specified keywords ### Parameters: - keyword: Keyw
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"publish_time","type":"integer","required":false},{"name":"sort_type","type":"integer","required":false}]`
-
-## `mcp_66c2d37272598bebe59925e4`
-
-# [中文] ### 用途: - 获取用户音乐列表数据 ### 参数: - sec_uid: 用户sec_uid - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量 ### 返回: - 用户音乐列表数据 # [English] ### Purpose: - Get user music list data ### Parameters: - sec_uid: User sec_uid - cursor: Cursor, used for paging, the first page is 0, the second page is t
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"sec_uid","type":"string","required":true}]`
-
-## `mcp_670e6edaf217df4f0a11e799`
-
-获取主页视频推荐数据/Get home feed(recommend) video data
-
-- Risk: `write`
-- Parameters: `[]`
-
-## `mcp_675a0a5463bd9a740b0c9950`
-
-获取用户的粉丝列表/Get user followers
+获取用户的关注列表/Get user followings
 
 - Risk: `read`
 - Parameters: `[{"name":"count","type":"integer","required":false},{"name":"maxCursor","type":"integer","required":false},{"name":"minCursor","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
 
-## `mcp_67962d9158fc9f9c98e1d355`
-
-# [中文] ### 用途: - 解密strData指纹数据，用于分析msToken请求中的指纹信息 ### 参数: - encrypted_data: 加密后的strData字符串，从浏览器自行抓包获取 ### 返回: - 解密后的原始指纹数据，包含浏览器指纹信息和环境信息等。 # [English] ### Purpose: - Decrypt strData fingerprint data to analyze fingerprint info in msToken request ### Parameters: - encrypted_data: Encrypted strData
-
-- Risk: `read`
-- Parameters: `[{"name":"encrypted_data","type":"string","required":true}]`
-
-## `mcp_686c502085546aeeca589a73`
-
-获取橱窗商品列表/Get Showcase Product List
-
-- Risk: `write`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"proxy","type":"any","required":false}]`
-
-## `mcp_6a9bb3b549f41faf102f9f8b`
-
-获取推荐广告/Get recommended ads
-
-- Risk: `write`
-- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"industry","type":"string","required":false},{"name":"material_id","type":"string","required":true}]`
-
-## `mcp_6df9b5fcb5fa495a2a6468de`
-
-# [中文] ### 用途: - 提取列表用户id ### 参数: - url: 用户主页链接（最多支持10个链接）、 ### 返回: - 如果链接成功获取到sec_user_id，则返回sec_user_id，否则返回原始的输入链接，后续可以手动校验链接无法获取sec_user_id的原因。 # [English] ### Purpose: - Extract list user id ### Parameters: - url: User homepage link (Support up to 10 links) ### Return: - If the sec_user_id is s
-
-- Risk: `write`
-- Parameters: `[{"name":"body","type":"array","required":true}]`
-
-## `mcp_6ed82941b9eedde3d1a7caaa`
-
-# [中文] ### 用途: - 获取TikTok音乐排行榜数据 ### 参数: - scene: 排行榜类型 - 0: Top 50 (热门前50) - 1: Viral 50 (病毒式传播前50) - cursor: 分页游标，默认0 - count: 每页数量，默认50，最大50 ### 返回: - 音乐排行榜数据，包含歌曲信息、排名变化等 # [English] ### Purpose: - Get TikTok music chart list data ### Parameters: - scene: Chart type - 0: Top 50 (Popular top 50)
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"scene","type":"integer","required":false}]`
-
-## `mcp_70e0c8107c15c11471283631`
-
-# [中文] ### 用途: - 获取TikTok Shop商品评论 - 支持多种筛选和排序方式 - 数据结构更完整，包含更多评论详情 ### 参数: - product_id: 商品ID (必填) - page_start: 起始页码，默认1 - 当响应中 has_more=1 时，使用当前页码 +1 进行下一页请求 - sort_rule: 排序规则，默认2 - filter_type: 筛选类型 - 1: 默认不选择任何过滤 - 2: 包含图片或视频 - 3: 真实购买过滤 - filter_value: 星级筛选 - 6: 所有星级的评论(默认) - 5: 5星评价 - 4: 4星评价
-
-- Risk: `read`
-- Parameters: `[{"name":"filter_type","type":"integer","required":false},{"name":"filter_value","type":"integer","required":false},{"name":"page_start","type":"integer","required":false},{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false},{"name":"sort_rule","type":"integer","required":false}]`
-
-## `mcp_7148f4b43d2d9f0c29e3bcef`
-
-# [中文] ### 用途: - 搜索指定用户的粉丝列表，可以用于查找某个用户的粉丝中是否有特定昵称的用户。 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID，可以先通过获取用户信息接口获取。 - keyword: 搜索关键词，用户的昵称中包含该关键词即可匹配 ### 返回: - 搜索结果列表 # [English] ### Purpose: - Search follower list of specified user, can be used to find whether there is a user with a specific nickname in
-
-- Risk: `read`
-- Parameters: `[{"name":"keyword","type":"string","required":true},{"name":"user_id","type":"string","required":true}]`
-
-## `mcp_72f634a7c91422de89b9d24b`
-
-# [中文] ### 用途: - 获取 TikTok Shop 创作者账号的健康状况信息，包括过去 90 天内的健康评分（风险等级）以及当前累计的违规积分数量。 - 关于违规积分： - 违规积分是 TikTok 用于衡量账号健康状况的重要指标。 - 违规积分越高，账号健康状况越差，可能面临限流、禁播、封禁等处罚。 - 违规积分将直接影响账号的曝光量和推荐量。 ### 累计违规积分对应的惩罚等级： | 分数范围 | 惩罚措施 | 惩罚时长 | | --------- | --------------------------------------------------------- | ---
-
-- Risk: `write`
-- Parameters: `[{"name":"proxy","type":"any","required":false}]`
-
-## `mcp_73adbc21d764047f77ec58ce`
-
-# [中文] ### 用途: - Tag详情 ### 参数: - tag_name: Tag名称 ### 返回: - Tag详情 # [English] ### Purpose: - Tag Detail ### Parameters: - tag_name: Tag name ### Return: - Tag Detail # [示例/Example] tag_name = "tiktok"
-
-- Risk: `read`
-- Parameters: `[{"name":"tag_name","type":"string","required":true}]`
-
-## `mcp_77ff05803f6142f8947d4d6d`
+## `mcp_0227f55e0cb0a48303335d3e`
 
 获取单个作品数据/Get single video data
 
 - Risk: `read`
 - Parameters: `[{"name":"itemId","type":"string","required":true},{"name":"region","type":"string","required":false}]`
 
-## `mcp_78b875295bc1d2fbe2abf7d7`
+## `mcp_0261fda79416a102f0682b60`
 
-# [中文] ### 用途: - 获取创作者搜索洞察数据，用于了解热门搜索趋势和创作灵感 ### 参数: - offset: 分页偏移量，默认0 - limit: 每页数量，默认20 - tab: 标签页类型，可选值: - all: 全部 - content_gap: 内容差距 - follower_searched: 粉丝常搜 - life_style: 生活方式 - topics: 话题 - challenges: 挑战 - sounds: 声音 - hashtags: 标签 - language_filters: 语言过滤器，多个用逗号分隔，可选值: id, de, en, es, fr
-
-- Risk: `read`
-- Parameters: `[{"name":"category_filters","type":"string","required":false},{"name":"creator_source","type":"string","required":false},{"name":"force_refresh","type":"boolean","required":false},{"name":"language_filters","type":"string","required":false},{"name":"limit","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"tab","type":"string","required":false}]`
-
-## `mcp_79cc9e4699616a77a1155909`
-
-获取直播间礼物列表/Get live room gift list
+# [中文] ### 用途: - 搜索用户 ### 参数: - keyword: 搜索关键词 - cursor: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取，一般这个值的关键字为offset或者cursor。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path-2 : $.data.log_pb.impr_i
 
 - Risk: `read`
-- Parameters: `[{"name":"room_id","type":"string","required":false}]`
+- Parameters: `[{"name":"cursor","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"search_id","type":"string","required":false}]`
 
-## `mcp_79e85a959fc4ae9f189f0ee1`
+## `mcp_0287c56e63740512e8dfbc96`
+
+# [中文] ### 用途: - 获取用户主页作品数据 ### 参数: - sec_user_id: 用户sec_user_id，优先使用sec_user_id获取用户作品数据，如果sec_user_id为空，则使用unique_id获取用户作品数据。 - max_cursor: 最大游标，用于翻页，第一页为0，第二页为第一次响应中的max_cursor值。 - count: 最大数量，建议保持默认值20。 - sort_type: 排序类型，0-最新，1-热门 - unique_id: 用户unique_id，可选参数，如果sec_user_id为空，则使用unique_id获取用户作品数据
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"sort_type","type":"integer","required":false},{"name":"unique_id","type":"string","required":false}]`
+
+## `mcp_02a0f6c1da7c61fe9ee415c5`
+
+获取视频详细分段统计数据/Get Video Detailed Statistics
+
+- Risk: `write`
+- Parameters: `[{"name":"item_id","type":"string","required":true},{"name":"proxy","type":"any","required":false},{"name":"start_date","type":"string","required":false}]`
+
+## `mcp_02e18f20ac890b8be7daaeb4`
+
+批量获取创作者卡片/Get creators card
+
+- Risk: `write`
+- Parameters: `[{"name":"creator_type","type":"integer","required":false},{"name":"need_loader_list","type":"array","required":false},{"name":"tt_uids","type":"array","required":false}]`
+
+## `mcp_02ff5896cb15603f7145ceb8`
+
+# [中文] ### 用途: - 获取用户的点赞列表 - 注意: 该接口需要用户点赞列表为公开状态 ### 参数: - secUid: 用户secUid - cursor: 翻页游标 - count: 每页数量，默认为20，不可变更。 - coverFormat: 封面格式 - post_item_list_request_type: 排序方式 - 0：默认排序 - 1：热门排序 - 2：最旧排序 ### 返回: - 用户的点赞列表 ### 备注: - 此接口返回的视频CDN直链需要携带返回的 `tt_chain_token` 才能访问，否则会返回 HTTP 403。 - 访问视频CDN直链时
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"coverFormat","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"post_item_list_request_type","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
+
+## `mcp_03d5f1dd46098084178429fb`
+
+获取用户的转发作品列表/Get user reposts
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"coverFormat","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
+
+## `mcp_043637ebf206414e41a1d762`
+
+# [中文] ### 用途: - 获取单个视频评论数据 ### 参数: - aweme_id: 作品id - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量 ### 返回: - 评论数据 # [English] ### Purpose: - Get single video comments data ### Parameters: - aweme_id: Video id - cursor: Cursor, used for paging, the first page is 0, the second page is the cu
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false}]`
+
+## `mcp_051767e083132d05228b6ae5`
+
+# [中文] ### 用途: - 获取商品详情及相关组件数据；字段完整程度因商品和地区而异。 ### 参数: - product_id: 商品 ID，必填。 - seller_id: 商家 ID，可选，可留空。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - 页面数据位于 data.data；可包含 components_map、global_data 等字段。 - 商品信息可见于 global_data.product_info.product_info 或商品信息组件；请检查实际存在的字段。
+
+- Risk: `read`
+- Parameters: `[{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false},{"name":"seller_id","type":"string","required":false}]`
+
+## `mcp_057829e786fdedefae30a448`
+
+生成 XBogus/Generate XBogus
+
+- Risk: `write`
+- Parameters: `[{"name":"url","type":"string","required":true},{"name":"user_agent","type":"string","required":true}]`
+
+## `mcp_05aaa843e95fdf54028b8e86`
+
+# [中文] ### 用途: - 获取指定关键词的用户搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 - user_search_follower_count（根据粉丝数排序）: - 空-不限制， - ZERO_TO_ONE_K = 0-1K， - ONE_K_TO_TEN_K-1K = 1K-10K， - TEN_K_TO_ONE_H_K = 10K-100K， - ONE_H_K_PLUS = 100K以上 - user_search_profile_type（根据账号类型排序）: - 空-不限制， - VERIFIED = 认证
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"user_search_follower_count","type":"string","required":false},{"name":"user_search_other_pref","type":"string","required":false},{"name":"user_search_profile_type","type":"string","required":false}]`
+
+## `mcp_06610fbe510f2e21041af2da`
+
+# [中文] ### 用途: - TikTok APP加密算法，用于生成请求头中的加密参数。 - 生成的加密参数列表： - `x-ladon` - `x-khronos` - `x-argus` - `x-gorgon` （8404） ### 参数: - url: 需要加密的完整URL - data: 如果接口是POST请求，请填写POST请求的数据参与加密计算，GET请求时传入空字符串即可。 - device_info: 设备信息，可选参数，如果不填写则使用默认设备信息，设备信息会修改传入的URL中的参数。 ### 返回: - 加密参数列表 # [English] ### Purpose:
+
+- Risk: `write`
+- Parameters: `[{"name":"data","type":"string","required":false},{"name":"device_info","type":"object","required":false},{"name":"url","type":"string","required":false}]`
+
+## `mcp_08567e4883758c9f541e06ff`
+
+获取视频关联商品列表/Get Video Associated Product List
+
+- Risk: `write`
+- Parameters: `[{"name":"item_ids","type":"array","required":true},{"name":"proxy","type":"any","required":false},{"name":"start_date","type":"string","required":false}]`
+
+## `mcp_0a39aa4fc3656ff383665b76`
+
+# [中文] ### 用途: - 解密strData指纹数据，用于分析msToken请求中的指纹信息 ### 参数: - encrypted_data: 加密后的strData字符串，从浏览器自行抓包获取 ### 返回: - 解密后的原始指纹数据，包含浏览器指纹信息和环境信息等。 # [English] ### Purpose: - Decrypt strData fingerprint data to analyze fingerprint info in msToken request ### Parameters: - encrypted_data: Encrypted strData
+
+- Risk: `read`
+- Parameters: `[{"name":"encrypted_data","type":"string","required":true}]`
+
+## `mcp_0a838384b7bcf9e43546d5e8`
+
+# [中文] ### 用途: - 获取指定关键词的话题搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 ### 返回: - 话题搜索结果 # [English] ### Purpose: - Get hashtag search results of specified keywords ### Parameters: - keyword: Keyword - offset: Offset - count: Number ### Return: - Hashtag search results # [示例/Example] keywor
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false}]`
+
+## `mcp_0b686fc9d9bedc816f456483`
+
+检测视频虚假流量分析/Detect fake views in video
+
+- Risk: `read`
+- Parameters: `[{"name":"content_category","type":"string","required":false},{"name":"item_id","type":"string","required":true}]`
+
+## `mcp_0c266fc72400b9bb1570b13c`
+
+加密或解密 TikTok APP 登录请求体/Encrypt or Decrypt TikTok APP login request body
+
+- Risk: `write`
+- Parameters: `[{"name":"mode","type":"string","required":false},{"name":"username","type":"string","required":false}]`
+
+## `mcp_0c4739458b71becc406f4f6e`
+
+# [中文] ### 用途: - 搜索视频 ### 参数: - keyword: 搜索关键词 - count: 每页数量，建议保持默认值20。 - offset: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path-2 : $.data.log_pb.impr_i
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
+
+## `mcp_0f841bb03105188c54289ed8`
+
+# [中文] ### 用途: - 获取商品搜索关键词建议。 ### 参数: - search_word: 搜索关键词，必填。 - lang: 语言代码，默认 en-US。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - 建议位于 data.data，是字符串数组，不是包含 keywords 或 suggestion 字段的对象。 - 建议数量随关键词和地区变化，数组也可能为空。 ### 返回数据结构: - 以下为主要字段示意，省略通用响应字段和部分可选字段；具体字段以实际响应为准。 ```jso
+
+- Risk: `read`
+- Parameters: `[{"name":"lang","type":"string","required":false},{"name":"region","type":"string","required":false},{"name":"search_word","type":"string","required":true}]`
+
+## `mcp_103cbdd31857d3b568d0538d`
+
+获取热门广告聚光灯/Get top ads spotlight
+
+- Risk: `write`
+- Parameters: `[{"name":"industry","type":"string","required":false},{"name":"limit","type":"integer","required":false},{"name":"page","type":"integer","required":false}]`
+
+## `mcp_10f0f0f8746a97da84cb4ca7`
+
+提取用户sec_user_id/Extract user sec_user_id
+
+- Risk: `read`
+- Parameters: `[{"name":"url","type":"string","required":true}]`
+
+## `mcp_14fbefc75975159d643ae214`
+
+# [中文] ### 用途: - 获取指定视频的评论回复数据 ### 参数: - item_id: 作品id - comment_id: 评论id - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量 ### 返回: - 评论回复数据 # [English] ### Purpose: - Get comment replies data of specified video ### Parameters: - item_id: Video id - comment_id: Comment id - cursor: Cursor, use
+
+- Risk: `read`
+- Parameters: `[{"name":"comment_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"item_id","type":"string","required":true}]`
+
+## `mcp_15373c5803e5206951bd2f9c`
 
 提取单个作品id/Extract single video id
 
 - Risk: `read`
 - Parameters: `[{"name":"url","type":"string","required":true}]`
 
-## `mcp_7af5b7870ac2d16018aa0496`
+## `mcp_16030d5b6e8d4af3cb529aa9`
 
-获取查询建议/Get query suggestions
+# [中文] ### 用途: - 获取指定直播间的数据 ### 参数: - room_id: 直播间id ### 返回: - 直播间数据 # [English] ### Purpose: - Get data of specified live room ### Parameters: - room_id: Live room id ### Return: - Live room data # [示例/Example] room_id = "7385461256746060575"
+
+- Risk: `read`
+- Parameters: `[{"name":"room_id","type":"string","required":true}]`
+
+## `mcp_164866c246089bf21ca7bb38`
+
+# [中文] ### 用途: - 获取用户主页作品数据 ### 参数: - sec_user_id: 用户sec_user_id，优先使用sec_user_id获取用户作品数据，如果sec_user_id为空，则使用unique_id获取用户作品数据。 - max_cursor: 最大游标，用于翻页，第一页为0，第二页为第一次响应中的max_cursor值。 - count: 最大数量，建议保持默认值20。 - sort_type: 排序类型，0-最新，1-热门 - unique_id: 用户unique_id，可选参数，如果sec_user_id为空，则使用unique_id获取用户作品数据
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"sort_type","type":"integer","required":false},{"name":"unique_id","type":"string","required":false}]`
+
+## `mcp_1720bacce29a8be63e876f6e`
+
+提取列表作品id/Extract list video id
 
 - Risk: `write`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"country_code","type":"string","required":false},{"name":"query","type":"string","required":false},{"name":"scenario","type":"integer","required":false}]`
+- Parameters: `[{"name":"body","type":"array","required":true}]`
+
+## `mcp_17f0bec6dda06174e764424c`
+
+获取直播间礼物列表/Get live room gift list
+
+- Risk: `read`
+- Parameters: `[{"name":"room_id","type":"string","required":false}]`
+
+## `mcp_184adf9a8ba962c439d428e3`
+
+# [中文] ### 用途: - 获取单个作品数据 V2 ### 参数: - aweme_id: 作品id ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data V2 ### Parameters: - aweme_id: Video id ### Return: - Video data # [示例/Example] aweme_id = "7350810998023949599"
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
+
+## `mcp_1865e1253db15f2dadb22a99`
+
+# [中文] ### 用途: - 从 TikTok Shop 分享链接获取商品 ID 和对应链接。 ### 参数: - share_link: 分享链接，必填。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - data.product_id 是字符串；data.product_link 为对应链接。 - 若返回 resolved=false，请核对分享链接。 ### 返回数据结构: - 以下为主要字段示意，省略通用响应字段和部分可选字段；具体字段以实际响应为准。 ```json { "code"
+
+- Risk: `read`
+- Parameters: `[{"name":"region","type":"string","required":false},{"name":"share_link","type":"string","required":true}]`
+
+## `mcp_196c9f5dddbc4ccdbabd97ae`
+
+# [中文] ### 用途: - 获取综合搜索列表 ### 参数: - keyword: 搜索关键词 - offset: 翻页游标，第一次请求时为0，第二次请求时从上一次请求的返回响应中获取，一般这个值的关键字为offset或者cursor。 - search_id: 搜索id，第一次请求时为空，第二次翻页时需要提供，需要从上一次请求的返回响应中获取。 - 例如: search_id = "20240828035554C02011379EBB6A00E00B" - JSON Path-1 : $.data.extra.logid - JSON Path-2 : $.data.log_pb.im
+
+- Risk: `read`
+- Parameters: `[{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
+
+## `mcp_1d1aa6d46fb7d4f33ed9a4c1`
+
+# [中文] ### 用途: - 获取TikTok音乐排行榜数据 ### 参数: - scene: 排行榜类型 - 0: Top 50 (热门前50) - 1: Viral 50 (病毒式传播前50) - cursor: 分页游标，默认0 - count: 每页数量，默认50，最大50 ### 返回: - 音乐排行榜数据，包含歌曲信息、排名变化等 # [English] ### Purpose: - Get TikTok music chart list data ### Parameters: - scene: Chart type - 0: Top 50 (Popular top 50)
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"scene","type":"integer","required":false}]`
+
+## `mcp_20a4b18ab661e2fac5a1fe59`
+
+设备注册/Register device for TikTok Web
+
+- Risk: `read`
+- Parameters: `[]`
+
+## `mcp_21bcef0624645f7ef2eb2c52`
+
+搜索广告/Search ads
+
+- Risk: `write`
+- Parameters: `[{"name":"ad_format","type":"any","required":false},{"name":"ad_language","type":"any","required":false},{"name":"country_code","type":"string","required":false},{"name":"duration","type":"any","required":false},{"name":"industry","type":"string","required":false},{"name":"keyword","type":"string","required":false},{"name":"like","type":"any","required":false},{"name":"limit","type":"integer","required":false},{"name":"objective","type":"any","required":false},{"name":"order_by","type":"string","required":false},{"name":"page","type":"integer","required":false},{"name":"pattern_label","type":"any","required":false},{"name":"period","type":"integer","required":false},{"name":"search_id","type":"string","required":false}]`
+
+## `mcp_232bb7c340b1f3a5c00362de`
+
+获取用户的合辑列表/Get user mix list
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"mixId","type":"string","required":true}]`
+
+## `mcp_246c905d1421cf1a5431243c`
+
+# [中文] ### 用途: - 获取直播间首页推荐的可用标签(直播分类 Tab)列表 - 用于配合 `/fetch_live_recommend` 接口，获取其 `related_live_tag` 参数的可选值 ### 参数: - logid: 翻页游标。首页请求时留空；加载下一页时，传入上一次响应返回的 `logid` 值 ### 返回: - 可用标签(直播分类 Tab)列表 - logid: 本次请求的日志ID(来自响应头 `x-tt-logid`)，翻页加载更多时需把它再次作为 `logid` 参数传入 ### 备注: - `related_live_tag` 的可选值并不固定，会随
+
+- Risk: `read`
+- Parameters: `[{"name":"logid","type":"string","required":false}]`
+
+## `mcp_253f8f823e4e5ca03a450a93`
+
+# [中文] ### 用途: - 获取指定关键词的综合搜索结果 ### 参数: - keyword: 关键词 - offset: 偏移量 - count: 数量 - sort_type: 0-相关度，1-最多点赞 - publish_time: 0-不限制，1-最近一天，7-最近一周，30-最近一个月，90-最近三个月，180-最近半年 ### 返回: - 综合搜索结果 # [English] ### Purpose: - Get comprehensive search results of specified keywords ### Parameters: - keyword: Keyw
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"keyword","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"publish_time","type":"integer","required":false},{"name":"sort_type","type":"integer","required":false}]`
+
+## `mcp_25b7bd5070ca7e811a509320`
+
+# [中文] ### 用途: - 生成TikTok分享链接，唤起TikTok APP，跳转指定作品详情页。 ### 参数: - aweme_id: 作品id - 注意: 如果未能跳转，请确保APP已经在后台运行。 ### 返回: - 分享链接 # [English] ### Purpose: - Generate TikTok share link, call TikTok APP, and jump to the specified video ### Parameters: - aweme_id: Video id - Note: If you cannot jump, please ma
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true}]`
+
+## `mcp_275c10582ccd92d8734748bd`
+
+# [中文] ### 用途: - 获取指定话题的作品数据 ### 参数: - ch_id: 话题id - cursor: 游标，用于翻页，第一页为0，第二页为第一次响应中的cursor值。 - count: 数量 - region: 地区，支持 US, GB, FR, JP, VN, SG，默认 US ### 返回: - 话题作品数据 # [English] ### Purpose: - Get video list of specified hashtag ### Parameters: - ch_id: Hashtag id - cursor: Cursor, used for pagin
+
+- Risk: `read`
+- Parameters: `[{"name":"ch_id","type":"string","required":true},{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"region","type":"string","required":false}]`
+
+## `mcp_27d97ac3581f57b88ee4a4a7`
+
+# [中文] ### 用途: - 生成TikTok分享链接，唤起TikTok APP，跳转指定关键词搜索结果。 ### 参数: - keyword: 关键词 - 注意: 如果未能跳转，请确保APP已经在后台运行。 ### 返回: - 分享链接 # [English] ### Purpose: - Generate TikTok share link, call TikTok APP, and jump to the specified keyword search result ### Parameters: - keyword: Keyword - Note: If you cannot j
+
+- Risk: `read`
+- Parameters: `[{"name":"keyword","type":"string","required":true}]`
+
+## `mcp_2883bd16a9d2183a225a06f4`
+
+批量获取视频信息/Batch Get Video Information
+
+- Risk: `write`
+- Parameters: `[{"name":"body","type":"array","required":true}]`
+
+## `mcp_28ccd10661c858c4fb11237f`
+
+# [中文] ### 用途: - 搜索指定用户的粉丝列表，可以用于查找某个用户的粉丝中是否有特定昵称的用户。 ### 参数: - user_id: 用户ID，这是一个纯数字版本的用户ID，可以先通过获取用户信息接口获取。 - keyword: 搜索关键词，用户的昵称中包含该关键词即可匹配 ### 返回: - 搜索结果列表 # [English] ### Purpose: - Search follower list of specified user, can be used to find whether there is a user with a specific nickname in
+
+- Risk: `read`
+- Parameters: `[{"name":"keyword","type":"string","required":true},{"name":"user_id","type":"string","required":true}]`
+
+## `mcp_29c63d15848acb170da1913e`
+
+获取商品详情V3(移动端-数据完整)/Get product detail V3 (Full Data)
+
+- Risk: `read`
+- Parameters: `[{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
+
+## `mcp_2c0db92627258134cb74f4f3`
+
+# [中文] ### 用途: - 生成ttwid ### 参数: - 无 ### 返回: - ttwid # [English] ### Purpose: - Generate ttwid ### Parameters: - None ### Return: - ttwid
+
+- Risk: `read`
+- Parameters: `[{"name":"user_agent","type":"string","required":false}]`
+
+## `mcp_2c9be3bb7ebe40b53de1f407`
+
+# [中文] ### 用途: - 通过直播链接获取直播间信息 - 此接口可获取离线直播间信息 ### 参数: - live_room_url: 直播间链接 ### 返回: - 直播间信息 # [English] ### Purpose: - Get live room information via live link - This interface can get offline live room information ### Parameters: - live_room_url: Live room link ### Return: - Live room information
+
+- Risk: `read`
+- Parameters: `[{"name":"live_room_url","type":"string","required":true}]`
+
+## `mcp_2e624bc2ea539a46bf1f54e4`
+
+# [中文] ### 用途: - TikTok直播间弹幕参数获取 ### 参数: - room_id: 直播间号 - user_unique_id: 用户唯一ID（可选） - resp_content_type: 响应格式，protobuf（默认）或 json ### 返回: - 弹幕参数数据 # [English] ### Purpose: - TikTok live room danmaku parameters ### Parameters: - room_id: Live room id - user_unique_id: User unique ID (optional) - res
+
+- Risk: `read`
+- Parameters: `[{"name":"resp_content_type","type":"string","required":false},{"name":"room_id","type":"string","required":true},{"name":"user_unique_id","type":"string","required":false}]`
+
+## `mcp_31964256159c4764399979f3`
+
+# [中文] ### 用途: - 搜索关键字推荐 ### 参数: - keyword: 搜索关键词 ### 返回: - 关键字推荐列表 # [English] ### Purpose: - Search keyword suggest ### Parameters: - keyword: Search keyword ### Return: - Keyword suggest list # [示例/Example] keyword = "TikTok"
+
+- Risk: `read`
+- Parameters: `[{"name":"keyword","type":"string","required":true}]`
+
+## `mcp_32597c06ff8ce20554c65255`
+
+获取用户的粉丝列表/Get user followers
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"maxCursor","type":"integer","required":false},{"name":"minCursor","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
+
+## `mcp_344e86cf512104c27df02254`
+
+获取直播间商品列表数据/Get live room product list data
+
+- Risk: `read`
+- Parameters: `[{"name":"author_id","type":"string","required":true},{"name":"offset","type":"integer","required":false},{"name":"page_size","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"room_id","type":"string","required":true}]`
+
+## `mcp_38cd37e733c683db198151d1`
+
+# [中文] ### 用途: - 获取单个作品数据 V3 ### 参数: - aweme_id: 作品id - region: 国家代码，默认US，支持ISO 3166-1 alpha-2国家代码，例如：US、GB、FR、DE、IN、JP等。 - 备注：某些视频可能在特定国家/地区不可用，设置region参数可以尝试获取该国家/地区的视频数据。 ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data V3 ### Parameters: - aweme_id: Video id - region: Country code
+
+- Risk: `read`
+- Parameters: `[{"name":"aweme_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
+
+## `mcp_39b1272b74831b1d2ac4750b`
+
+# [中文] ### 用途: - 获取 TikTok Creative Center 热门视频榜单(Top Contents)，榜单固定收录 100 条热门视频 - 支持按内容分类筛选、按播放量/互动率/完播率排序，用于选题与创意参考 ### 参数: - period_end_timestamp: 榜单周期结束时间戳(10位秒级)，必填 - 该参数需调用方根据目标榜单日期自行生成，并非由其他接口返回 - 示例: `1785024000`；不要传 `0`，否则会返回空结果 - period_dimension 为 1 时需传周日 00:00 UTC 的时间戳，其余日期无数据 - period_d
+
+- Risk: `write`
+- Parameters: `[{"name":"content_label_ids","type":"string","required":false},{"name":"country_code","type":"string","required":false},{"name":"limit","type":"integer","required":false},{"name":"order_by_metric","type":"integer","required":false},{"name":"organic_only","type":"boolean","required":false},{"name":"page","type":"integer","required":false},{"name":"period_dimension","type":"integer","required":false},{"name":"period_end_timestamp","type":"integer","required":true}]`
+
+## `mcp_4033e4168089a5d07d58eb52`
+
+# [中文] ### 用途: - 加密strData指纹数据，用于生成msToken请求 ### 参数: - data: 原始指纹数据字符串（请先将JSON格式然后转换成字符串进行请求） ### 返回: - 加密后的strData # [English] ### Purpose: - Encrypt strData fingerprint data for msToken request ### Parameters: - data: Raw fingerprint data string (please convert JSON format to string before request
+
+- Risk: `read`
+- Parameters: `[{"name":"data","type":"string","required":true}]`
+
+## `mcp_4310d02d6e8671c172121bc3`
+
+获取橱窗商品列表/Get Showcase Product List
+
+- Risk: `write`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"proxy","type":"any","required":false}]`
+
+## `mcp_434456f26b20490bf13bc86b`
+
+# [中文] ### 用途: - 获取用户喜欢作品数据 ### 参数: - sec_user_id: 用户sec_user_id - max_cursor: 最大游标，用于翻页，第一页为0，第二页为第一次响应中的max_cursor值。 - count: 最大数量 ### 返回: - 用户作品数据 # [English] ### Purpose: - Get user like video data ### Parameters: - sec_user_id: User sec_user_id - max_cursor: Maximum cursor, used for paging, the
+
+- Risk: `read`
+- Parameters: `[{"name":"counts","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":true}]`
+
+## `mcp_4e4019534b6136bf67671424`
+
+# [中文] ### 用途: - 获取指定话题的详情数据 ### 参数: - ch_id: 话题id - region: 地区，支持 US, GB, FR, JP, VN, SG，默认 US ### 返回: - 话题详情数据 # [English] ### Purpose: - Get details of specified hashtag ### Parameters: - ch_id: Hashtag id - region: Region, supports US, GB, FR, JP, VN, SG, default US ### Return: - Hashtag details
+
+- Risk: `read`
+- Parameters: `[{"name":"ch_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
+
+## `mcp_51b1ff259e25ceab730d0fba`
+
+获取搜索板块配置/Get search modules config
+
+- Risk: `write`
+- Parameters: `[{"name":"body","type":"string","required":false}]`
+
+## `mcp_51e730b321c551b93c8e5a15`
+
+# [中文] ### 用途: - 获取用户转发的作品数据 ### 参数: - user_id: 用户id，可以通过 handler_user_profile 端点获取，响应中的关键字为uid。 - offset: 偏移量 - count: 数量 ### 返回: - 用户转发作品数据 # [English] ### Purpose: - Get user repost video data ### Parameters: - user_id: User id, which can be obtained through the handler_user_profile endpoint, wit
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"offset","type":"integer","required":false},{"name":"user_id","type":"integer","required":true}]`
+
+## `mcp_525fc077c1c915bee03ca19f`
+
+# [中文] ### 用途: - 获取 TikTok Shop 创作者账号的健康状况信息，包括过去 90 天内的健康评分（风险等级）以及当前累计的违规积分数量。 - 关于违规积分： - 违规积分是 TikTok 用于衡量账号健康状况的重要指标。 - 违规积分越高，账号健康状况越差，可能面临限流、禁播、封禁等处罚。 - 违规积分将直接影响账号的曝光量和推荐量。 ### 累计违规积分对应的惩罚等级： | 分数范围 | 惩罚措施 | 惩罚时长 | | --------- | --------------------------------------------------------- | ---
+
+- Risk: `write`
+- Parameters: `[{"name":"proxy","type":"any","required":false}]`
+
+## `mcp_5267e7d92eb2e089d70fce09`
+
+# [中文] ### 用途: - 生成随机浏览器指纹数据，可用于自定义msToken请求 ### 参数: - browser_type: 指定浏览器类型，可选值: - chrome_windows: Chrome + Windows - chrome_mac: Chrome + macOS - firefox_windows: Firefox + Windows - firefox_mac: Firefox + macOS - 不传则随机选择 ### 返回: - 浏览器指纹数据 # [English] ### Purpose: - Generate random browser fingerp
+
+- Risk: `read`
+- Parameters: `[{"name":"browser_type","type":"string","required":false}]`
+
+## `mcp_542cc78e5ee1b36ad5d54732`
+
+获取广告关键帧分析/Get ad keyframe analysis
+
+- Risk: `write`
+- Parameters: `[{"name":"material_id","type":"string","required":true},{"name":"metric","type":"string","required":false}]`
+
+## `mcp_58699d32947a47fa5a71ce63`
+
+# [中文] ### 用途: - 获取单个作品由 TikTok 官方 AI 根据视频内容生成的长文与内容概览 - 可用于内容分析、选题参考、SEO 关键词挖掘等场景 ### 参数: - itemId: 作品id ### 返回: - `itemCustomTDK` 字段中包含以下内容: - `title`: AI 生成的标题 - `desc`: AI 生成的内容概览(摘要) - `keywords`: AI 提取的关键词列表 - `article`: AI 根据视频内容生成的长文正文 ### 备注: - 并非所有作品都有 AI 生成内容。若该作品没有，响应中不会出现 `itemCustomTDK
+
+- Risk: `read`
+- Parameters: `[{"name":"itemId","type":"string","required":true}]`
+
+## `mcp_5907fe5d1664133d5f42c23d`
+
+# [中文] ### 用途: - 获取TikTok视频的详细统计数据，包括观看量、点赞数、评论数和收藏数等核心指标 - 提供总量统计以及从发布日期起14天的每日趋势数据，便于分析视频表现 - 帮助创作者分析内容效果，评估用户互动情况，优化内容策略 ### 参数: - item_id: 视频作品ID，必填参数，可从视频分享链接或TikTok Studio获取 ### 返回内容说明: - `item_id`: 请求的视频ID - `video_views`: 视频总观看次数 - `value`: 观看次数数值 - `video_views_14_days`: 近14天的每日观看量趋势数据 - `i
+
+- Risk: `read`
+- Parameters: `[{"name":"item_id","type":"string","required":true}]`
+
+## `mcp_5a7f1c6cfd9f1a799b21bdfc`
+
+# [中文] ### 用途: - 获取 TikTok Shop 创作者账号在指定时间范围内推广的商品列表及其销售数据分析。 - 支持按商品成交额、商品上架时间排序，可分页查询。 ### 返回内容说明: - `segments`（分段数据列表）: - `filter.creator_id`: 创作者账号 ID - `list_control`: - `rules`: 列表排序规则（如按成交额、商品 ID 排序） - `next_pagination`: 翻页信息（是否还有更多页、下一页页码、总页数、总记录数） - `timed_lists`: 每个时间段内的商品数据，包括： - `product
+
+- Risk: `write`
+- Parameters: `[{"name":"end_date","type":"string","required":false},{"name":"page","type":"integer","required":false},{"name":"proxy","type":"any","required":false},{"name":"start_date","type":"string","required":false}]`
+
+## `mcp_5ac19331eb06808fb5268aee`
+
+# [中文] ### 用途: - 获取指定地区、分类下的商品列表。 ### 参数: - category_id: 分类 ID，必填，可从 fetch_products_category_list 获取，需与 region 对应。 - offset: 分页偏移量，默认 0。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - 商品位于 data.data.productList，分页字段是 data.data.hasMore，不是 products 或 has_more。 - 每批实际商品数量可能少于
+
+- Risk: `read`
+- Parameters: `[{"name":"category_id","type":"integer","required":true},{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false}]`
+
+## `mcp_5cbdc555ee5ba728005820f1`
+
+根据直播间链接提取直播间ID/Extract live room ID from live room link
+
+- Risk: `read`
+- Parameters: `[{"name":"live_room_url","type":"string","required":true}]`
+
+## `mcp_5d287d7f2c0624c6f316cbdf`
+
+获取用户unique_id/Get user unique_id
+
+- Risk: `read`
+- Parameters: `[{"name":"url","type":"string","required":true}]`
+
+## `mcp_5e72c3d463136fbf293c73ba`
+
+首页推荐作品/Home Feed
+
+- Risk: `write`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"region","type":"string","required":false}]`
+
+## `mcp_604af8147d4d5537bc997c8a`
+
+# [中文] ### 用途: - 按关键词搜索美国地区商品。 ### 参数: - search_word: 搜索关键词，必填。 - offset: 分页偏移量，首次请求为 0。 - page_token: 分页标记，首次请求留空。 - region: 仅支持 US，默认 US。 ### 返回与使用说明: - 商品位于 data.data.component_data.products；分页状态位于 component_data.has_more。 - 下一页使用 component_data.offset 和 component_data.load_more_params.page_token
+
+- Risk: `read`
+- Parameters: `[{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"search_word","type":"string","required":true}]`
+
+## `mcp_651253dc77856d6d98a3a0a5`
+
+获取热门标签详情(趋势)/Get trending hashtag detail
+
+- Risk: `write`
+- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"hashtag_id","type":"string","required":true},{"name":"time_range","type":"integer","required":false}]`
+
+## `mcp_659f8a76623c0c47402e8ff5`
+
+提取直播间弹幕/Extract live room danmaku
+
+- Risk: `read`
+- Parameters: `[{"name":"danmaku_type","type":"string","required":true},{"name":"live_room_url","type":"string","required":true}]`
+
+## `mcp_694c980f1d0aea3ddf8cc5d1`
+
+获取用户的直播详情/Get user live details
+
+- Risk: `read`
+- Parameters: `[{"name":"uniqueId","type":"string","required":true}]`
+
+## `mcp_6a10a4deb1892e43aa84d0b3`
+
+# [中文] ### 用途: - 根据分享链接获取单个作品数据 V2，数据结构会有些不一样，会返回region字段。 ### 参数: - share_url: 分享链接 ### 返回: - 作品数据 # [English] ### Purpose: - Get single video data by sharing link V2, the data structure will be a bit different, and the region field will be returned. ### Parameters: - share_url: Share link ### Retu
+
+- Risk: `read`
+- Parameters: `[{"name":"share_url","type":"string","required":true}]`
+
+## `mcp_6a2a9f20e4faba7c7e256ed7`
+
+获取列表unique_id/Get list unique_id
+
+- Risk: `write`
+- Parameters: `[{"name":"body","type":"array","required":true}]`
+
+## `mcp_6b0f0c05b7cfcf846cab43eb`
+
+# [中文] ### 用途: - 获取类似用户推荐 ### 参数: - sec_uid: 用户sec_uid - page_token: 分页标记，第一次请求时不需要传递，后续请求时传递上一次响应中的next_page_token值。 ### 返回: - 类似用户推荐 # [English] ### Purpose: - Similar User Recommendations ### Parameters: - sec_uid: User sec_uid - page_token: Page token, not required for the first request, for sub
+
+- Risk: `read`
+- Parameters: `[{"name":"sec_uid","type":"string","required":true}]`
+
+## `mcp_71c24c18128f56e65378f5a8`
+
+获取推荐广告/Get recommended ads
+
+- Risk: `write`
+- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"industry","type":"string","required":false},{"name":"material_id","type":"string","required":true}]`
+
+## `mcp_73e3c2615d3f69a5be7c8a4c`
+
+# [中文] ### 用途: - 获取热门视频榜单中单个视频的详细数据 - 在榜单数据基础上额外返回热门评论与作者主页信息，便于分析视频的受欢迎原因 ### 参数: - item_id: 视频ID，从 /get_top_contents_list 返回的 `itemInfo.itemID` 获取 - period_end_timestamp: 榜单周期结束时间戳(10位秒级)，必填 - 该参数需调用方根据目标榜单日期自行生成，并非由其他接口返回 - 示例: `1785024000`；不要传 `0`，否则会返回空结果 - period_dimension 为 1 时需传周日 00:00 UTC
+
+- Risk: `write`
+- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"item_id","type":"string","required":true},{"name":"period_dimension","type":"integer","required":false},{"name":"period_end_timestamp","type":"integer","required":true}]`
+
+## `mcp_757faaf1d0f1d236a4103602`
+
+# [中文] ### 用途: - 提取列表用户id ### 参数: - url: 用户主页链接（最多支持10个链接）、 ### 返回: - 如果链接成功获取到sec_user_id，则返回sec_user_id，否则返回原始的输入链接，后续可以手动校验链接无法获取sec_user_id的原因。 # [English] ### Purpose: - Extract list user id ### Parameters: - url: User homepage link (Support up to 10 links) ### Return: - If the sec_user_id is s
+
+- Risk: `write`
+- Parameters: `[{"name":"body","type":"array","required":true}]`
+
+## `mcp_75d80fff6cc498bdc771dd3d`
+
+# [中文] ### 本接口已弃用: - 请改用 fetch_product_detail_v3。 ### 用途: - 保留商品详情 V2 的原有调用参数。 ### 参数: - product_id: 商品 ID，必填。 - seller_id: 商家 ID，可选，可留空。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - 本版本已弃用，新的接入请使用 fetch_product_detail_v3，并按其返回结构读取字段。 # [English] ### This endpoint is dep
+
+- Risk: `read`
+- Parameters: `[{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false},{"name":"seller_id","type":"string","required":false}]`
+
+## `mcp_766f656d380b4379b6ef37b9`
+
+# [中文] ### 用途: - 获取用户主页作品数据 ### 参数: - sec_user_id: 用户sec_user_id，优先使用sec_user_id获取用户作品数据，如果sec_user_id为空，则使用unique_id获取用户作品数据。 - max_cursor: 最大游标，用于翻页，第一页为0，第二页为第一次响应中的max_cursor值。 - count: 最大数量，建议保持默认值20。 - sort_type: 排序类型，0-最新，1-热门 - unique_id: 用户unique_id，可选参数，如果sec_user_id为空，则使用unique_id获取用户作品数据
+
+- Risk: `read`
+- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"max_cursor","type":"integer","required":false},{"name":"sec_user_id","type":"string","required":false},{"name":"sort_type","type":"integer","required":false},{"name":"unique_id","type":"string","required":false}]`
+
+## `mcp_77beaeae9f6bae58572a17b2`
+
+获取广告互动分析/Get ad interactive analysis
+
+- Risk: `write`
+- Parameters: `[{"name":"material_id","type":"string","required":true},{"name":"metric_type","type":"string","required":false},{"name":"period_type","type":"integer","required":false}]`

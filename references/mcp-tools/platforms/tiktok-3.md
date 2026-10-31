@@ -2,40 +2,33 @@
 
 - 来源平台：`TikTok`
 - 能力分段：`tiktok-3`
-- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
-- Tool count: 5
+- Reference version: `sha256:7101f2f686e885c845f46663dcbe08d7c1ed1dbc6f1964fd25114ee3d35b88b6`
+- Tool count: 4
 
-## `mcp_f70238ef0efe13ffcced6351`
+## `mcp_fc2c571ad81f5a53e37a4966`
 
-# [中文] ### 用途: - 获取TikTok Shop商品详情 - 提供最完整的商品信息，包括推荐商品、相关视频、店铺信息等 - 适用于所有地区的商品 ### 参数: - product_id: 商品ID (必填) - region: 地区代码 (US/GB/SG/MY/PH/TH/VN/ID) ### 重要提示: - **请务必确保 `product_id` 对应的 `region` 是正确的，否则接口将不会返回数据。** - 由于接口风控原因，请务必将请求timeout设置为30秒 - 如遇到400错误代码，请重试请求3次 ### 返回数据结构: ```json { "code":
-
-- Risk: `read`
-- Parameters: `[{"name":"product_id","type":"string","required":true},{"name":"region","type":"string","required":false}]`
-
-## `mcp_fa23023f72eae56fae2bf0d2`
-
-# [中文] ### 用途: - 通过直播链接获取直播间信息 - 此接口可获取离线直播间信息 ### 参数: - live_room_url: 直播间链接 ### 返回: - 直播间信息 # [English] ### Purpose: - Get live room information via live link - This interface can get offline live room information ### Parameters: - live_room_url: Live room link ### Return: - Live room information
-
-- Risk: `read`
-- Parameters: `[{"name":"live_room_url","type":"string","required":true}]`
-
-## `mcp_fc477a5c20245086b7360631`
-
-获取用户的播放列表/Get user play list
-
-- Risk: `read`
-- Parameters: `[{"name":"count","type":"integer","required":false},{"name":"cursor","type":"integer","required":false},{"name":"secUid","type":"string","required":true}]`
-
-## `mcp_fc6502efd42012e7027f2b79`
-
-获取热门标签详情(趋势)/Get trending hashtag detail
+批量查询Gift ID对应的礼物名称($0.025/次,建议50个)/Batch get gift names by gift IDs ($0.025/call, suggest 50)
 
 - Risk: `write`
-- Parameters: `[{"name":"country_code","type":"string","required":false},{"name":"hashtag_id","type":"string","required":true},{"name":"time_range","type":"integer","required":false}]`
+- Parameters: `[{"name":"gift_ids","type":"array","required":true}]`
 
-## `mcp_fdb304b3795b0e4073858c24`
+## `mcp_fe6588bce70f9ba6060a00de`
 
-# [中文] ### 用途: - 获取直播间首页推荐列表 ### 参数: - related_live_tag: 相关直播标签(直播分类)。该参数的可选值不固定，请先调用 `/fetch_live_recommend_tabs` 接口获取当前可用的标签列表，再从中选取传入。 ### 返回: - 直播间首页推荐列表 ### 备注: - 不清楚 `related_live_tag` 可以传哪些值时，请调用 `/fetch_live_recommend_tabs` 接口获取当前可用的标签(分类 Tab)列表。 - 此接口返回的视频CDN直链需要携带返回的 `tt_chain_token` 才能访问，
+# [中文] ### 用途: - 按关键词搜索指定地区的商品。 ### 参数: - search_word: 搜索关键词，必填。 - offset: 分页偏移量，首次请求为 0。 - page_token: 分页标记，首次请求留空。 - region: 商品或商家所在地区，US/SG/MY/PH/TH/VN/ID/JP/MX；GB、BR 暂不支持。 ### 返回与使用说明: - 商品位于 data.data.products；分页状态位于 data.data.has_more。 - 下一页使用 data.data.load_more_params 返回的 offset 和 page_token
 
 - Risk: `read`
-- Parameters: `[{"name":"related_live_tag","type":"string","required":true}]`
+- Parameters: `[{"name":"offset","type":"integer","required":false},{"name":"region","type":"string","required":false},{"name":"search_word","type":"string","required":true}]`
+
+## `mcp_ff13a2957e9d151b9b512c74`
+
+# [中文] ### 用途: - 获取创作者搜索洞察详情数据，用于查询特定搜索词条的搜索统计数据 ### 参数: - query_id_str: 搜索词条ID，从 fetch_creator_search_insights 接口返回的数据中获取 - time_range: 时间范围，可选值: - past_7_days: 过去7天 - past_30_days: 过去30天（默认） - past_60_days: 过去60天 - past_6_months: 过去6个月 - custom: 自定义时间（需配合 start_date 和 end_date 使用，不能超过6个月） - start_
+
+- Risk: `read`
+- Parameters: `[{"name":"dimension_list","type":"string","required":false},{"name":"end_date","type":"integer","required":false},{"name":"query_id_str","type":"string","required":true},{"name":"start_date","type":"integer","required":false},{"name":"time_range","type":"string","required":false}]`
+
+## `mcp_ffd8df61f89d37b6d1255bb5`
+
+提取用户user_id/Extract user user_id
+
+- Risk: `read`
+- Parameters: `[{"name":"url","type":"string","required":true}]`

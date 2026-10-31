@@ -2,10 +2,10 @@
 
 - 来源平台：`混合视频解析`
 - 能力分段：`hybrid`
-- Reference version: `sha256:b393f547c384fca750d10753974c32b9972edce5b8eaf37db23343442f1014b8`
+- Reference version: `sha256:7101f2f686e885c845f46663dcbe08d7c1ed1dbc6f1964fd25114ee3d35b88b6`
 - Tool count: 1
 
-## `mcp_e7b2c96b5a7871645d1d0daf`
+## `mcp_69659d7d75a41657c34a8e3e`
 
 # [中文] ### 用途: - 该接口用于解析抖音/TikTok单一视频的数据。 ### 参数: - `url`: 视频链接、分享链接、分享文本。 ### 返回: - `data`: 视频数据。 # [English] ### Purpose: - This endpoint is used to parse data of a single Douyin/TikTok video. ### Parameters: - `url`: Video link, share link, or share text. ### Returns: - `data`: Video data. # [Exa
 
