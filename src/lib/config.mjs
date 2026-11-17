@@ -46,6 +46,15 @@ export function getApiKey() {
   return pick('OKFLOW_API_KEY');
 }
 
+/**
+ * 返回默认团队空间 ID，未配置时返回空字符串。
+ *
+ * 只做取值；合法性校验和优先级合并由 workspace 模块负责。
+ */
+export function getWorkspaceId() {
+  return pick('OKFLOW_WORKSPACE_ID');
+}
+
 /** 返回 API base url，允许通过 OKFLOW_BASE_URL 覆盖。 */
 export function getBaseUrl(override) {
   if (override && override.trim()) return override.trim().replace(/\/+$/, '');

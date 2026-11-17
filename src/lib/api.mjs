@@ -15,6 +15,7 @@ import {
   saveCredentials,
 } from './oauth-credentials.mjs';
 import { redactSecrets } from './secrets.mjs';
+import { resolveWorkspaceId } from './workspace.mjs';
 
 /** 凭证缺失时抛出的专用错误，便于上层给出配置指引而不是打印堆栈。 */
 export class MissingCredentialError extends Error {
@@ -132,24 +133,50 @@ async function resolveCredential({ baseUrl, timeout, rejectedToken } = {}) {
   return getApiKey();
 }
 
-function buildHeaders({ json = true, anonymous = false, credential } = {}) {
+function buildHeaders({ json = true, anonymous = false, credential, workspaceId } = {}) {
   const key = anonymous ? '' : credential;
   if (!key && !anonymous) throw new MissingCredentialError();
   const headers = {
   };
   if (key) headers.Authorization = `Bearer ${key}`;
   if (json) headers['Content-Type'] = 'application/json';
+  // 团队空间统一在请求层注入：付费调用用它声明由团队钱包结算，
+  // 个人结算（未选择或 --no-workspace）不发送该请求头。
+  if (workspaceId) headers['X-Workspace-Id'] = String(workspaceId);
   return headers;
 }
 
-async function request(method, path, { body, bodyType = 'json', baseUrl, timeout = 60, anonymous = false, credential, retried = false } = {}) {
+async function request(method, path, {
+  body,
+  bodyType = 'json',
+  baseUrl,
+  timeout = 60,
+  anonymous = false,
+  credential,
+  workspaceId,
+  retried = false,
+} = {}) {
   // 先构造 headers：凭证缺失要以 MissingCredentialError 抛出，
   // 放进下面的 try 会被包装成「请求失败」，用户就看不到配置指引了。
   const isJson = bodyType === 'json';
   const resolvedCredential = anonymous ? '' : credential || await resolveCredential({ baseUrl, timeout });
+  // 只有付费调用会显式传 workspaceId：
+  // - `true` 表示按当前生效的团队选择（--workspace-id / 环境变量 / 本地保存）自动解析；
+  // - 数字表示调用方已解析好的团队 ID；
+  // - 其余情况（未传、null）一律不带请求头。
+  // 只读接口（status/history/models/sign-url/知识库查询等）刻意不带上团队上下文，
+  // 否则会被团队付款策略（如 allowlist 未命中）403 拦截，影响本与计费无关的查询。
+  let resolvedWorkspaceId = null;
+  if (!anonymous && workspaceId === true) resolvedWorkspaceId = resolveWorkspaceId(baseUrl);
+  else if (!anonymous && typeof workspaceId === 'number') resolvedWorkspaceId = workspaceId;
   const usingStoredOAuth = !anonymous && !credential && !process.env.OKFLOW_API_KEY?.trim()
     && getStoredCredentials().access_token === resolvedCredential;
-  const headers = buildHeaders({ json: isJson, anonymous, credential: resolvedCredential });
+  const headers = buildHeaders({
+    json: isJson,
+    anonymous,
+    credential: resolvedCredential,
+    workspaceId: resolvedWorkspaceId,
+  });
   const url = `${getBaseUrl(baseUrl)}${path}`;
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeout * 1000);
@@ -175,7 +202,7 @@ async function request(method, path, { body, bodyType = 'json', baseUrl, timeout
   if (resp.status === 401 && usingStoredOAuth && !retried) {
     const renewedToken = await resolveCredential({ baseUrl, timeout, rejectedToken: resolvedCredential });
     return request(method, path, {
-      body, bodyType, baseUrl, timeout, anonymous, credential: renewedToken, retried: true,
+      body, bodyType, baseUrl, timeout, anonymous, credential: renewedToken, workspaceId: resolvedWorkspaceId, retried: true,
     });
   }
   let parsed;
@@ -196,6 +223,12 @@ async function request(method, path, { body, bodyType = 'json', baseUrl, timeout
   return parsed.data;
 }
 
+/** 列出当前凭证可计费的团队工作空间（OpenAPI 只读接口，支持 API Key 与 OAuth）。 */
+export function listTeamWorkspaces({ baseUrl, timeout = 60 } = {}) {
+  // 该接口本身不参与团队计费，也不需要团队上下文。
+  return request('GET', '/openapi/v1/workspaces', { baseUrl, timeout });
+}
+
 /** 列出公开可用模型。type 可选，对应平台的 model_type 过滤。 */
 export function listModels({ type, baseUrl, timeout } = {}) {
   const query = new URLSearchParams({ is_public: 'true' });
@@ -204,13 +237,14 @@ export function listModels({ type, baseUrl, timeout } = {}) {
 }
 
 /** 提交生成任务，返回含 task_id 的对象。 */
-export function submitGeneration({ model, config, images, workflow_code, project_id, source_project_id, baseUrl, timeout } = {}) {
+export function submitGeneration({ model, config, images, workflow_code, project_id, source_project_id, baseUrl, timeout, workspaceId } = {}) {
   const body = { model, config };
   if (images && images.length) body.images = images;
   if (workflow_code !== undefined) body.workflow_code = workflow_code;
   if (project_id !== undefined) body.project_id = project_id;
   if (source_project_id !== undefined) body.source_project_id = source_project_id;
-  return request('POST', '/openapi/v1/image/generate', { body, baseUrl, timeout });
+  // 生图/生视频是付费调用：workspaceId 为 true 时按当前团队选择注入 X-Workspace-Id。
+  return request('POST', '/openapi/v1/image/generate', { body, baseUrl, timeout, workspaceId });
 }
 
 /** 查询任务状态。 */
@@ -222,8 +256,8 @@ export function getTaskStatus(taskId, { baseUrl, timeout } = {}) {
 }
 
 /** 提交平台标准 TTS 任务。model 与 speaker_id 至少提供一个。 */
-export function submitTtsSpeech({ body, baseUrl, timeout = 180 } = {}) {
-  return request('POST', '/openapi/v1/audio/speech', { body, baseUrl, timeout });
+export function submitTtsSpeech({ body, baseUrl, timeout = 180, workspaceId } = {}) {
+  return request('POST', '/openapi/v1/audio/speech', { body, baseUrl, timeout, workspaceId });
 }
 
 /** 查询平台标准 TTS 任务状态。 */
@@ -287,6 +321,7 @@ export function callAgent({
   workflowCode,
   baseUrl,
   timeout = 180,
+  workspaceId,
 } = {}) {
   const body = {
     prompt_code: String(promptCode || '').trim(),
@@ -302,7 +337,7 @@ export function callAgent({
   if (maxTokens !== undefined) body.max_tokens = maxTokens;
   if (images?.length) body.images = images;
   if (workflowCode) body.workflow_code = String(workflowCode);
-  return request('POST', '/openapi/v1/agent/call', { body, baseUrl, timeout });
+  return request('POST', '/openapi/v1/agent/call', { body, baseUrl, timeout, workspaceId });
 }
 
 const MIME_TYPES = {
@@ -549,6 +584,7 @@ export async function dispatchMcpTool({
   capability,
   baseUrl,
   timeout = 180,
+  workspaceId,
 } = {}) {
   if (!toolArguments || typeof toolArguments !== 'object' || Array.isArray(toolArguments)) {
     throw new TypeError('arguments must be an object');
@@ -562,5 +598,5 @@ export async function dispatchMcpTool({
   if (sessionId) body.session_id = String(sessionId);
   if (requestId) body.request_id = String(requestId);
   if (confirmation) body.confirmation = confirmation;
-  return request('POST', '/openapi/v1/agent/mcp/dispatch', { body, baseUrl, timeout });
+  return request('POST', '/openapi/v1/agent/mcp/dispatch', { body, baseUrl, timeout, workspaceId });
 }

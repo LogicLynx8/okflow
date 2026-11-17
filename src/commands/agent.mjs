@@ -13,6 +13,7 @@ import { validateGenerationRequest } from '../lib/model-capabilities.mjs';
 import { info, json, ok, step, table } from '../lib/output.mjs';
 import { pollUntilDone } from '../lib/poll.mjs';
 import { getLivePublicModel, validateLiveGenerationRequest } from './request.mjs';
+import { describeActiveWorkspace } from '../lib/workspace.mjs';
 
 export function help() {
   console.log(`
@@ -235,6 +236,8 @@ function callHelp() {
   --timeout <秒>              默认 180
   --base-url <url>            覆盖 API 地址
   --json                      输出原始 Agent 响应
+  --workspace-id <团队ID>      本次调用用该团队空间积分结算
+  --no-workspace              本次调用强制使用个人钱包
 `);
 }
 
@@ -253,7 +256,11 @@ async function runCall(args) {
   }
 
   await assertVisibleAgent(promptCode, { baseUrl, timeout: Math.min(timeout, 60) });
-  if (!quiet) step(`已确认当前 API Key 可调用 Agent: ${promptCode}`);
+  if (!quiet) {
+    step(`已确认当前 API Key 可调用 Agent: ${promptCode}`);
+    const settlement = describeActiveWorkspace({ baseUrl });
+    if (settlement) step(`结算主体: ${settlement}`);
+  }
 
   const result = await callAgent({
     promptCode,
@@ -267,6 +274,7 @@ async function runCall(args) {
     workflowCode: optionalString(args, 'workflow-code'),
     baseUrl,
     timeout,
+    workspaceId: true,
   });
 
   if (!quiet) ok(`Agent 调用完成: ${result?.prompt_code || promptCode}`);
@@ -302,6 +310,8 @@ Agent 输入:
   --interval <秒>             生图轮询间隔，默认 10
   --base-url <url>            覆盖 API 地址
   --json                      只输出最终生图 JSON
+  --workspace-id <团队ID>      本次调用用该团队空间积分结算
+  --no-workspace              本次调用强制使用个人钱包
 `);
 }
 
@@ -336,7 +346,11 @@ async function runImage(args) {
   }
 
   await assertVisibleAgent(promptCode, { baseUrl, timeout: Math.min(totalTimeout, 60) });
-  if (!quiet) step(`已确认当前 API Key 可调用 Agent: ${promptCode}`);
+  if (!quiet) {
+    step(`已确认当前 API Key 可调用 Agent: ${promptCode}`);
+    const settlement = describeActiveWorkspace({ baseUrl });
+    if (settlement) step(`结算主体: ${settlement}`);
+  }
 
   const agentResult = await callAgent({
     promptCode,
@@ -350,6 +364,7 @@ async function runImage(args) {
     workflowCode: optionalString(args, 'workflow-code'),
     baseUrl,
     timeout: Math.min(totalTimeout, 180),
+    workspaceId: true,
   });
   if (agentResult?.success === false) {
     throw new UsageError(agentResult?.error || 'Agent 调用未成功，未提交生图任务');
@@ -380,6 +395,7 @@ async function runImage(args) {
     ...requestBody,
     baseUrl,
     timeout: 120,
+    workspaceId: true,
   });
   const taskId = submitted?.task_id;
   if (!taskId) {

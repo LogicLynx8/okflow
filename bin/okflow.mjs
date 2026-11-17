@@ -8,6 +8,7 @@
 import { parseArgs, UsageError } from '../src/lib/args.mjs';
 import { fail, step, info } from '../src/lib/output.mjs';
 import { MissingCredentialError, ApiError, OAuthReauthenticationRequiredError } from '../src/lib/api.mjs';
+import { parseWorkspaceId, setWorkspaceOverride } from '../src/lib/workspace.mjs';
 
 import * as setup from '../src/commands/setup.mjs';
 import * as models from '../src/commands/models.mjs';
@@ -24,8 +25,21 @@ import * as agent from '../src/commands/agent.mjs';
 import * as request from '../src/commands/request.mjs';
 import * as tts from '../src/commands/tts.mjs';
 import * as auth from '../src/commands/auth.mjs';
+import * as workspace from '../src/commands/workspace.mjs';
 
-const COMMANDS = { setup, models, generate, request, tts, auth, status, history, download, upload, 'sign-url': signUrl, 'sign-urls': signUrls, knowledge, mcp, agent };
+const COMMANDS = { setup, models, generate, request, tts, auth, status, history, download, upload, 'sign-url': signUrl, 'sign-urls': signUrls, knowledge, mcp, agent, workspace };
+
+/**
+ * 全局结算主体选项：一次覆盖本次调用的团队空间。
+ * --workspace-id 指定团队空间，--no-workspace 强制回到个人钱包。
+ */
+function applyWorkspaceArgs(args) {
+  const hasWorkspaceId = args['workspace-id'] !== undefined;
+  const personal = args['no-workspace'] === true || args.personal === true;
+  if (hasWorkspaceId && personal) throw new UsageError('--workspace-id 与 --no-workspace 不能同时使用');
+  if (hasWorkspaceId) setWorkspaceOverride(parseWorkspaceId(args['workspace-id']));
+  else if (personal) setWorkspaceOverride(null);
+}
 
 function printGlobalHelp() {
   console.log(`
@@ -46,6 +60,11 @@ function printGlobalHelp() {
   sign-urls <file>    批量刷新 JSON 文件中的 OSS URL
   mcp dispatch         预检 References 后调用一个 MCP 工具
   agent <子命令>       列出、调用线上 Agent，或用 Agent 提示词生图
+  workspace <子命令>   查看团队空间列表、选择团队积分结算
+
+付费命令通用选项:
+  --workspace-id <ID>  本次调用用该团队空间积分结算
+  --no-workspace       本次调用强制使用个人钱包
 
 用 'okflow <命令> --help' 查看某个命令的详细参数。
 `);
@@ -68,13 +87,14 @@ async function main() {
 
   const args = parseArgs(rest);
   if (args.help || args.h) {
-    if ((command === 'agent' || command === 'request') && args._.length > 0) {
+    if ((command === 'agent' || command === 'request' || command === 'workspace') && args._.length > 0) {
       return impl.run(args);
     }
     impl.help();
     return 0;
   }
 
+  applyWorkspaceArgs(args);
   return impl.run(args);
 }
 

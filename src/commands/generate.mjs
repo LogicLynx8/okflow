@@ -12,6 +12,7 @@ import { validateGenerationRequest } from '../lib/model-capabilities.mjs';
 import { info, ok, warn, step, json } from '../lib/output.mjs';
 import { pollUntilDone } from '../lib/poll.mjs';
 import { getLivePublicModel } from './request.mjs';
+import { describeActiveWorkspace } from '../lib/workspace.mjs';
 
 export function help() {
   console.log(`
@@ -37,6 +38,8 @@ export function help() {
   --interval <秒>         轮询间隔，默认 10
   --json                  只输出最终 JSON，不打印进度
   --base-url <url>        覆盖 API 地址
+  --workspace-id <团队ID>  本次调用用该团队空间积分结算
+  --no-workspace          本次调用强制使用个人钱包
 
 示例:
   okflow generate --model <模型> --prompt "一只橘猫在窗台上" --wait
@@ -138,6 +141,8 @@ export async function run(args) {
     const extraKeys = Object.keys(config).filter((k) => k !== 'prompt');
     if (extraKeys.length) step(`附加参数: ${extraKeys.join(', ')}`);
     if (images.length) step(`输入图片: ${images.length} 张`);
+    const settlement = describeActiveWorkspace({ baseUrl });
+    if (settlement) step(`结算主体: ${settlement}`);
   }
 
   const requestBody = validateGenerationRequest({
@@ -149,6 +154,7 @@ export async function run(args) {
     ...requestBody,
     baseUrl,
     timeout: 120,
+    workspaceId: true,
   });
   const taskId = submitted?.task_id;
 

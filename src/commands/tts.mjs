@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 
 import { num, required, UsageError } from '../lib/args.mjs';
 import { getTtsTaskStatus, submitTtsSpeech } from '../lib/api.mjs';
+import { describeActiveWorkspace } from '../lib/workspace.mjs';
 import { info, json, ok, step, warn } from '../lib/output.mjs';
 
 const SUCCESS = new Set(['completed', 'success']);
@@ -22,6 +23,8 @@ export function help() {
   --interval <秒>                 默认 3
   --json                          只输出最终 JSON
   --base-url <url>                覆盖服务地址
+  --workspace-id <团队ID>          本次调用用该团队空间积分结算
+  --no-workspace                  本次调用强制使用个人钱包
 
 高级可选参数:
   --volume <数值>                 0.1-10
@@ -97,7 +100,11 @@ export async function run(args) {
   const quiet = Boolean(args.json);
   const baseUrl = args['base-url'];
   if (!quiet) info(`提交 TTS：${hasModel ? `model=${body.model}` : `speaker_id=${body.speaker_id}`}`);
-  const submitted = await submitTtsSpeech({ body, baseUrl, timeout: 180 });
+  if (!quiet) {
+    const settlement = describeActiveWorkspace({ baseUrl });
+    if (settlement) step(`结算主体: ${settlement}`);
+  }
+  const submitted = await submitTtsSpeech({ body, baseUrl, timeout: 180, workspaceId: true });
   if (!submitted?.task_id || !args.wait) {
     json(submitted);
     return submitted?.status === 'failed' ? 1 : 0;

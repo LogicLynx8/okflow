@@ -1,6 +1,6 @@
 {
   "name": "okflow",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "private": true,
   "description": "通过 okflow 开放 API 生成图片、视频、音频和音乐的命令行工具",
   "type": "module",

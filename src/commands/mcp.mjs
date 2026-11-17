@@ -1,6 +1,7 @@
 import { dispatchMcpTool } from '../lib/api.mjs';
 import { json, ok, step } from '../lib/output.mjs';
 import { required, num, UsageError } from '../lib/args.mjs';
+import { describeActiveWorkspace } from '../lib/workspace.mjs';
 
 function parseObject(raw, label) {
   let value;
@@ -32,6 +33,8 @@ export function help() {
   --base-url <url>        覆盖 OpenAPI 地址
   --timeout <秒>          调度超时，默认 180
   --json                  只输出结果 JSON
+  --workspace-id <团队ID>  本次调用用该团队空间积分结算
+  --no-workspace          本次调用强制使用个人钱包
 `);
 }
 
@@ -53,12 +56,15 @@ export async function run(args) {
     confirmation,
     baseUrl: args['base-url'],
     timeout: num(args, 'timeout', 180),
+    workspaceId: true,
   });
 
   if (args.json) {
     json(result);
     return 0;
   }
+  const settlement = describeActiveWorkspace({ baseUrl: args['base-url'] });
+  if (settlement) step(`结算主体: ${settlement}`);
   ok(`MCP 工具调用完成：${result?.status || 'success'}`);
   if (result?.billing) step(`计费状态：${result.billing.state || 'unknown'}`);
   json(result);

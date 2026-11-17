@@ -6,6 +6,7 @@ import { num, positional, required, UsageError } from '../lib/args.mjs';
 import { createRequestTemplate, findPublicModel, validateGenerationRequest } from '../lib/model-capabilities.mjs';
 import { ensureLocalModelCatalog, fetchModelContract, syncModelReferences } from '../lib/model-references.mjs';
 import { info, json, ok, step } from '../lib/output.mjs';
+import { describeActiveWorkspace } from '../lib/workspace.mjs';
 import { pollUntilDone } from '../lib/poll.mjs';
 
 export function help() {
@@ -74,6 +75,8 @@ function submitHelp() {
   --interval <秒>         轮询间隔，默认 10
   --base-url <url>        覆盖 API 地址
   --json                  只输出最终 JSON
+  --workspace-id <团队ID>  本次调用用该团队空间积分结算
+  --no-workspace          本次调用强制使用个人钱包
 `);
 }
 
@@ -162,7 +165,11 @@ async function runSubmit(args) {
     timeout: Math.min(totalTimeout, 60),
   });
   if (!quiet) info(`线上 capabilities.params 校验通过，提交任务: model=${request.model}`);
-  const submitted = await submitGeneration({ ...request, baseUrl: args['base-url'], timeout: 120 });
+  if (!quiet) {
+    const settlement = describeActiveWorkspace({ baseUrl: args['base-url'] });
+    if (settlement) step(`结算主体: ${settlement}`);
+  }
+  const submitted = await submitGeneration({ ...request, baseUrl: args['base-url'], timeout: 120, workspaceId: true });
   if (!submitted?.task_id || !args.wait) {
     if (quiet) json(submitted);
     else {

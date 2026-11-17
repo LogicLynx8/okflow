@@ -220,6 +220,35 @@ node bin/okflow.mjs sign-urls ./anchor-urls.json \
 创建生成任务，也不消耗媒体生成积分。应长期保存 canonical URL，在实际使用前刷新临时
 签名；对象已删除时重新签名也无法恢复内容。
 
+## 团队空间与团队积分结算
+
+加入团队后，付费调用可以让团队钱包结算，而不是扣个人积分。先查团队 ID：
+
+```bash
+node bin/okflow.mjs workspace list
+node bin/okflow.mjs workspace use 140   # 保存为默认结算主体
+node bin/okflow.mjs workspace current
+```
+
+选中团队后，`generate`、`request submit`、`tts`、`agent call`、`agent image` 和
+`mcp dispatch` 都会自动带上 `X-Workspace-Id` 请求头，由服务端按团队额度结算。也可以用
+全局参数只影响一次调用：
+
+```bash
+node bin/okflow.mjs tts --model <模型> --voice <音色> --text "你好" --workspace-id 140
+node bin/okflow.mjs tts --model <模型> --voice <音色> --text "你好" --no-workspace
+```
+
+结算主体优先级为：`--workspace-id` / `--no-workspace` > `OKFLOW_WORKSPACE_ID`（环境变量或
+`.env`）> `workspace use` 保存的选择 > 个人钱包。保存的选择会记录服务地址，换站点联调时
+不会把官网团队 ID 发到测试环境；需要时重新 `workspace use` 即可。`workspace clear` 删除本地
+选择并回到个人钱包。
+
+`workspace list` 调用只读的 `GET /openapi/v1/workspaces`，API Key 和 OAuth 登录都支持；它只返回
+你真正能计费的团队空间，`billing_enabled` 表示该团队已开启统一付款、已激活且团队钱包可用。
+`workspace use` 会校验这一点，团队还未开启统一付款时会拒绝保存（确认仍要保存可加 `--no-verify`）。
+团队采用白名单付款时，未纳入白名单的 AI 应用下单仍会返回 403，需要团队管理员把应用加进白名单。
+
 ## 常见问题
 
 | 现象 | 怎么办 |
@@ -230,6 +259,9 @@ node bin/okflow.mjs sign-urls ./anchor-urls.json \
 | 轮询超时 | 任务还在跑，用 `status <taskId>` 继续查 |
 | 本地进程中断且 taskId 丢失 | 用 `history --json` 找回任务，再用 `status <taskId> --wait` 续查，不要直接重提 |
 | 任务很快 failed 且无错误信息 | 内容审核拦截，按上面的避坑建议改 prompt |
+| 团队积分没被扣 / 仍扣个人积分 | 先 `workspace current` 确认结算主体；没有团队上下文时加 `--workspace-id <团队ID>` |
+| `workspace use` 报团队不可用 | 团队未开启 AI 应用统一付款、未激活或团队钱包不可用 |
+| 团队空间请求被拒 | 团队采用白名单付款且当前应用未入白名单，或当前账号不在团队在席成员中 |
 
 更多用法：`node bin/okflow.mjs <命令> --help`。
 

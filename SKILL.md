@@ -2,7 +2,7 @@
 name: okflow
 description: 当用户明确要用 OKFlow 生成或查询 AI 图片、视频、语音、音效、音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等公开内容，调用 OKFlow 线上 Agent，或同步 OKFlow 知识库时使用。可用 `okflow auth login` 浏览器授权或 `OKFLOW_API_KEY`；生成和付费 MCP 调用必须先按实时契约校验。不要用于通用网页浏览、PDF/OCR、纯文本写作或私密内容；仅出现通用 Agent、MCP、OpenAPI、知识库等词时不要触发。
 slug: okflow
-version: 1.4.0
+version: 1.5.0
 display_name: OKFlow AI生图·视频·音频·音乐与社媒内容解析
 display_name_en: OKFlow AI Image, Video, Audio, Music & Social Content
 description_zh: 用 OKFlow 生成 AI 图片、视频、语音、音效和音乐，解析小红书、抖音、公众号、B站、知乎、YouTube、TikTok、Instagram 等平台的公开内容，并调用线上 Agent、同步知识库。支持浏览器授权登录，付费生成前按实时模型契约校验参数。
@@ -13,7 +13,7 @@ homepage: https://github.com/LogicLynx8/okflow
 metadata:
   slug: okflow
   displayName: OKFlow AI生图·视频·音频·音乐与社媒内容解析
-  version: 1.4.0
+  version: 1.5.0
   summary: 用 OKFlow 生成图片、视频、语音、音效和音乐，解析公开社媒内容，并调用线上 Agent 与知识库。
   tags: [ai-agent, image-generation, video-generation, audio-generation, music-generation, social-media-data, content-extraction, openapi, mcp, knowledge-base]
   homepage: https://github.com/LogicLynx8/okflow
@@ -41,7 +41,7 @@ metadata:
 node bin/okflow.mjs auth login
 ```
 
-交互模式默认调用系统浏览器打开 `verification_uri_complete`；页面自动读取并清除 URL 中的设备码，用户只点击“同意授权”。默认申请 `openapi:invoke` 与 `wallet:balance:read`，前者仍受服务端既有角色、资源归属、租户和计费规则约束，后者只允许读取本人余额概览。`--json` 只改变输出格式，仍会打开浏览器；`--no-browser` 关闭自动打开并保留完整链接供无图形环境手动访问。`auth status` 只显示账户、Client、scope 和到期时间，`auth logout` 撤销 refresh family 并清理本地凭据。
+交互模式默认调用系统浏览器打开 `verification_uri_complete`；页面自动读取并清除 URL 中的设备码，用户只点击“同意授权”。默认申请 `openapi:invoke` 与 `wallet:balance:read`，前者仍受服务端既有角色、资源归属、租户和计费规则约束（团队空间列表也属于它），后者只允许读取本人余额概览。`--json` 只改变输出格式，仍会打开浏览器；`--no-browser` 关闭自动打开并保留完整链接供无图形环境手动访问。`auth status` 只显示账户、Client、scope 和到期时间，`auth logout` 撤销 refresh family 并清理本地凭据。
 
 ```bash
 node bin/okflow.mjs setup
@@ -72,6 +72,7 @@ OAuth Device Grant 只使用服务端登记的 `client_id`：默认 `okflow-cli`
 | `download <taskId>` | 下载已完成产物 |
 | `upload <file>` | 上传本地媒体并取得持久 URL |
 | `sign-url` / `sign-urls` | 刷新过期 OSS 签名，不重复上传 |
+| `workspace list/use/current/clear` | 查团队空间列表，选择用团队积分结算 |
 | `agent list/call/image` | 查询、调用 Agent，或让 Agent 生成提示词后生图 |
 | `knowledge sync` | 将 Markdown 和本地图片同步到知识库 |
 | `mcp dispatch` | 预检实时 References 后调度一个 MCP 工具 |
@@ -172,6 +173,22 @@ node bin/okflow.mjs knowledge sync <baseId> ./article.md --json
 ```
 
 字段、图片上传和错误处理细节见 [knowledge-openapi.md](references/knowledge-openapi.md)。不要修改网页代码代替知识库 OpenAPI。
+
+### 用团队积分结算
+
+团队空间的付费调用可以让团队钱包结算而不是个人积分。先查团队 ID 并选中：
+
+```bash
+node bin/okflow.mjs workspace list
+node bin/okflow.mjs workspace use 140
+node bin/okflow.mjs workspace current
+```
+
+选中后 `generate`、`request submit`、`tts`、`agent call/image`、`mcp dispatch` 自动带
+`X-Workspace-Id`；单次覆盖用 `--workspace-id <团队ID>`，单次回到个人钱包用 `--no-workspace`，
+`workspace clear` 删除本地选择。优先级：命令行 > `OKFLOW_WORKSPACE_ID` > 保存的选择 > 个人。
+`workspace list` 走只读的 `GET /openapi/v1/workspaces`，API Key 与 OAuth 都可用，只返回真正
+可计费的团队；`billing_enabled=false` 表示团队未开启统一付款并会被 `workspace use` 拒绝。
 
 ### 刷新 OSS 地址
 
