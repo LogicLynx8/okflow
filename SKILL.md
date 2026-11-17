@@ -106,6 +106,11 @@ node bin/okflow.mjs generate --model <模型名> --prompt "一张产品发布会
 长中文提示词必须先写入文件，再使用 `--prompt-file` 提交；不要把长提示词直接拼接在命令行中，也不要先探索命令参数。
 
 模型参数唯一以线上 `capabilities.params` 为准。`request submit` 会在付费 POST 前再次获取并校验线上契约；模型不存在、参数缺失、类型/枚举/范围错误时必须停止，不要猜参数或手写付费请求。视频通常需要较长等待，可先提交拿 `taskId`，之后用 `status <taskId> --wait`。
+### Seedance 2.5 参考链特例
+
+`doubao-seedance-2-5-260628` 是当前唯一走 Ark 参考资产链的视频模型：参考图和参考音频会在产品/后端链路转换为 `asset-*`，内部分别对应 `reference_image_asset_ids` 与 `reference_audio_asset_ids`。不要把这两个内部字段推广到其他视频模型，也不要在公共请求中手写它们。
+
+公共 `okflow request` 提交时仍以该模型实时 `capabilities.params` 为准：参考图使用 `config.img2video_reference` 的 http/https URL 数组，参考音频使用 `config.reference_audios` 的 http/https URL 数组；服务端负责把它们转换成 SD2.5 专属 asset 引用。其他模型一律按各自实时契约填写参考输入字段。
 
 音频模型同样使用这套实时契约流程。需要语音合成、音效、多角色对白、参考音频或参考图片时，读取 [audio-generation.md](references/audio-generation.md)；不要把供应商端点、`request_type`、Webhook、计费公式或实际用量路径当作用户参数。
 
